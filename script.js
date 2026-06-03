@@ -1,242 +1,66 @@
-let products = [
-  {
-    id: 1,
-    name: "Đầm hoa pastel",
-    category: "Đầm",
-    price: 329000,
-    oldPrice: 420000,
-    image: "assets/product-1.svg",
-    description: "Đầm hoa pastel nhẹ nhàng, phù hợp đi chơi, đi cà phê hoặc dạo phố cuối tuần.",
-    tag: "Sale"
-  },
-  {
-    id: 2,
-    name: "Áo sơ mi trắng nữ",
-    category: "Áo",
-    price: 259000,
-    oldPrice: 0,
-    image: "assets/product-2.svg",
-    description: "Áo sơ mi trắng basic, dễ phối cùng quần jeans, chân váy hoặc quần tây.",
-    tag: "New"
-  },
-  {
-    id: 3,
-    name: "Chân váy chữ A",
-    category: "Váy",
-    price: 279000,
-    oldPrice: 350000,
-    image: "assets/product-3.svg",
-    description: "Chân váy chữ A tôn dáng, phù hợp phong cách đi học và công sở.",
-    tag: "Sale"
-  },
-  {
-    id: 4,
-    name: "Đầm dự tiệc đen",
-    category: "Đầm",
-    price: 499000,
-    oldPrice: 650000,
-    image: "assets/product-4.svg",
-    description: "Đầm dự tiệc màu đen sang trọng, thiết kế đơn giản nhưng nổi bật.",
-    tag: "Hot"
-  },
-  {
-    id: 5,
-    name: "Áo croptop basic",
-    category: "Áo",
-    price: 199000,
-    oldPrice: 0,
-    image: "assets/product-5.svg",
-    description: "Áo croptop basic trẻ trung, chất vải mềm, dễ phối với chân váy hoặc quần jean.",
-    tag: "New"
-  },
-  {
-    id: 6,
-    name: "Váy công sở thanh lịch",
-    category: "Váy",
-    price: 369000,
-    oldPrice: 450000,
-    image: "assets/product-6.svg",
-    description: "Váy công sở dáng dài vừa phải, thanh lịch, phù hợp đi làm và gặp khách hàng.",
-    tag: "Sale"
-  },
-  {
-    id: 7,
-    name: "Túi xách mini",
-    category: "Phụ kiện",
-    price: 229000,
-    oldPrice: 0,
-    image: "assets/product-7.svg",
-    description: "Túi xách mini nữ tính, dễ phối cùng đầm, váy hoặc set công sở.",
-    tag: "New"
-  },
-  {
-    id: 8,
-    name: "Set áo và chân váy",
-    category: "Đầm",
-    price: 459000,
-    oldPrice: 560000,
-    image: "assets/product-8.svg",
-    description: "Set áo và chân váy đồng bộ, giúp bạn có outfit hoàn chỉnh chỉ trong vài giây.",
-    tag: "Hot"
-  },
-  {
-    id: 9,
-    name: "Đầm linen cổ vuông",
-    category: "Đầm",
-    price: 389000,
-    oldPrice: 480000,
-    image: "assets/product-1.svg",
-    description: "Đầm linen cổ vuông nhẹ mát, phù hợp đi làm, đi chơi và những ngày thời tiết nóng.",
-    tag: "Sale"
-  },
-  {
-    id: 10,
-    name: "Áo blouse tay phồng",
-    category: "Áo",
-    price: 289000,
-    oldPrice: 350000,
-    image: "assets/product-2.svg",
-    description: "Áo blouse tay phồng nữ tính, dễ phối cùng chân váy chữ A hoặc quần jeans.",
-    tag: "New"
-  },
-  {
-    id: 11,
-    name: "Chân váy midi xếp ly",
-    category: "Váy",
-    price: 319000,
-    oldPrice: 390000,
-    image: "assets/product-3.svg",
-    description: "Chân váy midi xếp ly mềm mại, tạo chuyển động nhẹ nhàng khi di chuyển.",
-    tag: "Sale"
-  },
-  {
-    id: 12,
-    name: "Đầm cổ yếm dự tiệc",
-    category: "Đầm",
-    price: 529000,
-    oldPrice: 690000,
-    image: "assets/product-4.svg",
-    description: "Đầm cổ yếm thanh lịch cho tiệc tối, sinh nhật hoặc những buổi hẹn quan trọng.",
-    tag: "Hot"
-  },
-  {
-    id: 13,
-    name: "Áo thun rib ôm dáng",
-    category: "Áo",
-    price: 179000,
-    oldPrice: 0,
-    image: "assets/product-5.svg",
-    description: "Áo thun rib co giãn nhẹ, ôm dáng vừa phải và dễ phối trong outfit hằng ngày.",
-    tag: "New"
-  },
-  {
-    id: 14,
-    name: "Váy bút chì công sở",
-    category: "Váy",
-    price: 339000,
-    oldPrice: 420000,
-    image: "assets/product-6.svg",
-    description: "Váy bút chì công sở có độ co giãn nhẹ, giúp dáng mặc gọn và thanh lịch.",
-    tag: "Sale"
-  },
-  {
-    id: 15,
-    name: "Túi đeo vai pastel",
-    category: "Phụ kiện",
-    price: 259000,
-    oldPrice: 320000,
-    image: "assets/product-7.svg",
-    description: "Túi đeo vai pastel nhỏ gọn, phù hợp đi chơi, đi học hoặc phối cùng đầm nhẹ.",
-    tag: "Sale"
-  },
-  {
-    id: 16,
-    name: "Set cardigan và váy",
-    category: "Đầm",
-    price: 489000,
-    oldPrice: 590000,
-    image: "assets/product-8.svg",
-    description: "Set cardigan và váy tạo vẻ ngoài dịu dàng, phù hợp tiết trời mát hoặc đi cà phê.",
-    tag: "Hot"
-  },
-  {
-    id: 17,
-    name: "Đầm sơ mi thắt eo",
-    category: "Đầm",
-    price: 419000,
-    oldPrice: 520000,
-    image: "assets/product-1.svg",
-    description: "Đầm sơ mi thắt eo gọn gàng, dễ mặc đi làm và có thể phối cùng túi mini.",
-    tag: "Sale"
-  },
-  {
-    id: 18,
-    name: "Áo kiểu cổ nơ",
-    category: "Áo",
-    price: 299000,
-    oldPrice: 360000,
-    image: "assets/product-2.svg",
-    description: "Áo kiểu cổ nơ tạo điểm nhấn nữ tính, hợp với phong cách công sở nhẹ nhàng.",
-    tag: "New"
-  },
-  {
-    id: 19,
-    name: "Chân váy jean chữ A",
-    category: "Váy",
-    price: 309000,
-    oldPrice: 0,
-    image: "assets/product-3.svg",
-    description: "Chân váy jean chữ A trẻ trung, dễ phối với áo thun, sơ mi hoặc croptop.",
-    tag: "New"
-  },
-  {
-    id: 20,
-    name: "Đầm satin hai dây",
-    category: "Đầm",
-    price: 459000,
-    oldPrice: 560000,
-    image: "assets/product-4.svg",
-    description: "Đầm satin hai dây mềm rũ, thích hợp cho các buổi tiệc tối và hẹn hò.",
-    tag: "Hot"
-  },
-  {
-    id: 21,
-    name: "Áo khoác cardigan mỏng",
-    category: "Áo",
-    price: 349000,
-    oldPrice: 430000,
-    image: "assets/product-5.svg",
-    description: "Áo khoác cardigan mỏng nhẹ, dễ khoác ngoài váy hai dây hoặc áo basic.",
-    tag: "Sale"
-  },
-  {
-    id: 22,
-    name: "Váy tennis xếp ly",
-    category: "Váy",
-    price: 289000,
-    oldPrice: 350000,
-    image: "assets/product-6.svg",
-    description: "Váy tennis xếp ly năng động, phù hợp phong cách trẻ trung khi đi học hoặc dạo phố.",
-    tag: "New"
-  },
-  {
-    id: 23,
-    name: "Băng đô ngọc trai",
-    category: "Phụ kiện",
-    price: 129000,
-    oldPrice: 0,
-    image: "assets/product-7.svg",
-    description: "Băng đô ngọc trai nhỏ xinh, tạo điểm nhấn nhẹ cho outfit váy hoặc đầm pastel.",
-    tag: "New"
-  }
+const productSeed = [
+  ["Đầm hoa pastel", "Đầm", 329000, 420000, "Đầm hoa pastel nhẹ nhàng, phù hợp đi chơi, đi cà phê hoặc dạo phố cuối tuần.", "Sale"],
+  ["Đầm dự tiệc đen", "Đầm", 499000, 650000, "Đầm dự tiệc màu đen sang trọng, thiết kế đơn giản nhưng nổi bật.", "Hot"],
+  ["Đầm linen cổ vuông", "Đầm", 389000, 480000, "Đầm linen cổ vuông nhẹ mát, phù hợp đi làm, đi chơi và những ngày thời tiết nóng.", "Sale"],
+  ["Đầm cổ yếm dự tiệc", "Đầm", 529000, 690000, "Đầm cổ yếm thanh lịch cho tiệc tối, sinh nhật hoặc những buổi hẹn quan trọng.", "Hot"],
+  ["Đầm sơ mi thắt eo", "Đầm", 419000, 520000, "Đầm sơ mi thắt eo gọn gàng, dễ mặc đi làm và có thể phối cùng túi mini.", "Sale"],
+  ["Đầm satin hai dây", "Đầm", 459000, 560000, "Đầm satin hai dây mềm rũ, thích hợp cho các buổi tiệc tối và hẹn hò.", "Hot"],
+  ["Đầm babydoll tay bồng", "Đầm", 379000, 460000, "Đầm babydoll tay bồng tạo dáng trẻ trung, dễ mặc trong những buổi dạo phố.", "New"],
+  ["Đầm maxi hoa nhí", "Đầm", 559000, 690000, "Đầm maxi hoa nhí mềm mại, phù hợp du lịch, đi biển hoặc những ngày cuối tuần.", "Sale"],
+  ["Áo sơ mi trắng nữ", "Áo", 259000, 0, "Áo sơ mi trắng basic, dễ phối cùng quần jeans, chân váy hoặc quần tây.", "New"],
+  ["Áo croptop basic", "Áo", 199000, 0, "Áo croptop basic trẻ trung, chất vải mềm, dễ phối với chân váy hoặc quần jean.", "New"],
+  ["Áo blouse tay phồng", "Áo", 289000, 350000, "Áo blouse tay phồng nữ tính, dễ phối cùng chân váy chữ A hoặc quần jeans.", "New"],
+  ["Áo thun rib ôm dáng", "Áo", 179000, 0, "Áo thun rib co giãn nhẹ, ôm dáng vừa phải và dễ phối trong outfit hằng ngày.", "New"],
+  ["Áo kiểu cổ nơ", "Áo", 299000, 360000, "Áo kiểu cổ nơ tạo điểm nhấn nữ tính, hợp với phong cách công sở nhẹ nhàng.", "New"],
+  ["Áo khoác cardigan mỏng", "Áo", 349000, 430000, "Áo khoác cardigan mỏng nhẹ, dễ khoác ngoài váy hai dây hoặc áo basic.", "Sale"],
+  ["Áo peplum công sở", "Áo", 319000, 390000, "Áo peplum công sở giúp tôn eo, phù hợp phối cùng chân váy hoặc quần tây.", "Sale"],
+  ["Chân váy chữ A", "Váy", 279000, 350000, "Chân váy chữ A tôn dáng, phù hợp phong cách đi học và công sở.", "Sale"],
+  ["Váy công sở thanh lịch", "Váy", 369000, 450000, "Váy công sở dáng dài vừa phải, thanh lịch, phù hợp đi làm và gặp khách hàng.", "Sale"],
+  ["Chân váy midi xếp ly", "Váy", 319000, 390000, "Chân váy midi xếp ly mềm mại, tạo chuyển động nhẹ nhàng khi di chuyển.", "Sale"],
+  ["Váy bút chì công sở", "Váy", 339000, 420000, "Váy bút chì công sở có độ co giãn nhẹ, giúp dáng mặc gọn và thanh lịch.", "Sale"],
+  ["Chân váy jean chữ A", "Váy", 309000, 0, "Chân váy jean chữ A trẻ trung, dễ phối với áo thun, sơ mi hoặc croptop.", "New"],
+  ["Váy tennis xếp ly", "Váy", 289000, 350000, "Váy tennis xếp ly năng động, phù hợp phong cách trẻ trung khi đi học hoặc dạo phố.", "New"],
+  ["Chân váy lụa midi", "Váy", 359000, 450000, "Chân váy lụa midi mềm rũ, dễ phối với áo sơ mi, áo thun hoặc cardigan.", "New"],
+  ["Chân váy xếp tầng", "Váy", 399000, 490000, "Chân váy xếp tầng nữ tính, tạo độ bay nhẹ cho outfit đi chơi hoặc dự tiệc.", "Hot"],
+  ["Túi xách mini", "Phụ kiện", 229000, 0, "Túi xách mini nữ tính, dễ phối cùng đầm, váy hoặc set công sở.", "New"],
+  ["Túi đeo vai pastel", "Phụ kiện", 259000, 320000, "Túi đeo vai pastel nhỏ gọn, phù hợp đi chơi, đi học hoặc phối cùng đầm nhẹ.", "Sale"],
+  ["Băng đô ngọc trai", "Phụ kiện", 129000, 0, "Băng đô ngọc trai nhỏ xinh, tạo điểm nhấn nhẹ cho outfit váy hoặc đầm pastel.", "New"],
+  ["Khăn lụa họa tiết", "Phụ kiện", 149000, 0, "Khăn lụa họa tiết nhẹ nhàng, có thể buộc cổ, buộc tóc hoặc trang trí túi.", "New"],
+  ["Thắt lưng bản nhỏ", "Phụ kiện", 169000, 220000, "Thắt lưng bản nhỏ giúp nhấn eo khi phối cùng đầm, váy hoặc áo blazer.", "Sale"]
 ];
 
+let products = productSeed.map(([name, category, price, oldPrice, description, tag], index) => ({
+  id: index + 1,
+  name,
+  category,
+  price,
+  oldPrice,
+  image: `assets/product-${index + 1}.jpg`,
+  description,
+  tag
+}));
+
 const defaultProducts = products.map((product) => ({ ...product }));
+const PRODUCT_ADMIN_STATE_VERSION = "manual-assets-v1";
 
 function getProductAdminState() {
-  return JSON.parse(localStorage.getItem("lunaProductAdminState")) || {
-    customProducts: [],
-    hiddenProductIds: []
+  const savedState = JSON.parse(localStorage.getItem("lunaProductAdminState")) || {};
+
+  if (savedState.version !== PRODUCT_ADMIN_STATE_VERSION) {
+    const customOnly = (savedState.customProducts || []).filter((product) => product.id > defaultProducts.length);
+    const freshState = {
+      version: PRODUCT_ADMIN_STATE_VERSION,
+      customProducts: customOnly,
+      hiddenProductIds: []
+    };
+    saveProductAdminState(freshState);
+    return freshState;
+  }
+
+  return {
+    version: PRODUCT_ADMIN_STATE_VERSION,
+    customProducts: savedState.customProducts || [],
+    hiddenProductIds: savedState.hiddenProductIds || []
   };
 }
 
@@ -331,9 +155,20 @@ const adminSectionLinks = document.querySelectorAll(".admin-sidebar nav a[href^=
 const adminSectionTriggers = document.querySelectorAll("a[href^='#admin']");
 const adminPanels = document.querySelectorAll(".admin-panel");
 const checkoutMainBtn = document.querySelector(".checkout-main-btn");
+const heroBannerImage = document.getElementById("heroBannerImage");
+const heroPrevBtn = document.getElementById("heroPrevBtn");
+const heroNextBtn = document.getElementById("heroNextBtn");
+const heroDots = document.querySelectorAll("#heroDots button");
+const heroTextContent = document.getElementById("heroTextContent");
+
+const heroBanners = [
+  "assets/banner-1.jpg",
+  "assets/banner-2.jpg"
+];
 
 let currentFilter = "Tất cả";
 let currentPage = 1;
+let currentHeroBanner = 0;
 const productsPerPage = window.location.pathname.endsWith("products.html") ? 8 : 10;
 let cart = JSON.parse(localStorage.getItem("lunaCart")) || [];
 let appliedSidebarFilters = {
@@ -470,6 +305,35 @@ function setAuthMessage(element, message, type) {
 
 function isValidEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function setHeroBanner(index) {
+  if (!heroBannerImage || heroBanners.length === 0) return;
+  currentHeroBanner = (index + heroBanners.length) % heroBanners.length;
+  heroBannerImage.style.display = "block";
+  heroBannerImage.src = heroBanners[currentHeroBanner];
+  heroBannerImage.alt = `Banner Luna Fashion ${currentHeroBanner + 1}`;
+  heroDots.forEach((dot, dotIndex) => {
+    dot.classList.toggle("active", dotIndex === currentHeroBanner);
+  });
+  heroTextContent?.classList.toggle("hide", currentHeroBanner !== 0);
+}
+
+function initHeroBanner() {
+  if (!heroBannerImage) return;
+
+  heroBannerImage.addEventListener("error", () => {
+    heroBannerImage.style.display = "none";
+  });
+  heroPrevBtn?.addEventListener("click", () => setHeroBanner(currentHeroBanner - 1));
+  heroNextBtn?.addEventListener("click", () => setHeroBanner(currentHeroBanner + 1));
+  heroDots.forEach((dot, index) => {
+    dot.addEventListener("click", () => setHeroBanner(index));
+  });
+
+  setInterval(() => {
+    setHeroBanner(currentHeroBanner + 1);
+  }, 5500);
 }
 
 function updateLoginLinks() {
@@ -693,6 +557,22 @@ function goToProductPage(page) {
   document.getElementById("products")?.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
+function interleaveProductsByCategory(productList) {
+  const categoryOrder = ["Đầm", "Áo", "Váy", "Phụ kiện"];
+  const groups = categoryOrder.map((category) => productList.filter((product) => product.category === category));
+  const mixedProducts = [];
+  let index = 0;
+
+  while (groups.some((group) => index < group.length)) {
+    groups.forEach((group) => {
+      if (group[index]) mixedProducts.push(group[index]);
+    });
+    index += 1;
+  }
+
+  return mixedProducts;
+}
+
 function renderProducts() {
   if (!productGrid || !searchInput || !emptyMessage) return;
 
@@ -724,11 +604,15 @@ function renderProducts() {
 
   emptyMessage.style.display = "none";
 
-  const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
+  const displayProducts = currentFilter === "Tất cả"
+    ? interleaveProductsByCategory(filteredProducts)
+    : filteredProducts;
+
+  const totalPages = Math.ceil(displayProducts.length / productsPerPage);
   if (currentPage > totalPages) currentPage = totalPages;
 
   const startIndex = (currentPage - 1) * productsPerPage;
-  const visibleProducts = filteredProducts.slice(startIndex, startIndex + productsPerPage);
+  const visibleProducts = displayProducts.slice(startIndex, startIndex + productsPerPage);
 
   visibleProducts.forEach((product) => {
     const card = document.createElement("article");
@@ -1156,10 +1040,30 @@ function renderAdminStats() {
   const revenue = orders.reduce((sum, order) => sum + order.total, 0);
 
   adminStats.innerHTML = `
-    <article class="admin-stat-card stat-blue"><span>Sản phẩm</span><strong>${products.length}</strong><small>Đang kinh doanh</small></article>
-    <article class="admin-stat-card stat-cyan"><span>Khách hàng</span><strong>${users.length}</strong><small>Tài khoản đã tạo</small></article>
-    <article class="admin-stat-card stat-purple"><span>Đơn hàng</span><strong>${orders.length}</strong><small>Đơn đã ghi nhận</small></article>
-    <article class="admin-stat-card stat-pink"><span>Doanh thu</span><strong>${formatMoney(revenue)}</strong><small>Tổng thanh toán</small></article>
+    <article class="admin-stat-card stat-green">
+      <strong>${users.length}</strong>
+      <span>Người dùng</span>
+      <small>Khách đã đăng kí</small>
+      <em>More info</em>
+    </article>
+    <article class="admin-stat-card stat-sky">
+      <strong>20</strong>
+      <span>Bài viết</span>
+      <small>Nội dung đang hiển thị</small>
+      <em>More info</em>
+    </article>
+    <article class="admin-stat-card stat-orange">
+      <strong>${products.length}</strong>
+      <span>Sản phẩm</span>
+      <small>Đang kinh doanh</small>
+      <em>More info</em>
+    </article>
+    <article class="admin-stat-card stat-indigo">
+      <strong>${orders.length}</strong>
+      <span>Đơn hàng</span>
+      <small>${formatMoney(revenue)}</small>
+      <em>More info</em>
+    </article>
   `;
 }
 
@@ -1225,18 +1129,31 @@ function renderAdminCustomers() {
     .filter((user) => user.role !== "admin")
     .filter((user) => {
       if (!keyword) return true;
-      return [user.email, user.phone].some((value) => String(value || "").toLowerCase().includes(keyword));
+      return [
+        `${user.lastName || ""} ${user.firstName || ""}`.trim(),
+        user.email,
+        user.phone,
+        user.address
+      ].some((value) => String(value || "").toLowerCase().includes(keyword));
     });
 
-  adminCustomerTable.innerHTML = users.length ? users.map((user) => `
+  adminCustomerTable.innerHTML = users.length ? users.map((user, index) => `
     <tr>
-      <td>${user.lastName} ${user.firstName}</td>
+      <td>${index + 1}</td>
+      <td>
+        <strong>${user.lastName} ${user.firstName}</strong>
+        <small>${user.role === "admin" ? "Quản trị viên" : "Khách hàng"}</small>
+      </td>
       <td>${user.email}</td>
       <td>${user.phone || "Chưa cập nhật"}</td>
       <td>${user.address || "Chưa cập nhật"}</td>
       <td>${new Date(user.createdAt).toLocaleDateString("vi-VN")}</td>
+      <td><span class="admin-status-badge">${user.email ? "Activated" : "Not Activated"}</span></td>
+      <td class="admin-customer-actions">
+        <button type="button" class="admin-customer-action" onclick="viewAdminCustomer('${user.id}')">Xem</button>
+      </td>
     </tr>
-  `).join("") : `<tr><td colspan="5">Chưa có khách hàng.</td></tr>`;
+  `).join("") : `<tr><td colspan="8">Chưa có khách hàng.</td></tr>`;
 }
 
 function applyAdminCustomerSearch() {
@@ -1248,6 +1165,16 @@ function resetAdminCustomerSearch() {
   adminCustomerKeyword = "";
   if (adminCustomerSearch) adminCustomerSearch.value = "";
   renderAdminCustomers();
+}
+
+function viewAdminCustomer(userId) {
+  const user = getUsers().find((item) => String(item.id) === String(userId));
+  if (!user) {
+    showToast("Không tìm thấy tài khoản.");
+    return;
+  }
+
+  showToast(`Tài khoản: ${user.lastName || ""} ${user.firstName || ""}`.trim());
 }
 
 function renderAdminOrders() {
@@ -1524,7 +1451,7 @@ function initAdminPage() {
         category: adminProductForm.productCategory.value,
         price: Number(adminProductForm.productPrice.value),
         oldPrice: Number(adminProductForm.productOldPrice.value) || 0,
-        image: adminProductForm.productImage.value.trim() || "assets/product-1.svg",
+        image: adminProductForm.productImage.value.trim() || "assets/product-1.jpg",
         tag: adminProductForm.productTag.value.trim() || "New",
         description: adminProductForm.productDescription.value.trim()
       };
@@ -1782,6 +1709,7 @@ normalizeCurrentUserRole();
 guardAdminWebsiteAccess();
 syncCategoryControls(currentFilter);
 updateLoginLinks();
+initHeroBanner();
 renderProducts();
 renderProductDetail();
 renderCart();

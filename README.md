@@ -10,6 +10,8 @@ luna-fashion-website/
 ├── style.css
 ├── script.js
 └── assets/
+    ├── banner-1.jpg
+    ├── banner-2.jpg
     ├── hero-fashion.svg
     ├── category-dress.svg
     ├── category-top.svg

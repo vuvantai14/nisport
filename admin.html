@@ -18,13 +18,13 @@
       </a>
       <nav>
         <a href="#adminDashboard">Dashboard</a>
-        <a href="#adminProducts">Qu&#7843;n l&#237; s&#7843;n ph&#7849;m</a>
-        <a href="#adminOrders">Qu&#7843;n l&#237; &#273;&#417;n h&#224;ng</a>
-        <a href="#adminCustomers">Qu&#7843;n l&#237; kh&#225;ch h&#224;ng</a>
-        <a href="#adminLogout" id="adminLogoutLink">&#272;&#259;ng xu&#7845;t</a>
+        <a href="#adminProducts">Quản lí sản phẩm</a>
+        <a href="#adminOrders">Quản lí đơn hàng</a>
+        <a href="#adminCustomers">Quản lí khách hàng</a>
+        <a href="#adminLogout" id="adminLogoutLink">Đăng xuất</a>
       </nav>
       <div class="admin-account">
-        <strong>Admin m&#7863;c &#273;&#7883;nh</strong>
+        <strong>Admin mặc định</strong>
         <span>admin@lunafashion.com</span>
         <span>admin123</span>
       </div>
@@ -34,9 +34,10 @@
       <div class="admin-topbar">
         <div>
           <h1>Dashboard</h1>
-          <p>Sales Reports</p>
+          <p>Control panel</p>
         </div>
         <div class="admin-top-actions">
+          <span class="admin-top-route">Home / Dashboard</span>
           <span class="admin-alert-dot"></span>
           <span class="admin-avatar-mini">LF</span>
           <strong>Hi, Luna Admin</strong>
@@ -44,144 +45,141 @@
       </div>
 
       <section class="admin-panel" id="adminDashboard">
-        <div class="admin-stats" id="adminStats"></div>
-
-        <div class="admin-dashboard-grid">
-          <article class="admin-chart-card">
-            <div class="admin-card-head">
-              <h3>Doanh s&#7889; theo ng&#224;y trong th&#225;ng</h3>
-              <div class="admin-chart-controls">
-                <span><i></i> Doanh thu</span>
-                <select id="dashboardSalesFilter">
-                  <option value="day">Theo ng&#224;y</option>
-                  <option value="week">Theo tu&#7847;n</option>
-                  <option value="month">Theo th&#225;ng</option>
-                </select>
-              </div>
+        <div class="admin-dashboard-shell">
+          <div class="admin-dashboard-header">
+            <div>
+              <span class="admin-dashboard-kicker">Dashboard</span>
+              <h2>Bảng điều khiển quản trị</h2>
             </div>
-            <div class="admin-wave-chart">
-              <div class="admin-wave-yaxis">
-                <span>2tr</span>
-                <span>1.5tr</span>
-                <span>1tr</span>
-                <span>500k</span>
-                <span>0</span>
-              </div>
-              <div class="admin-wave-plot">
-                <svg viewBox="0 0 720 260" preserveAspectRatio="none" role="img" aria-label="Bi&#7875;u &#273;&#7891; doanh thu theo ng&#224;y">
-                  <defs>
-                    <linearGradient id="salesWaveFill" x1="0" x2="0" y1="0" y2="1">
-                      <stop offset="0%" stop-color="#2f9af0" stop-opacity="0.26" />
-                      <stop offset="100%" stop-color="#2f9af0" stop-opacity="0.02" />
-                    </linearGradient>
-                  </defs>
-                  <path class="wave-area" d="M0,198 C70,120 125,165 180,116 C240,60 282,74 325,142 C365,205 420,205 470,140 C520,70 570,102 620,84 C665,68 690,74 720,82 L720,240 L0,240 Z"></path>
-                  <path class="wave-line" d="M0,198 C70,120 125,165 180,116 C240,60 282,74 325,142 C365,205 420,205 470,140 C520,70 570,102 620,84 C665,68 690,74 720,82"></path>
-                  <circle cx="520" cy="70" r="5"></circle>
-                  <text x="520" y="46">1.8tr</text>
-                </svg>
-                <div class="admin-wave-xaxis">
-                  <span>01</span>
-                  <span>05</span>
-                  <span>10</span>
-                  <span>15</span>
-                  <span>20</span>
-                  <span>25</span>
-                  <span>30</span>
+            <div class="admin-dashboard-date" id="adminTodayLabel">Hôm nay</div>
+          </div>
+
+          <div class="admin-stats" id="adminStats"></div>
+
+          <div class="admin-dashboard-grid">
+            <article class="admin-chart-card admin-chart-card-main">
+              <div class="admin-card-head">
+                <div>
+                  <h3>Thống kê lượt truy cập website</h3>
+                  <p>Từ 01/01/2026 - 31/07/2026</p>
+                </div>
+                <div class="admin-chart-controls">
+                  <span><i></i> Doanh thu</span>
+                  <select id="dashboardSalesFilter">
+                    <option value="day">Theo ngày</option>
+                    <option value="week">Theo tuần</option>
+                    <option value="month">Theo tháng</option>
+                  </select>
                 </div>
               </div>
-            </div>
-          </article>
+              <div class="admin-wave-chart">
+                <div class="admin-wave-yaxis">
+                  <span>2tr</span>
+                  <span>1.5tr</span>
+                  <span>1tr</span>
+                  <span>500k</span>
+                  <span>0</span>
+                </div>
+                <div class="admin-wave-plot">
+                  <svg viewBox="0 0 720 260" preserveAspectRatio="none" role="img" aria-label="Biểu đồ doanh thu theo ngày">
+                    <defs>
+                      <linearGradient id="salesWaveFill" x1="0" x2="0" y1="0" y2="1">
+                        <stop offset="0%" stop-color="#3c8cf5" stop-opacity="0.28" />
+                        <stop offset="100%" stop-color="#3c8cf5" stop-opacity="0.04" />
+                      </linearGradient>
+                    </defs>
+                    <path class="wave-back" d="M0,88 C72,102 130,96 184,82 C242,66 302,70 352,106 C404,143 452,148 498,120 C553,86 609,78 666,96 C690,103 706,108 720,112 L720,240 L0,240 Z"></path>
+                    <path class="wave-area" d="M0,176 C70,126 126,142 182,118 C236,94 288,56 338,102 C392,152 450,194 504,132 C556,72 610,78 666,70 C690,68 708,70 720,74 L720,240 L0,240 Z"></path>
+                    <path class="wave-line" d="M0,176 C70,126 126,142 182,118 C236,94 288,56 338,102 C392,152 450,194 504,132 C556,72 610,78 666,70 C690,68 708,70 720,74"></path>
+                    <circle cx="504" cy="132" r="6"></circle>
+                    <text x="504" y="104">1.8tr</text>
+                  </svg>
+                  <div class="admin-wave-xaxis">
+                    <span>January</span>
+                    <span>February</span>
+                    <span>March</span>
+                    <span>April</span>
+                    <span>May</span>
+                    <span>June</span>
+                    <span>July</span>
+                  </div>
+                </div>
+              </div>
 
-          <article class="admin-category-card">
-            <div class="admin-card-head">
-              <h3>T&#7881; l&#7879; b&#225;n theo danh m&#7909;c</h3>
-            </div>
-            <div class="admin-pie-chart" aria-label="T&#7881; l&#7879; b&#225;n theo danh m&#7909;c"></div>
-            <ul class="admin-pie-legend">
-              <li><i></i>&#272;&#7847;m <strong>35%</strong></li>
-              <li><i></i>&#193;o <strong>30%</strong></li>
-              <li><i></i>V&#225;y <strong>22%</strong></li>
-              <li><i></i>Ph&#7909; ki&#7879;n <strong>13%</strong></li>
-            </ul>
-          </article>
+              <div class="admin-metric-strip">
+                <div><strong>40</strong><span>Users access</span></div>
+                <div><strong>10</strong><span>New users</span></div>
+                <div><strong>90</strong><span>Views page</span></div>
+                <div><strong>700</strong><span>Used Chrome</span></div>
+              </div>
+            </article>
+
+            <article class="admin-category-card">
+              <div class="admin-card-head">
+                <div>
+                  <h3>Tỉ lệ bán theo danh mục</h3>
+                  <p>Danh mục bán chạy trong tháng</p>
+                </div>
+              </div>
+              <div class="admin-pie-chart" aria-label="Tỉ lệ bán theo danh mục"></div>
+              <ul class="admin-pie-legend">
+                <li><i></i>Đầm <strong>35%</strong></li>
+                <li><i></i>Áo <strong>30%</strong></li>
+                <li><i></i>Váy <strong>22%</strong></li>
+                <li><i></i>Phụ kiện <strong>13%</strong></li>
+              </ul>
+            </article>
+          </div>
         </div>
-
-        <article class="admin-schedule-card">
-          <div class="admin-card-head">
-            <h3>L&#7883;ch x&#7917; l&#253; h&#244;m nay</h3>
-            <span id="adminTodayLabel">H&#244;m nay</span>
-          </div>
-          <div class="admin-schedule-table">
-            <div class="admin-schedule-row admin-schedule-head">
-              <span>Nh&#226;n vi&#234;n</span>
-              <span>8 am</span>
-              <span>10 am</span>
-              <span>12 am</span>
-              <span>14 pm</span>
-            </div>
-            <div class="admin-schedule-row">
-              <span>Luna Admin</span>
-              <b class="schedule-pill">Ki&#7875;m tra SP</b>
-              <b class="schedule-pill schedule-pill-light">Duy&#7879;t &#273;&#417;n</b>
-              <b class="schedule-pill schedule-pill-done">Ho&#224;n t&#7845;t</b>
-            </div>
-            <div class="admin-schedule-row">
-              <span>CSKH</span>
-              <b class="schedule-pill schedule-pill-light">Li&#234;n h&#7879; kh&#225;ch</b>
-              <b class="schedule-pill schedule-pill-done">C&#7853;p nh&#7853;t</b>
-            </div>
-          </div>
-        </article>
       </section>
 
       <section class="admin-panel" id="adminProducts">
         <div class="admin-panel-title">
           <div>
-            <p>Qu&#7843;n l&#253;</p>
-            <h2>S&#7843;n ph&#7849;m</h2>
+            <p>Quản lý</p>
+            <h2>Sản phẩm</h2>
           </div>
-          <button type="button" onclick="openAdminProductForm()">+ Th&#234;m m&#7899;i</button>
+          <button type="button" onclick="openAdminProductForm()">+ Thêm mới</button>
         </div>
 
         <div class="admin-product-manager">
           <div class="admin-product-list">
             <div class="admin-list-toolbar">
               <div class="admin-list-title-row">
-                <strong>Danh s&#225;ch</strong>
+                <strong>Danh sách</strong>
                 <div class="admin-list-actions">
-                  <input type="search" id="adminProductSearch" placeholder="Nh&#7853;p t&#7915; kh&#243;a c&#7847;n t&#236;m">
-                  <button type="button" id="adminSearchProducts">T&#236;m ki&#7871;m</button>
+                  <input type="search" id="adminProductSearch" placeholder="Nhập từ khóa cần tìm">
+                  <button type="button" id="adminSearchProducts">Tìm kiếm</button>
                 </div>
               </div>
               <div class="admin-product-filter">
-                <label>Danh m&#7909;c
+                <label>Danh mục
                   <select id="adminFilterCategory">
-                    <option value="all">-- Ch&#7885;n --</option>
-                    <option value="&#272;&#7847;m">&#272;&#7847;m</option>
-                    <option value="&#193;o">&#193;o</option>
-                    <option value="V&#225;y">V&#225;y</option>
-                    <option value="Ph&#7909; ki&#7879;n">Ph&#7909; ki&#7879;n</option>
+                    <option value="all">-- Chọn --</option>
+                    <option value="Đầm">Đầm</option>
+                    <option value="Áo">Áo</option>
+                    <option value="Váy">Váy</option>
+                    <option value="Phụ kiện">Phụ kiện</option>
                   </select>
                 </label>
-                <label>Kho&#7843;ng gi&#225;
+                <label>Khoảng giá
                   <select id="adminFilterPrice">
-                    <option value="all">T&#7845;t c&#7843; gi&#225;</option>
-                    <option value="under250">D&#432;&#7899;i 250.000&#273;</option>
-                    <option value="250to400">250.000&#273; - 400.000&#273;</option>
-                    <option value="over400">Tr&#234;n 400.000&#273;</option>
+                    <option value="all">Tất cả giá</option>
+                    <option value="under250">Dưới 250.000đ</option>
+                    <option value="250to400">250.000đ - 400.000đ</option>
+                    <option value="over400">Trên 400.000đ</option>
                   </select>
                 </label>
-                <label>Nh&#227;n
+                <label>Nhãn
                   <select id="adminFilterTag">
-                    <option value="all">T&#7845;t c&#7843; nh&#227;n</option>
+                    <option value="all">Tất cả nhãn</option>
                     <option value="Sale">Sale</option>
                     <option value="New">New</option>
                     <option value="Hot">Hot</option>
                   </select>
                 </label>
-                <button class="admin-filter-btn" id="adminApplyProductFilters" type="button">L&#7885;c</button>
-                <button class="admin-clear-filter-btn" id="adminClearProductFilters" type="button">X&#243;a l&#7885;c</button>
+                <button class="admin-filter-btn" id="adminApplyProductFilters" type="button">Lọc</button>
+                <button class="admin-clear-filter-btn" id="adminClearProductFilters" type="button">Xóa lọc</button>
               </div>
             </div>
 
@@ -189,48 +187,39 @@
               <form class="admin-product-form" id="adminProductForm">
                 <div class="admin-form-title">
                   <div>
-                    <p>Bi&#7875;u m&#7851;u</p>
-                    <h3>Th&#234;m s&#7843;n ph&#7849;m</h3>
+                    <p>Biểu mẫu</p>
+                    <h3>Thêm sản phẩm</h3>
                   </div>
-                  <button type="button" onclick="closeAdminProductForm()">&#215;</button>
+                  <button type="button" onclick="closeAdminProductForm()">×</button>
                 </div>
                 <input type="hidden" name="productId">
-                <label class="admin-form-wide">T&#234;n s&#7843;n ph&#7849;m<input type="text" name="productName"></label>
-                <label>Gi&#225; nh&#7853;p<input type="number" name="productOldPrice"></label>
-                <label>Gi&#225; b&#225;n<input type="number" name="productPrice"></label>
-                <label>M&#227; s&#7843;n ph&#7849;m<input type="text" name="productTag"></label>
-                <label>Ph&#226;n lo&#7841;i
+                <label class="admin-form-wide">Tên sản phẩm<input type="text" name="productName"></label>
+                <label>Giá nhập<input type="number" name="productOldPrice"></label>
+                <label>Giá bán<input type="number" name="productPrice"></label>
+                <label>Mã sản phẩm<input type="text" name="productTag"></label>
+                <label>Phân loại
                   <select name="productCategory">
-                    <option value="&#272;&#7847;m">&#272;&#7847;m</option>
-                    <option value="&#193;o">&#193;o</option>
-                    <option value="V&#225;y">V&#225;y</option>
-                    <option value="Ph&#7909; ki&#7879;n">Ph&#7909; ki&#7879;n</option>
+                    <option value="Đầm">Đầm</option>
+                    <option value="Áo">Áo</option>
+                    <option value="Váy">Váy</option>
+                    <option value="Phụ kiện">Phụ kiện</option>
                   </select>
                 </label>
-                <label class="admin-form-wide">M&#244; t&#7843;<textarea name="productDescription" rows="4"></textarea></label>
-                <label>T&#7891;n kho t&#7889;i thi&#7875;u<input type="number"></label>
-                <label>&#272;&#417;n v&#7883; c&#417; b&#7843;n
+                <label class="admin-form-wide">Mô tả<textarea name="productDescription" rows="4"></textarea></label>
+                <label>Tồn kho tối thiểu<input type="number"></label>
+                <label>Đơn vị cơ bản
                   <select>
-                    <option>C&#225;i</option>
-                    <option>B&#7897;</option>
-                    <option>Chi&#7871;c</option>
+                    <option>Cái</option>
+                    <option>Bộ</option>
+                    <option>Chiếc</option>
                   </select>
                 </label>
-                <label class="admin-form-wide">&#7842;nh s&#7843;n ph&#7849;m
-                  <select name="productImage">
-                    <option value="assets/product-1.svg">product-1.svg</option>
-                    <option value="assets/product-2.svg">product-2.svg</option>
-                    <option value="assets/product-3.svg">product-3.svg</option>
-                    <option value="assets/product-4.svg">product-4.svg</option>
-                    <option value="assets/product-5.svg">product-5.svg</option>
-                    <option value="assets/product-6.svg">product-6.svg</option>
-                    <option value="assets/product-7.svg">product-7.svg</option>
-                    <option value="assets/product-8.svg">product-8.svg</option>
-                  </select>
+                <label class="admin-form-wide">Ảnh sản phẩm
+                  <input type="text" name="productImage" placeholder="assets/product-1.jpg">
                 </label>
                 <div class="admin-form-actions">
-                  <button class="admin-save-btn" type="submit">L&#432;u s&#7843;n ph&#7849;m</button>
-                  <button class="admin-cancel-btn" type="button" onclick="closeAdminProductForm()">H&#7911;y</button>
+                  <button class="admin-save-btn" type="submit">Lưu sản phẩm</button>
+                  <button class="admin-cancel-btn" type="button" onclick="closeAdminProductForm()">Hủy</button>
                 </div>
               </form>
             </div>
@@ -240,13 +229,13 @@
                 <thead>
                   <tr>
                     <th><input type="checkbox"></th>
-                    <th>&#7842;nh</th>
-                    <th>S&#7843;n ph&#7849;m</th>
-                    <th>Danh m&#7909;c</th>
-                    <th>Gi&#225;</th>
-                    <th>Nh&#227;n</th>
-                    <th>Tr&#7841;ng th&#225;i</th>
-                    <th>Thao t&#225;c</th>
+                    <th>Ảnh</th>
+                    <th>Sản phẩm</th>
+                    <th>Danh mục</th>
+                    <th>Giá</th>
+                    <th>Nhãn</th>
+                    <th>Trạng thái</th>
+                    <th>Thao tác</th>
                   </tr>
                 </thead>
                 <tbody id="adminProductTable"></tbody>
@@ -259,30 +248,34 @@
       <section class="admin-panel" id="adminCustomers">
         <div class="admin-panel-title">
           <div>
-            <p>Qu&#7843;n l&#253;</p>
-            <h2>Kh&#225;ch h&#224;ng</h2>
+            <p>Quản lý</p>
+            <h2>Khách hàng</h2>
           </div>
         </div>
         <div class="admin-customer-manager">
           <div class="admin-list-toolbar">
             <div class="admin-list-title-row">
-              <strong>Danh s&#225;ch kh&#225;ch h&#224;ng</strong>
+              <strong>Danh sách khách hàng</strong>
               <div class="admin-list-actions admin-customer-search">
-                <input type="search" id="adminCustomerSearch" placeholder="T&#236;m theo email ho&#7863;c s&#7889; &#273;i&#7879;n tho&#7841;i">
-                <button type="button" id="adminSearchCustomers">T&#236;m ki&#7871;m</button>
-                <button class="admin-clear-filter-btn" type="button" id="adminClearCustomerSearch">X&#243;a l&#7885;c</button>
+                <input type="search" id="adminCustomerSearch" placeholder="Tìm theo email hoặc số điện thoại">
+                <button type="button" id="adminSearchCustomers">Tìm kiếm</button>
+                <button class="admin-clear-filter-btn" type="button" id="adminClearCustomerSearch">Xóa lọc</button>
               </div>
             </div>
           </div>
+
           <div class="admin-table-wrap">
-            <table class="admin-table">
+            <table class="admin-table admin-customer-table">
               <thead>
                 <tr>
-                  <th>H&#7885; t&#234;n</th>
+                  <th>ID</th>
+                  <th>Tên tài khoản</th>
                   <th>Email</th>
-                  <th>S&#7889; &#273;i&#7879;n tho&#7841;i</th>
-                  <th>&#272;&#7883;a ch&#7881;</th>
-                  <th>Ng&#224;y t&#7841;o</th>
+                  <th>Số điện thoại</th>
+                  <th>Địa chỉ</th>
+                  <th>Ngày tạo</th>
+                  <th>Trạng thái</th>
+                  <th>Tác vụ</th>
                 </tr>
               </thead>
               <tbody id="adminCustomerTable"></tbody>
@@ -294,36 +287,36 @@
       <section class="admin-panel" id="adminOrders">
         <div class="admin-panel-title">
           <div>
-            <p>Qu&#7843;n l&#253;</p>
-            <h2>&#272;&#417;n h&#224;ng</h2>
+            <p>Quản lý</p>
+            <h2>Đơn hàng</h2>
           </div>
-          <button type="button">+ T&#7841;o &#273;&#417;n h&#224;ng</button>
+          <button type="button">+ Tạo đơn hàng</button>
         </div>
         <div class="admin-order-manager">
           <div class="admin-order-tabs">
-            <button class="active" type="button" data-order-filter="all">T&#7845;t c&#7843; &#273;&#417;n h&#224;ng</button>
-            <button type="button" data-order-filter="pending">Ch&#432;a thanh to&#225;n</button>
-            <button type="button" data-order-filter="confirmed">&#272;&#227; x&#225;c th&#7921;c</button>
-            <button type="button" data-order-filter="shipping">&#272;ang giao</button>
-            <button type="button" data-order-filter="done">&#272;&#227; giao</button>
-            <button type="button" data-order-filter="cancel">H&#7911;y</button>
+            <button class="active" type="button" data-order-filter="all">Tất cả đơn hàng</button>
+            <button type="button" data-order-filter="pending">Chưa thanh toán</button>
+            <button type="button" data-order-filter="confirmed">Đã xác thực</button>
+            <button type="button" data-order-filter="shipping">Đang giao</button>
+            <button type="button" data-order-filter="done">Đã giao</button>
+            <button type="button" data-order-filter="cancel">Hủy</button>
           </div>
 
           <div class="admin-order-toolbar">
-            <button class="admin-clear-filter-btn" type="button" id="adminClearOrderFilters">Th&#234;m &#273;i&#7873;u ki&#7879;n l&#7885;c</button>
-            <input type="search" id="adminOrderSearch" placeholder="T&#236;m theo m&#227; &#273;&#417;n, kh&#225;ch h&#224;ng, email">
-            <button type="button" id="adminSearchOrders">L&#432;u b&#7897; l&#7885;c</button>
+            <button class="admin-clear-filter-btn" type="button" id="adminClearOrderFilters">Thêm điều kiện lọc</button>
+            <input type="search" id="adminOrderSearch" placeholder="Tìm theo mã đơn, khách hàng, email">
+            <button type="button" id="adminSearchOrders">Lưu bộ lọc</button>
           </div>
 
           <div class="admin-order-date-filter">
-            <span>L&#7885;c theo th&#7901;i gian &#273;&#7863;t h&#224;ng</span>
-            <label>T&#7915; ng&#224;y
+            <span>Lọc theo thời gian đặt hàng</span>
+            <label>Từ ngày
               <input type="date" id="adminOrderDateFrom">
             </label>
-            <label>&#272;&#7871;n ng&#224;y
+            <label>Đến ngày
               <input type="date" id="adminOrderDateTo">
             </label>
-            <button type="button" id="adminFilterOrderDate">L&#7885;c th&#7901;i gian</button>
+            <button type="button" id="adminFilterOrderDate">Lọc thời gian</button>
           </div>
 
           <div class="admin-table-wrap">
@@ -331,13 +324,13 @@
               <thead>
                 <tr>
                   <th>Stt</th>
-                  <th>M&#227; &#273;&#417;n</th>
-                  <th>Kh&#225;ch</th>
-                  <th>S&#7843;n ph&#7849;m</th>
-                  <th>T&#7893;ng ti&#7873;n</th>
-                  <th>Ng&#224;y gi&#7901;</th>
-                  <th>Tr&#7841;ng th&#225;i</th>
-                  <th>H&#224;nh &#273;&#7897;ng</th>
+                  <th>Mã đơn</th>
+                  <th>Khách</th>
+                  <th>Sản phẩm</th>
+                  <th>Tổng tiền</th>
+                  <th>Ngày giờ</th>
+                  <th>Trạng thái</th>
+                  <th>Hành động</th>
                 </tr>
               </thead>
               <tbody id="adminOrderTable"></tbody>

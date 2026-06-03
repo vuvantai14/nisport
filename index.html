@@ -52,10 +52,11 @@
   </header>
 
   <main>
-    <section class="hero">
-      <button class="hero-arrow hero-arrow-left" aria-label="Ảnh trước">‹</button>
+    <section class="hero" id="homeHero">
+      <img class="hero-banner-img" id="heroBannerImage" src="assets/banner-1.jpg" alt="Banner Luna Fashion 1" />
+      <button class="hero-arrow hero-arrow-left" id="heroPrevBtn" aria-label="Ảnh trước">‹</button>
       <div class="container hero-wrapper">
-        <div class="hero-content">
+        <div class="hero-content" id="heroTextContent">
           <p class="script-title">Tỏa sáng rạng ngời ✨</p>
           <h1>Vẻ đẹp dịu dàng trong từng phong cách</h1>
           <p>
@@ -65,16 +66,12 @@
           <a href="products.html" class="btn btn-primary">Mua ngay <span>→</span></a>
         </div>
 
-        <div class="hero-image">
-          <img src="assets/hero-fashion.svg" alt="Bộ sưu tập thời trang Luna Fashion" />
-        </div>
+        <div class="hero-image" aria-hidden="true"></div>
       </div>
-      <button class="hero-arrow hero-arrow-right" aria-label="Ảnh sau">›</button>
-      <div class="hero-dots" aria-hidden="true">
-        <span class="active"></span>
-        <span></span>
-        <span></span>
-        <span></span>
+      <button class="hero-arrow hero-arrow-right" id="heroNextBtn" aria-label="Ảnh sau">›</button>
+      <div class="hero-dots" id="heroDots" aria-label="Chọn banner">
+        <button class="active" type="button" aria-label="Banner 1"></button>
+        <button type="button" aria-label="Banner 2"></button>
       </div>
     </section>
 
