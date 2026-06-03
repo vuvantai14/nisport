@@ -302,12 +302,34 @@ const registerForm = document.getElementById("registerForm");
 const loginForm = document.getElementById("loginForm");
 const registerMessage = document.getElementById("registerMessage");
 const loginMessage = document.getElementById("loginMessage");
+const adminProductModal = document.getElementById("adminProductModal");
 const adminProductForm = document.getElementById("adminProductForm");
 const adminProductTable = document.getElementById("adminProductTable");
+const adminFilterCategory = document.getElementById("adminFilterCategory");
+const adminFilterPrice = document.getElementById("adminFilterPrice");
+const adminFilterTag = document.getElementById("adminFilterTag");
+const adminProductSearch = document.getElementById("adminProductSearch");
+const adminApplyProductFilters = document.getElementById("adminApplyProductFilters");
+const adminSearchProducts = document.getElementById("adminSearchProducts");
+const adminClearProductFilters = document.getElementById("adminClearProductFilters");
 const adminCustomerTable = document.getElementById("adminCustomerTable");
+const adminCustomerSearch = document.getElementById("adminCustomerSearch");
+const adminSearchCustomers = document.getElementById("adminSearchCustomers");
+const adminClearCustomerSearch = document.getElementById("adminClearCustomerSearch");
 const adminOrderTable = document.getElementById("adminOrderTable");
+const adminOrderDateFrom = document.getElementById("adminOrderDateFrom");
+const adminOrderDateTo = document.getElementById("adminOrderDateTo");
+const adminFilterOrderDate = document.getElementById("adminFilterOrderDate");
+const adminOrderSearch = document.getElementById("adminOrderSearch");
+const adminSearchOrders = document.getElementById("adminSearchOrders");
+const adminClearOrderFilters = document.getElementById("adminClearOrderFilters");
+const adminOrderFilterButtons = document.querySelectorAll("[data-order-filter]");
 const adminStats = document.getElementById("adminStats");
 const adminApp = document.getElementById("adminApp");
+const adminLogoutLink = document.getElementById("adminLogoutLink");
+const adminSectionLinks = document.querySelectorAll(".admin-sidebar nav a[href^='#admin']");
+const adminSectionTriggers = document.querySelectorAll("a[href^='#admin']");
+const adminPanels = document.querySelectorAll(".admin-panel");
 const checkoutMainBtn = document.querySelector(".checkout-main-btn");
 
 let currentFilter = "Tất cả";
@@ -317,6 +339,19 @@ let cart = JSON.parse(localStorage.getItem("lunaCart")) || [];
 let appliedSidebarFilters = {
   priceValue: "all",
   colors: []
+};
+let adminProductFilters = {
+  category: "all",
+  price: "all",
+  tag: "all",
+  keyword: ""
+};
+let adminCustomerKeyword = "";
+let adminOrderFilters = {
+  status: "all",
+  dateFrom: "",
+  dateTo: "",
+  keyword: ""
 };
 
 let currentUser = JSON.parse(localStorage.getItem("lunaCurrentUser")) || null;
@@ -349,6 +384,17 @@ function normalizeCurrentUserRole() {
     currentUser = { ...currentUser, role: "customer" };
   }
   localStorage.setItem("lunaCurrentUser", JSON.stringify(currentUser));
+}
+
+function guardAdminWebsiteAccess() {
+  if (!currentUser || currentUser.role !== "admin") return;
+
+  const pageName = window.location.pathname.split("/").pop() || "index.html";
+  const allowedAdminPages = new Set(["admin.html", "login.html", "register.html"]);
+
+  if (!allowedAdminPages.has(pageName)) {
+    window.location.replace("admin.html");
+  }
 }
 
 const params = new URLSearchParams(window.location.search);
@@ -1052,6 +1098,11 @@ function createOrderFromCart() {
     return;
   }
 
+  if (currentUser.role === "admin") {
+    showCenterNotice("Tài khoản admin chỉ dùng để quản trị, không thể đặt đơn hàng.", "error");
+    return;
+  }
+
   const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const shipping = subtotal >= 500000 ? 0 : 30000;
   const order = {
@@ -1105,35 +1156,77 @@ function renderAdminStats() {
   const revenue = orders.reduce((sum, order) => sum + order.total, 0);
 
   adminStats.innerHTML = `
-    <article><span>Sản phẩm</span><strong>${products.length}</strong></article>
-    <article><span>Khách hàng</span><strong>${users.length}</strong></article>
-    <article><span>Đơn hàng</span><strong>${orders.length}</strong></article>
-    <article><span>Doanh thu</span><strong>${formatMoney(revenue)}</strong></article>
+    <article class="admin-stat-card stat-blue"><span>Sản phẩm</span><strong>${products.length}</strong><small>Đang kinh doanh</small></article>
+    <article class="admin-stat-card stat-cyan"><span>Khách hàng</span><strong>${users.length}</strong><small>Tài khoản đã tạo</small></article>
+    <article class="admin-stat-card stat-purple"><span>Đơn hàng</span><strong>${orders.length}</strong><small>Đơn đã ghi nhận</small></article>
+    <article class="admin-stat-card stat-pink"><span>Doanh thu</span><strong>${formatMoney(revenue)}</strong><small>Tổng thanh toán</small></article>
   `;
+}
+
+function getHiddenAdminProducts() {
+  const state = getProductAdminState();
+  const customById = new Map(state.customProducts.map((product) => [product.id, product]));
+  return state.hiddenProductIds
+    .map((id) => customById.get(id) || defaultProducts.find((product) => product.id === id))
+    .filter(Boolean);
+}
+
+function getFilteredAdminProducts() {
+  const sourceProducts = products;
+  const keyword = adminProductFilters.keyword.trim().toLowerCase();
+
+  return sourceProducts.filter((product) => {
+    const matchesCategory = adminProductFilters.category === "all" || product.category === adminProductFilters.category;
+    const matchesPrice =
+      adminProductFilters.price === "all" ||
+      (adminProductFilters.price === "under250" && product.price < 250000) ||
+      (adminProductFilters.price === "250to400" && product.price >= 250000 && product.price <= 400000) ||
+      (adminProductFilters.price === "over400" && product.price > 400000);
+    const matchesTag = adminProductFilters.tag === "all" || product.tag === adminProductFilters.tag;
+    const matchesKeyword = !keyword || [
+      product.name,
+      product.category,
+      product.tag,
+      product.description,
+      String(product.price)
+    ].some((value) => String(value || "").toLowerCase().includes(keyword));
+
+    return matchesCategory && matchesPrice && matchesTag && matchesKeyword;
+  });
 }
 
 function renderAdminProducts() {
   if (!adminProductTable) return;
 
-  adminProductTable.innerHTML = products.map((product) => `
+  const filteredProducts = getFilteredAdminProducts();
+
+  adminProductTable.innerHTML = filteredProducts.length ? filteredProducts.map((product) => `
     <tr>
+      <td><input type="checkbox" aria-label="Chọn ${product.name}"></td>
       <td><img src="${product.image}" alt="${product.name}"></td>
       <td><strong>${product.name}</strong><small>${product.description}</small></td>
       <td>${product.category}</td>
       <td>${formatMoney(product.price)}</td>
       <td>${product.tag}</td>
+      <td><span class="admin-status-badge">Hoạt động</span></td>
       <td>
         <button type="button" onclick="editAdminProduct(${product.id})">Sửa</button>
         <button type="button" onclick="hideAdminProduct(${product.id})">Ẩn</button>
       </td>
     </tr>
-  `).join("");
+  `).join("") : `<tr><td colspan="8">Không tìm thấy sản phẩm phù hợp.</td></tr>`;
 }
 
 function renderAdminCustomers() {
   if (!adminCustomerTable) return;
 
-  const users = getUsers().filter((user) => user.role !== "admin");
+  const keyword = adminCustomerKeyword.trim().toLowerCase();
+  const users = getUsers()
+    .filter((user) => user.role !== "admin")
+    .filter((user) => {
+      if (!keyword) return true;
+      return [user.email, user.phone].some((value) => String(value || "").toLowerCase().includes(keyword));
+    });
 
   adminCustomerTable.innerHTML = users.length ? users.map((user) => `
     <tr>
@@ -1146,21 +1239,98 @@ function renderAdminCustomers() {
   `).join("") : `<tr><td colspan="5">Chưa có khách hàng.</td></tr>`;
 }
 
+function applyAdminCustomerSearch() {
+  adminCustomerKeyword = adminCustomerSearch?.value || "";
+  renderAdminCustomers();
+}
+
+function resetAdminCustomerSearch() {
+  adminCustomerKeyword = "";
+  if (adminCustomerSearch) adminCustomerSearch.value = "";
+  renderAdminCustomers();
+}
+
 function renderAdminOrders() {
   if (!adminOrderTable) return;
 
-  const orders = getOrders();
+  const keyword = adminOrderFilters.keyword.trim().toLowerCase();
+  const adminUserIds = new Set(getUsers().filter((user) => user.role === "admin").map((user) => user.id));
+  const orders = getOrders().filter((order) => !adminUserIds.has(order.customerId)).filter((order) => {
+    const createdDate = new Date(order.createdAt);
+    const fromDate = adminOrderFilters.dateFrom ? new Date(`${adminOrderFilters.dateFrom}T00:00:00`) : null;
+    const toDate = adminOrderFilters.dateTo ? new Date(`${adminOrderFilters.dateTo}T23:59:59`) : null;
+    const normalizedStatus = String(order.status || "").toLowerCase();
+    const statusMap = {
+      pending: ["chờ", "pending"],
+      confirmed: ["xác thực", "confirmed"],
+      shipping: ["giao", "shipping"],
+      done: ["đã giao", "done"],
+      cancel: ["hủy", "cancel"]
+    };
+    const matchesStatus = adminOrderFilters.status === "all" ||
+      (statusMap[adminOrderFilters.status] || []).some((value) => normalizedStatus.includes(value));
+    const matchesDateFrom = !fromDate || createdDate >= fromDate;
+    const matchesDateTo = !toDate || createdDate <= toDate;
+    const matchesKeyword = !keyword || [
+      order.id,
+      order.customerName,
+      order.email,
+      order.status,
+      String(order.total)
+    ].some((value) => String(value || "").toLowerCase().includes(keyword));
 
-  adminOrderTable.innerHTML = orders.length ? orders.map((order) => `
+    return matchesStatus && matchesDateFrom && matchesDateTo && matchesKeyword;
+  });
+
+  adminOrderTable.innerHTML = orders.length ? orders.map((order, index) => {
+    const createdAt = new Date(order.createdAt);
+    const productSummary = order.items?.length
+      ? order.items.map((item) => `${item.name} [${item.quantity}]`).join(", ")
+      : "Chưa có sản phẩm";
+
+    return `
     <tr>
-      <td>#${order.id}</td>
-      <td><strong>${order.customerName}</strong><small>${order.email}</small></td>
-      <td>${order.items.reduce((sum, item) => sum + item.quantity, 0)} sản phẩm</td>
+      <td>${index + 1}</td>
+      <td><strong class="admin-order-code">${order.id}</strong></td>
+      <td>${order.customerName || "Khách"}</td>
+      <td>${productSummary}</td>
       <td>${formatMoney(order.total)}</td>
-      <td>${order.status}</td>
-      <td>${new Date(order.createdAt).toLocaleString("vi-VN")}</td>
+      <td>${createdAt.toLocaleTimeString("vi-VN")}<br>${createdAt.toLocaleDateString("vi-VN")}</td>
+      <td><span class="order-state order-state-process">${order.status || "Đang chờ xử lý"}</span></td>
+      <td class="admin-order-actions">
+        <button type="button" title="Xác nhận">✓</button>
+        <button type="button" title="Hủy">×</button>
+      </td>
     </tr>
-  `).join("") : `<tr><td colspan="6">Chưa có đơn hàng.</td></tr>`;
+  `;
+  }).join("") : `<tr><td colspan="8">Chưa có đơn hàng phù hợp.</td></tr>`;
+}
+
+function applyAdminOrderFilters() {
+  adminOrderFilters.keyword = adminOrderSearch?.value || "";
+  renderAdminOrders();
+}
+
+function applyAdminOrderDateFilter() {
+  adminOrderFilters.dateFrom = adminOrderDateFrom?.value || "";
+  adminOrderFilters.dateTo = adminOrderDateTo?.value || "";
+  renderAdminOrders();
+}
+
+function resetAdminOrderFilters() {
+  adminOrderFilters = {
+    status: "all",
+    dateFrom: "",
+    dateTo: "",
+    keyword: ""
+  };
+  if (adminOrderDateFrom) adminOrderDateFrom.value = "";
+  if (adminOrderDateTo) adminOrderDateTo.value = "";
+  if (adminOrderSearch) adminOrderSearch.value = "";
+  adminOrderFilterButtons.forEach((button) => {
+    button.classList.toggle("active", button.dataset.orderFilter === "all");
+  });
+  renderAdminOrders();
 }
 
 function resetAdminProductForm() {
@@ -1169,10 +1339,27 @@ function resetAdminProductForm() {
   adminProductForm.productId.value = "";
 }
 
+function openAdminProductForm() {
+  if (!adminProductForm) return;
+  resetAdminProductForm();
+  if (adminProductModal) adminProductModal.hidden = false;
+  adminProductForm.classList.add("show");
+  adminProductForm.productName.focus();
+}
+
+function closeAdminProductForm() {
+  if (!adminProductForm) return;
+  adminProductForm.classList.remove("show");
+  if (adminProductModal) adminProductModal.hidden = true;
+  resetAdminProductForm();
+}
+
 function editAdminProduct(productId) {
   const product = products.find((item) => item.id === productId);
   if (!product || !adminProductForm) return;
 
+  if (adminProductModal) adminProductModal.hidden = false;
+  adminProductForm.classList.add("show");
   adminProductForm.productId.value = product.id;
   adminProductForm.productName.value = product.name;
   adminProductForm.productCategory.value = product.category;
@@ -1207,12 +1394,125 @@ function hideAdminProduct(productId) {
   renderAdminStats();
 }
 
+function restoreAdminProduct(productId) {
+  const state = getProductAdminState();
+  state.hiddenProductIds = state.hiddenProductIds.filter((id) => id !== productId);
+  saveProductAdminState(state);
+  refreshProductsFromAdminState();
+  renderAdminProducts();
+  renderAdminStats();
+}
+
+function applyAdminProductFilters() {
+  adminProductFilters.category = adminFilterCategory?.value || "all";
+  adminProductFilters.price = adminFilterPrice?.value || "all";
+  adminProductFilters.tag = adminFilterTag?.value || "all";
+  adminProductFilters.keyword = adminProductSearch?.value || "";
+  renderAdminProducts();
+}
+
+function resetAdminProductFilters() {
+  adminProductFilters = {
+    category: "all",
+    price: "all",
+    tag: "all",
+    keyword: ""
+  };
+
+  if (adminFilterCategory) adminFilterCategory.value = "all";
+  if (adminFilterPrice) adminFilterPrice.value = "all";
+  if (adminFilterTag) adminFilterTag.value = "all";
+  if (adminProductSearch) adminProductSearch.value = "";
+  renderAdminProducts();
+}
+
+function showAdminSection(sectionId = "adminDashboard") {
+  const targetId = sectionId.replace("#", "");
+  const targetPanel = document.getElementById(targetId) || document.getElementById("adminDashboard");
+
+  adminPanels.forEach((panel) => {
+    panel.classList.toggle("active", panel === targetPanel);
+  });
+
+  adminSectionLinks.forEach((link) => {
+    link.classList.toggle("active", link.getAttribute("href") === `#${targetPanel.id}`);
+  });
+}
+
+function initAdminSections() {
+  if (!adminPanels.length) return;
+
+  adminSectionTriggers.forEach((link) => {
+    link.addEventListener("click", (event) => {
+      event.preventDefault();
+      const sectionId = link.getAttribute("href");
+      showAdminSection(sectionId);
+      history.replaceState(null, "", sectionId);
+    });
+  });
+
+  showAdminSection(window.location.hash || "adminDashboard");
+}
+
 function initAdminPage() {
   if (!adminApp || !requireAdminAccess()) return;
+  const adminTodayLabel = document.getElementById("adminTodayLabel");
+  if (adminTodayLabel) {
+    adminTodayLabel.textContent = new Date().toLocaleDateString("vi-VN", {
+      weekday: "long",
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric"
+    });
+  }
+
   renderAdminStats();
   renderAdminProducts();
   renderAdminCustomers();
   renderAdminOrders();
+  initAdminSections();
+
+  adminApplyProductFilters?.addEventListener("click", applyAdminProductFilters);
+  adminSearchProducts?.addEventListener("click", applyAdminProductFilters);
+  adminClearProductFilters?.addEventListener("click", resetAdminProductFilters);
+  adminProductSearch?.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      applyAdminProductFilters();
+    }
+  });
+  adminSearchCustomers?.addEventListener("click", applyAdminCustomerSearch);
+  adminClearCustomerSearch?.addEventListener("click", resetAdminCustomerSearch);
+  adminCustomerSearch?.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      applyAdminCustomerSearch();
+    }
+  });
+  adminOrderFilterButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      adminOrderFilters.status = button.dataset.orderFilter || "all";
+      adminOrderFilterButtons.forEach((item) => item.classList.toggle("active", item === button));
+      renderAdminOrders();
+    });
+  });
+  adminSearchOrders?.addEventListener("click", applyAdminOrderFilters);
+  adminFilterOrderDate?.addEventListener("click", applyAdminOrderDateFilter);
+  adminClearOrderFilters?.addEventListener("click", resetAdminOrderFilters);
+  adminOrderSearch?.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      applyAdminOrderFilters();
+    }
+  });
+  [adminOrderDateFrom, adminOrderDateTo].forEach((input) => {
+    input?.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        applyAdminOrderDateFilter();
+      }
+    });
+  });
 
   if (adminProductForm) {
     adminProductForm.addEventListener("submit", (event) => {
@@ -1235,7 +1535,7 @@ function initAdminPage() {
       }
 
       upsertAdminProduct(product);
-      resetAdminProductForm();
+      closeAdminProductForm();
       renderAdminStats();
       renderAdminProducts();
       showToast("Đã lưu sản phẩm.");
@@ -1449,6 +1749,15 @@ if (checkoutMainBtn) {
   checkoutMainBtn.addEventListener("click", createOrderFromCart);
 }
 
+if (adminLogoutLink) {
+  adminLogoutLink.addEventListener("click", (event) => {
+    event.preventDefault();
+    localStorage.removeItem("lunaCurrentUser");
+    currentUser = null;
+    window.location.href = "login.html";
+  });
+}
+
 if (menuToggle && mainNav) {
   menuToggle.addEventListener("click", () => {
     mainNav.classList.toggle("show");
@@ -1470,6 +1779,7 @@ document.addEventListener("keydown", (event) => {
 
 seedAdminAccount();
 normalizeCurrentUserRole();
+guardAdminWebsiteAccess();
 syncCategoryControls(currentFilter);
 updateLoginLinks();
 renderProducts();
