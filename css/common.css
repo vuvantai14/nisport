@@ -105,7 +105,7 @@ button {
 }
 
 .logo-main {
-  font-family: "Playfair Display", serif;
+  font-family: "Segoe UI", Arial, "Helvetica Neue", sans-serif;
   font-size: 1.85rem;
   font-weight: 700;
   color: #111111;
@@ -327,7 +327,7 @@ button {
 .script-title {
   margin-bottom: 8px;
   color: #c66b87;
-  font-family: "Playfair Display", serif;
+  font-family: "Segoe UI", Arial, "Helvetica Neue", sans-serif;
   font-size: clamp(1.45rem, 3vw, 2rem);
   font-style: italic;
 }

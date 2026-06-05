@@ -2086,33 +2086,11 @@
 .admin-product-summary article {
   position: relative;
   min-height: 116px;
-  padding: 20px 20px 18px 84px;
+  padding: 20px 22px 18px;
   background: #ffffff;
   border: 1px solid #edf0f4;
   border-radius: 12px;
   box-shadow: 0 12px 28px rgba(31, 41, 55, 0.06);
-}
-
-.admin-product-summary article::before {
-  content: "";
-  position: absolute;
-  left: 22px;
-  top: 28px;
-  width: 44px;
-  height: 44px;
-  background: #f8eee7;
-  border-radius: 50%;
-}
-
-.admin-product-summary article::after {
-  content: "";
-  position: absolute;
-  left: 37px;
-  top: 43px;
-  width: 14px;
-  height: 14px;
-  border: 2px solid #8b5e3c;
-  border-radius: 4px;
 }
 
 .admin-product-summary span {
@@ -2143,6 +2121,46 @@
 
 .admin-product-summary small.down {
   color: #ef4444;
+}
+
+.admin-product-summary article:nth-child(1) {
+  background: linear-gradient(135deg, #e0f2fe 0%, #f7fbff 100%);
+  border-color: #7dd3fc;
+  border-left: 6px solid #0284c7;
+}
+
+.admin-product-summary article:nth-child(2) {
+  background: linear-gradient(135deg, #dcfce7 0%, #f5fff9 100%);
+  border-color: #86efac;
+  border-left: 6px solid #16a34a;
+}
+
+.admin-product-summary article:nth-child(3) {
+  background: linear-gradient(135deg, #fff1d8 0%, #fffaf0 100%);
+  border-color: #ffc266;
+  border-left: 6px solid #ff9f43;
+}
+
+.admin-product-summary article:nth-child(4) {
+  background: linear-gradient(135deg, #ffe4ea 0%, #fff6f8 100%);
+  border-color: #fda4af;
+  border-left: 6px solid #ef476f;
+}
+
+.admin-product-summary article:nth-child(1) strong {
+  color: #0369a1;
+}
+
+.admin-product-summary article:nth-child(2) strong {
+  color: #15803d;
+}
+
+.admin-product-summary article:nth-child(3) strong {
+  color: #c2410c;
+}
+
+.admin-product-summary article:nth-child(4) strong {
+  color: #be123c;
 }
 
 #adminProducts .admin-panel-title {
@@ -2427,10 +2445,10 @@
 
 .admin-order-workspace {
   display: grid;
-  grid-template-columns: minmax(720px, 1fr) 360px;
+  grid-template-columns: minmax(0, 1fr) 340px;
   gap: 18px;
   align-items: start;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .admin-order-list-card,
@@ -2445,7 +2463,7 @@
 #adminOrders .admin-table-wrap {
   width: 100%;
   max-width: 100%;
-  overflow-x: auto;
+  overflow-x: hidden;
   overflow-y: hidden;
 }
 
@@ -2518,68 +2536,82 @@
 
 #adminOrders .admin-order-table {
   width: 100%;
-  min-width: 760px;
+  min-width: 0;
   border: 0;
   table-layout: fixed;
 }
 
 #adminOrders .admin-order-table th,
 #adminOrders .admin-order-table td {
-  padding: 13px 14px;
+  padding: 13px 8px;
   color: #111827;
   background: #ffffff;
   border: 0;
   border-bottom: 1px solid #edf0f4;
   text-align: left;
-  font-size: 0.92rem;
+  font-size: 0.88rem;
   font-weight: 400;
 }
 
 #adminOrders .admin-order-table th:nth-child(1),
 #adminOrders .admin-order-table td:nth-child(1) {
-  width: 42px;
+  width: 4%;
 }
 
 #adminOrders .admin-order-table th:nth-child(2),
 #adminOrders .admin-order-table td:nth-child(2) {
-  width: 112px;
+  width: 12%;
+  min-width: 0;
 }
 
 #adminOrders .admin-order-table th:nth-child(3),
 #adminOrders .admin-order-table td:nth-child(3) {
-  width: 145px;
+  width: 19%;
+  min-width: 0;
 }
 
 #adminOrders .admin-order-table th:nth-child(4),
 #adminOrders .admin-order-table td:nth-child(4) {
-  width: 112px;
+  width: 15%;
+  min-width: 0;
 }
 
 #adminOrders .admin-order-table th:nth-child(5),
 #adminOrders .admin-order-table td:nth-child(5) {
-  width: 118px;
+  width: 18%;
+  min-width: 0;
 }
 
 #adminOrders .admin-order-table th:nth-child(6),
 #adminOrders .admin-order-table td:nth-child(6) {
-  width: 118px;
+  width: 14%;
+  min-width: 0;
 }
 
 #adminOrders .admin-order-table th:nth-child(7),
 #adminOrders .admin-order-table td:nth-child(7) {
-  width: 105px;
+  width: 18%;
+  min-width: 0;
 }
 
 #adminOrders .admin-order-table td,
 #adminOrders .admin-order-table th {
   overflow: hidden;
-  text-overflow: ellipsis;
+  text-overflow: clip;
+}
+
+#adminOrders .admin-order-table th:nth-child(2),
+#adminOrders .admin-order-table td:nth-child(2),
+#adminOrders .admin-order-table th:nth-child(7),
+#adminOrders .admin-order-table td:nth-child(7) {
+  overflow: visible;
 }
 
 #adminOrders .admin-order-actions {
   display: flex;
   align-items: center;
-  gap: 6px;
+  justify-content: flex-start;
+  gap: 5px;
   white-space: nowrap;
 }
 
@@ -2603,8 +2635,10 @@
 }
 
 #adminOrders .admin-order-code {
+  display: inline-block;
   color: #f06095;
   font-weight: 600;
+  white-space: nowrap;
 }
 
 #adminOrders .order-state {
@@ -2634,16 +2668,17 @@
 }
 
 #adminOrders .admin-order-actions button {
-  width: 34px;
-  height: 34px;
-  min-height: 34px;
-  margin: 0 3px 0 0;
+  width: 30px;
+  flex: 0 0 30px;
+  height: 30px;
+  min-height: 30px;
+  margin: 0;
   padding: 0;
   color: #475569;
   background: #ffffff;
   border: 1px solid #e5e7eb;
   border-radius: 6px;
-  font-size: 0.9rem;
+  font-size: 0.86rem;
 }
 
 #adminOrders .admin-order-footer {

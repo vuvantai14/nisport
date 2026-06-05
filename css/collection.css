@@ -39,14 +39,14 @@
 .collection-heading p {
   margin-bottom: 4px;
   color: #ef6b9c;
-  font-family: "Playfair Display", serif;
+  font-family: "Segoe UI", Arial, "Helvetica Neue", sans-serif;
   font-size: clamp(1.7rem, 3vw, 2.5rem);
   font-style: italic;
 }
 
 .collection-heading h1 {
   color: #161216;
-  font-family: "Playfair Display", serif;
+  font-family: "Segoe UI", Arial, "Helvetica Neue", sans-serif;
   font-size: clamp(2.35rem, 5vw, 4.1rem);
   line-height: 1.05;
   text-transform: uppercase;
@@ -134,7 +134,7 @@
 .collection-card-body h2 {
   margin-bottom: 12px;
   color: #21191d;
-  font-family: "Playfair Display", serif;
+  font-family: "Segoe UI", Arial, "Helvetica Neue", sans-serif;
   font-size: 1.55rem;
   line-height: 1.25;
   text-transform: uppercase;

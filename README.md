@@ -41,35 +41,34 @@ Luna-Fashion/
 
 ## Chức năng chính từng trang
 
-### Trang chủ - index.html
+### Trang chủ 
 
 - Hiển thị banner hero có chuyển slide tự động và nút điều hướng.
 - Hiển thị các điểm nổi bật của cửa hàng.
 - Hiển thị danh mục sản phẩm và cho phép bấm để lọc/đi tới khu vực sản phẩm.
-- Hiển thị danh sách sản phẩm nổi bật từ dữ liệu trong `js/products.js`.
+- Hiển thị danh sách sản phẩm nổi bật từ dữ liệu 
 - Có khu vực khuyến mãi, đánh giá và thông tin liên hệ trên trang.
 - Dùng chung header, giỏ hàng, quick view và trạng thái đăng nhập.
 
-### Trang sản phẩm - products.html
-
+### Trang sản phẩm 
 - Hiển thị danh sách sản phẩm.
 - Tìm kiếm sản phẩm theo tên.
 - Lọc sản phẩm theo danh mục, khoảng giá và màu.
 - Phân trang danh sách sản phẩm.
 - Thêm sản phẩm vào giỏ hàng.
 - Xem nhanh sản phẩm bằng modal.
-- Có thể nhận tham số `category` trên URL để mở sẵn danh mục tương ứng.
 
-### Trang chi tiết sản phẩm - product-detail.html
 
-- Xem thông tin chi tiết sản phẩm theo `id` trên URL.
+### Trang chi tiết sản phẩm 
+
+
 - Hiển thị ảnh, giá, giá cũ, mô tả, thông số sản phẩm và nhãn giảm giá/hàng mới.
 - Chọn size trước khi thêm vào giỏ hàng.
 - Chọn màu sản phẩm.
 - Thêm sản phẩm vào giỏ hàng và chuyển sang trang giỏ hàng.
 - Hiển thị sản phẩm liên quan cùng danh mục.
 
-### Trang giỏ hàng - cart.html
+### Trang giỏ hàng 
 
 - Xem các sản phẩm đang có trong giỏ hàng.
 - Tăng/giảm số lượng sản phẩm.
@@ -81,34 +80,29 @@ Luna-Fashion/
 - Không cho tài khoản admin đặt hàng.
 - Sau khi đặt hàng thành công, đơn hàng được lưu vào LocalStorage và giỏ hàng được làm rỗng.
 
-### Trang đăng nhập - login.html
+### Trang đăng nhập 
 
 - Đăng nhập người dùng bằng email và mật khẩu đã lưu trong LocalStorage.
 - Đăng nhập admin bằng tài khoản mẫu.
 - Kiểm tra thiếu email/mật khẩu và kiểm tra sai thông tin đăng nhập.
-- Lưu phiên đăng nhập hiện tại vào `lunaCurrentUser`.
-- Điều hướng admin sang `admin.html`, người dùng thường sang `index.html`.
 
-### Trang đăng ký - register.html
+
+### Trang đăng ký 
 
 - Tạo tài khoản khách hàng mới.
 - Validate thông tin bắt buộc.
 - Validate định dạng email.
 - Validate mật khẩu tối thiểu 6 ký tự.
 - Kiểm tra email đã tồn tại.
-- Lưu người dùng mới vào `lunaUsers`.
 - Sau khi đăng ký thành công, chuyển người dùng về trang đăng nhập.
 
-### Trang tài khoản - account.html
-
+### Trang tài khoản -
 - Xem thông tin người dùng hiện tại.
 - Chỉnh sửa họ tên, số điện thoại và địa chỉ.
-- Lưu thông tin cập nhật vào `lunaCurrentUser` và `lunaUsers`.
 - Đăng xuất tài khoản.
-- Hiển thị thống kê đơn hàng cá nhân dựa trên dữ liệu trong `lunaOrders`.
 - Hiển thị địa chỉ mặc định và các đơn hàng gần đây nếu có.
 
-### Trang đơn hàng - orders.html
+### Trang đơn hàng 
 
 - Hiển thị danh sách đơn hàng của người dùng đang đăng nhập.
 - Hiển thị trạng thái đơn hàng.
@@ -116,9 +110,8 @@ Luna-Fashion/
 - Xem thông tin giao hàng, sản phẩm trong đơn, phí vận chuyển, giảm giá và tổng tiền.
 - Nếu chưa đăng nhập hoặc chưa có đơn hàng, trang hiển thị trạng thái trống phù hợp.
 
-### Trang admin - admin.html
+### Trang admin 
 
-- Chỉ tài khoản có `role: "admin"` mới được truy cập khu vực quản trị.
 - Nếu chưa đăng nhập admin, trang hiển thị thông báo không có quyền và tài khoản mẫu.
 - Dashboard thống kê doanh thu, đơn hàng, khách hàng và sản phẩm.
 - Hiển thị biểu đồ doanh thu dạng SVG tĩnh và tỷ lệ đơn hàng.
@@ -140,29 +133,26 @@ Luna-Fashion/
   - Xem chi tiết đơn hàng.
   - Cập nhật trạng thái đơn hàng thành đã xử lí hoặc đã hủy.
 
-### Trang thương hiệu - brand.html
+### Trang thương hiệu 
 
 - Hiển thị câu chuyện thương hiệu Luna Fashion.
 - Trình bày phần giới thiệu, điểm nổi bật và thống kê thương hiệu.
 - Dùng chung header, giỏ hàng và trạng thái tài khoản.
 
-### Trang bộ sưu tập - collection.html
+### Trang bộ sưu tập 
 
 - Hiển thị các bộ sưu tập/thư mục thời trang.
 - Mỗi bộ sưu tập có ảnh, mô tả và liên kết tới danh sách sản phẩm tương ứng.
 - Dùng chung header, giỏ hàng và trạng thái tài khoản.
 
-### Trang liên hệ - contact.html
-
+### Trang liên hệ 
 - Hiển thị thông tin liên hệ của cửa hàng.
 - Có form liên hệ gồm họ tên, email và nội dung.
 - Validate trường bắt buộc.
-- Kiểm tra email cơ bản bằng ký tự `@`.
 - Hiển thị thông báo thành công hoặc lỗi ngay trên giao diện.
 - Form chỉ xử lý ở front-end, không gửi dữ liệu lên server.
 
-### Trang khuyến mãi - sale.html
-
+### Trang khuyến mãi
 - Hiển thị banner khuyến mãi.
 - Trình bày các chương trình ưu đãi, mã giảm giá/dịch vụ nổi bật.
 - Có các khu vực dịch vụ như đổi trả, giao hàng, thanh toán và hỗ trợ.
