@@ -55,7 +55,7 @@ Bạn cũng có thể mở trực tiếp file `index.html` bằng trình duyệt
 ## admin 
 
 - Email: admin@lunafashion.com
-- Mật khẩu: admin123
+- Mật khẩu: 123456
 
 ## Chức năng admin Quản lý sản phẩm:
 

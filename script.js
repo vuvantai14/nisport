@@ -172,6 +172,7 @@ const heroBanners = [
 let currentFilter = "Tất cả";
 let currentPage = 1;
 let currentHeroBanner = 0;
+let selectedUserOrderId = null;
 const productsPerPage = window.location.pathname.endsWith("products.html") ? 8 : 10;
 let cart = JSON.parse(localStorage.getItem("lunaCart")) || [];
 let appliedSidebarFilters = {
@@ -191,27 +192,37 @@ let adminOrderFilters = {
   dateTo: "",
   keyword: ""
 };
+let selectedAdminOrderId = null;
 
 let currentUser = JSON.parse(localStorage.getItem("lunaCurrentUser")) || null;
 
 function seedAdminAccount() {
   const users = getUsers();
   const adminEmail = "admin@lunafashion.com";
+  const adminPassword = "123456";
+  const adminIndex = users.findIndex((user) => user.email === adminEmail);
 
-  if (!users.some((user) => user.email === adminEmail)) {
+  if (adminIndex === -1) {
     users.push({
       id: 1,
       firstName: "Admin",
       lastName: "Luna",
       email: adminEmail,
-      password: "admin123",
+      password: adminPassword,
       phone: "",
       address: "",
       role: "admin",
       createdAt: new Date().toISOString()
     });
-    saveUsers(users);
+  } else {
+    users[adminIndex] = {
+      ...users[adminIndex],
+      password: adminPassword,
+      role: "admin"
+    };
   }
+
+  saveUsers(users);
 }
 
 function normalizeCurrentUserRole() {
@@ -497,11 +508,11 @@ function showUserInfo() {
                 <article>
                   <img src="${firstItem?.image || "assets/product-1.jpg"}" alt="${firstItem?.name || "Sản phẩm"}">
                   <div class="user-order-code">
-                    <strong>#${order.id}</strong>
+                    <strong>${formatOrderCode(order, userOrders)}</strong>
                     <span>${createdAt.toLocaleDateString("vi-VN")}</span>
                   </div>
                   <b>${formatMoney(order.total || 0)}</b>
-                  <em>${order.status || "Chờ xử lý"}</em>
+                  <em>${order.status || "Đang xử lí"}</em>
                 </article>
               `;
             }).join("") : `<p class="user-no-orders">Chưa có đơn hàng gần đây.</p>`}
@@ -1076,6 +1087,22 @@ function saveOrders(orders) {
   localStorage.setItem("lunaOrders", JSON.stringify(orders));
 }
 
+function formatOrderCode(order, orders = []) {
+  const index = orders.findIndex((item) => String(item.id) === String(order.id));
+  const number = index === -1 ? 1 : index + 1;
+  return `#DH${String(number).padStart(4, "0")}`;
+}
+
+function getOrderStatusClass(status) {
+  const normalizedStatus = String(status || "").toLowerCase();
+
+  if (normalizedStatus.includes("hủy")) return "is-cancelled";
+  if (normalizedStatus.includes("đã xử") || normalizedStatus.includes("đã giao") || normalizedStatus.includes("hoàn thành")) return "is-success";
+  if (normalizedStatus.includes("đang") || normalizedStatus.includes("chờ")) return "is-pending";
+
+  return "is-pending";
+}
+
 function renderUserOrders() {
   if (!userOrdersContent) return;
 
@@ -1103,7 +1130,11 @@ function renderUserOrders() {
     return;
   }
 
-  const selectedOrder = orders[0];
+  if (!selectedUserOrderId || !orders.some((order) => String(order.id) === String(selectedUserOrderId))) {
+    selectedUserOrderId = orders[0].id;
+  }
+
+  const selectedOrder = orders.find((order) => String(order.id) === String(selectedUserOrderId)) || orders[0];
   const selectedDate = new Date(selectedOrder.createdAt);
   const selectedItems = selectedOrder.items || [];
   const selectedSubtotal = selectedOrder.subtotal || selectedItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
@@ -1133,12 +1164,12 @@ function renderUserOrders() {
           ${orders.map((order) => {
             const createdAt = new Date(order.createdAt);
             return `
-              <article class="user-order-row">
-                <strong>#${order.id}</strong>
+              <article class="user-order-row ${String(order.id) === String(selectedOrder.id) ? "active" : ""}">
+                <strong>${formatOrderCode(order, orders)}</strong>
                 <span>${createdAt.toLocaleDateString("vi-VN")} ${createdAt.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })}</span>
                 <b>${formatMoney(order.total || 0)}</b>
-                <em>${order.status || "Chờ xử lý"}</em>
-                <button type="button">Xem chi tiết</button>
+                <em class="order-status-pill ${getOrderStatusClass(order.status)}">${order.status || "Đang xử lí"}</em>
+                <button type="button" data-user-order-id="${order.id}">Xem chi tiết</button>
               </article>
             `;
           }).join("")}
@@ -1153,9 +1184,9 @@ function renderUserOrders() {
         <div class="user-order-detail-head">
           <div>
             <h2>Chi tiết đơn hàng</h2>
-            <strong>#${selectedOrder.id}</strong>
+            <strong>${formatOrderCode(selectedOrder, orders)}</strong>
           </div>
-          <em>${selectedOrder.status || "Chờ xử lý"}</em>
+          <em class="order-status-pill ${getOrderStatusClass(selectedOrder.status)}">${selectedOrder.status || "Đang xử lí"}</em>
         </div>
         <div class="user-order-detail-meta">
           <p>Ngày đặt: ${selectedDate.toLocaleDateString("vi-VN")} ${selectedDate.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })}</p>
@@ -1192,6 +1223,13 @@ function renderUserOrders() {
       </aside>
     </div>
   `;
+
+  userOrdersContent.querySelectorAll("[data-user-order-id]").forEach((button) => {
+    button.addEventListener("click", () => {
+      selectedUserOrderId = button.dataset.userOrderId;
+      renderUserOrders();
+    });
+  });
 }
 
 function renderAccountPage() {
@@ -1312,11 +1350,11 @@ function renderAccountPage() {
                 <article>
                   <img src="${firstItem?.image || "assets/product-1.jpg"}" alt="${firstItem?.name || "Sản phẩm"}">
                   <div class="user-order-code">
-                    <strong>#${order.id}</strong>
+                  <strong>${formatOrderCode(order, userOrders)}</strong>
                     <span>${createdAt.toLocaleDateString("vi-VN")}</span>
                   </div>
                   <b>${formatMoney(order.total || 0)}</b>
-                  <em>${order.status || "Chờ xử lý"}</em>
+                <em class="order-status-pill ${getOrderStatusClass(order.status)}">${order.status || "Đang xử lí"}</em>
                 </article>
               `;
             }).join("") : `<p class="user-no-orders">Chưa có đơn hàng gần đây.</p>`}
@@ -1394,7 +1432,7 @@ function createOrderFromCart() {
     subtotal,
     shipping,
     total: subtotal + shipping,
-    status: "Chờ xử lý",
+    status: "Đang xử lí",
     createdAt: new Date().toISOString()
   };
 
@@ -1416,7 +1454,7 @@ function requireAdminAccess() {
       <section class="admin-denied">
         <h1>Không có quyền truy cập</h1>
         <p>Chỉ tài khoản admin mới có thể vào trang quản trị.</p>
-        <p><strong>Email:</strong> admin@lunafashion.com<br><strong>Mật khẩu:</strong> admin123</p>
+        <p><strong>Email:</strong> admin@lunafashion.com<br><strong>Mật khẩu:</strong> 123456</p>
         <a class="btn btn-primary" href="login.html">Đăng nhập admin</a>
       </section>
     `;
@@ -1457,6 +1495,198 @@ function renderAdminStats() {
       <span>Đơn hàng</span>
       <small>${formatMoney(revenue)}</small>
       <em>More info</em>
+    </article>
+  `;
+}
+
+function renderAdminDashboard() {
+  const dashboardShell = document.querySelector("#adminDashboard .admin-dashboard-shell");
+  if (!dashboardShell) return;
+  const adminUserIds = new Set(getUsers().filter((user) => user.role === "admin").map((user) => user.id));
+  const dashboardOrders = getOrders().filter((order) => !adminUserIds.has(order.customerId));
+  const recentOrders = dashboardOrders.slice(-3).reverse();
+  const recentOrderRows = recentOrders.length ? recentOrders.map((order) => {
+    const createdAt = new Date(order.createdAt);
+    return `
+      <div>
+        <strong>${formatOrderCode(order, dashboardOrders)}</strong>
+        <span>${order.customerName || "Khách hàng"}</span>
+        <span>${createdAt.toLocaleDateString("vi-VN")} ${createdAt.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })}</span>
+        <b>${formatMoney(order.total || 0)}</b>
+        <em class="order-status-pill ${getOrderStatusClass(order.status)}">${order.status || "Đang xử lí"}</em>
+      </div>
+    `;
+  }).join("") : `
+    <div class="admin-dashboard-order-empty">
+      <span>Chưa có đơn hàng mới.</span>
+    </div>
+  `;
+
+  dashboardShell.innerHTML = `
+    <div class="admin-dashboard-header">
+      <div>
+        <span class="admin-dashboard-kicker">Dashboard</span>
+        <h2>Bảng điều khiển quản trị</h2>
+      </div>
+      <label class="admin-dashboard-search">
+        <input type="search" placeholder="Tìm kiếm...">
+        <span>⌕</span>
+      </label>
+    </div>
+
+    <div class="admin-stats" id="adminStats"></div>
+
+    <div class="admin-dashboard-grid admin-dashboard-grid-clean">
+      <article class="admin-chart-card admin-chart-card-main">
+        <div class="admin-card-head">
+          <div>
+            <h3>Doanh thu</h3>
+            <p>Biểu đồ doanh thu theo ngày trong tháng</p>
+          </div>
+          <div class="admin-chart-controls">
+            <select id="dashboardSalesFilter">
+              <option value="month">Tháng này</option>
+              <option value="week">Tuần này</option>
+              <option value="year">Năm nay</option>
+            </select>
+          </div>
+        </div>
+        <div class="admin-wave-chart">
+          <div class="admin-wave-yaxis">
+            <span>800M</span>
+            <span>600M</span>
+            <span>400M</span>
+            <span>200M</span>
+            <span>0</span>
+          </div>
+          <div class="admin-wave-plot">
+            <svg viewBox="0 0 720 260" preserveAspectRatio="none" role="img" aria-label="Biểu đồ doanh thu">
+              <defs>
+                <linearGradient id="salesWaveFill" x1="0" x2="0" y1="0" y2="1">
+                  <stop offset="0%" stop-color="#ff6aa2" stop-opacity="0.3" />
+                  <stop offset="100%" stop-color="#ff6aa2" stop-opacity="0.04" />
+                </linearGradient>
+              </defs>
+              <path class="wave-area" d="M0,218 C34,188 55,173 84,154 C112,137 134,76 168,106 C196,132 220,148 250,122 C284,92 306,72 338,104 C374,138 394,66 426,92 C462,118 482,176 514,150 C552,118 576,116 608,90 C646,58 682,34 720,40 L720,240 L0,240 Z"></path>
+              <path class="wave-line" d="M0,218 C34,188 55,173 84,154 C112,137 134,76 168,106 C196,132 220,148 250,122 C284,92 306,72 338,104 C374,138 394,66 426,92 C462,118 482,176 514,150 C552,118 576,116 608,90 C646,58 682,34 720,40"></path>
+              <circle cx="338" cy="104" r="6"></circle>
+              <text x="338" y="72">520.000.000đ</text>
+            </svg>
+            <div class="admin-wave-xaxis">
+              <span>01</span>
+              <span>05</span>
+              <span>10</span>
+              <span>15</span>
+              <span>20</span>
+              <span>25</span>
+              <span>30</span>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="admin-category-card admin-order-ratio-card">
+        <div class="admin-card-head">
+          <div>
+            <h3>Tỉ lệ đơn hàng</h3>
+            <p>Phân bổ theo trạng thái</p>
+          </div>
+        </div>
+        <div class="admin-pie-chart" aria-label="Tỉ lệ đơn hàng">
+          <strong>1.248</strong>
+          <span>Tổng đơn</span>
+        </div>
+        <ul class="admin-pie-legend">
+          <li><i></i>Đã xử lí <strong>69%</strong></li>
+          <li><i></i>Đang xử lí <strong>20%</strong></li>
+          <li><i></i>Đã hủy <strong>10%</strong></li>
+          <li><i></i>Hoàn trả <strong>5%</strong></li>
+        </ul>
+      </article>
+    </div>
+
+    <article class="admin-chart-card admin-recent-orders-card">
+      <div class="admin-card-head">
+        <div>
+          <h3>Đơn hàng mới nhất</h3>
+          <p>Theo dõi nhanh các đơn vừa được đặt</p>
+        </div>
+        <a href="#adminOrders" onclick="showAdminSection('adminOrders')">Xem tất cả</a>
+      </div>
+      <div class="admin-dashboard-orders">
+        <div>
+          <span>Mã đơn</span>
+          <span>Khách hàng</span>
+          <span>Ngày đặt</span>
+          <span>Tổng tiền</span>
+          <span>Trạng thái</span>
+        </div>
+        ${recentOrderRows}
+      </div>
+    </article>
+  `;
+}
+
+function renderAdminSidebar() {
+  const sidebar = document.querySelector(".admin-sidebar");
+  if (!sidebar) return;
+
+  const icons = {
+    dashboard: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11.5 12 5l8 6.5V20h-5v-5H9v5H4z"></path></svg>`,
+    product: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h8l8 8-5 5-8-8V7z"></path><path d="M8.5 9.5h.01"></path></svg>`,
+    order: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 6h13v12H7z"></path><path d="M4 9h3M4 15h3M10 10h6M10 14h5"></path></svg>`,
+    customer: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"></path><path d="M3.5 19a5.5 5.5 0 0 1 11 0"></path><path d="M16 10a2.5 2.5 0 1 0 0-5"></path><path d="M17 14a4.5 4.5 0 0 1 3.5 4"></path></svg>`,
+    logout: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 7V5h10v14H9v-2"></path><path d="M13 12H4"></path><path d="m7 9-3 3 3 3"></path></svg>`
+  };
+
+  sidebar.innerHTML = `
+    <a href="index.html" class="logo admin-sidebar-logo">
+      <span class="logo-main">Luna</span>
+      <small>Fashion</small>
+    </a>
+    <nav>
+      <span class="admin-nav-label">Tổng quan</span>
+      <a href="#adminDashboard">${icons.dashboard}<span>Dashboard</span></a>
+
+      <span class="admin-nav-label">Quản lý</span>
+      <a href="#adminProducts">${icons.product}<span>Sản phẩm</span></a>
+      <a href="#adminOrders">${icons.order}<span>Đơn hàng</span></a>
+      <a href="#adminCustomers">${icons.customer}<span>Khách hàng</span></a>
+
+      <span class="admin-nav-label">Cài đặt</span>
+      <a href="#adminLogout" id="adminLogoutLink">${icons.logout}<span>Đăng xuất</span></a>
+    </nav>
+  `;
+}
+
+function renderAdminStats() {
+  const statsTarget = document.getElementById("adminStats");
+  if (!statsTarget) return;
+
+  const users = getUsers().filter((user) => user.role !== "admin");
+  const orders = getOrders();
+  const revenue = orders.reduce((sum, order) => sum + (order.total || 0), 0);
+
+  statsTarget.innerHTML = `
+    <article class="admin-stat-card stat-pink">
+      <span>Tổng doanh thu</span>
+      <strong>${formatMoney(revenue || 2450000000)}</strong>
+      <small>+ 18.6% so với tháng trước</small>
+    </article>
+    <article class="admin-stat-card stat-purple">
+      <span>Đơn hàng</span>
+      <strong>${orders.length || 1248}</strong>
+      <small>+ 12.5% so với tháng trước</small>
+    </article>
+    <article class="admin-stat-card stat-orange">
+      <span>Khách hàng</span>
+      <strong>${users.length || 3682}</strong>
+      <small>+ 8.7% so với tháng trước</small>
+    </article>
+    <article class="admin-stat-card stat-teal">
+      <span>Sản phẩm</span>
+      <strong>${products.length || 568}</strong>
+      <small>+ 5.3% so với tháng trước</small>
     </article>
   `;
 }
@@ -1513,6 +1743,164 @@ function renderAdminProducts() {
       </td>
     </tr>
   `).join("") : `<tr><td colspan="8">Không tìm thấy sản phẩm phù hợp.</td></tr>`;
+}
+
+function renderAdminProductLayout() {
+  const productPanel = document.getElementById("adminProducts");
+  if (!productPanel) return;
+
+  const panelTitle = productPanel.querySelector(".admin-panel-title");
+  if (panelTitle) {
+    panelTitle.innerHTML = `
+      <div>
+        <p>Quản lý sản phẩm</p>
+        <h2>Danh sách sản phẩm</h2>
+      </div>
+    `;
+  }
+
+  if (!productPanel.querySelector(".admin-product-summary")) {
+    productPanel.insertAdjacentHTML("afterbegin", `
+      <div class="admin-product-summary">
+        <article>
+          <span>Tổng sản phẩm </span>
+          <strong>568</strong>
+          <small class="up">+ 12.5% so voi thang truoc</small>
+        </article>
+        <article>
+          <span>Đang bán</span>
+          <strong>486</strong>
+          <small class="up">+ 8.2% so voi thang truoc</small>
+        </article>
+        <article>
+          <span>Hết hàng</span>
+          <strong>32</strong>
+          <small class="down">- 4.3% so voi thang truoc</small>
+        </article>
+        <article>
+          <span>Ngừng kinh doanh</span>
+          <strong>50</strong>
+          <small class="down">- 1.7% so voi thang truoc</small>
+        </article>
+      </div>
+    `);
+  }
+
+  const toolbar = productPanel.querySelector(".admin-list-toolbar");
+  if (toolbar) {
+    toolbar.innerHTML = `
+      <div class="admin-product-toolbar-top">
+        <strong>Danh sách sản phẩm</strong>
+        <div class="admin-product-toolbar-actions">
+          <button class="admin-soft-btn" type="button">Bộ lọc</button>
+          <select id="adminFilterCategory">
+            <option value="all">Danh mục</option>
+            <option value="Dam">Đầm</option>
+            <option value="Ao">Áo</option>
+            <option value="Vay">Váy</option>
+            <option value="Phu kien">Phụ kiện</option>
+          </select>
+          <button class="admin-add-product-btn" type="button" onclick="openAdminProductForm()">+ Thêm sản phẩm</button>
+        </div>
+      </div>
+      <div class="admin-product-search-row">
+        <input type="search" id="adminProductSearch" placeholder="Tìm kiếm sản phẩm...">
+        <button type="button" id="adminSearchProducts">Tìm kiếm</button>
+      </div>
+    `;
+  }
+
+  const tableHead = productPanel.querySelector(".admin-table thead tr");
+  if (tableHead) {
+    tableHead.innerHTML = `
+      <th><input type="checkbox"></th>
+      <th>Sản phẩm</th>
+      <th>Danh mục</th>
+      <th>Giá bán</th>
+      <th>Kho</th>
+      <th>Trạng thái</th>
+      <th>Lượt bán</th>
+      <th>Ngày tạo</th>
+      <th>Thao tác</th>
+    `;
+  }
+
+  const currentCategorySelect = productPanel.querySelector("#adminFilterCategory");
+  const currentSearchInput = productPanel.querySelector("#adminProductSearch");
+  const currentSearchButton = productPanel.querySelector("#adminSearchProducts");
+  const categories = [...new Set(products.map((product) => product.category))];
+
+  if (currentCategorySelect) {
+    currentCategorySelect.innerHTML = [
+      `<option value="all">Danh muc</option>`,
+      ...categories.map((category) => `<option value="${category}">${category}</option>`)
+    ].join("");
+
+    currentCategorySelect.addEventListener("change", () => {
+      adminProductFilters.category = currentCategorySelect.value;
+      renderAdminProducts();
+    });
+  }
+
+  if (currentSearchButton) {
+    currentSearchButton.addEventListener("click", () => {
+      adminProductFilters.keyword = currentSearchInput?.value || "";
+      renderAdminProducts();
+    });
+  }
+
+  currentSearchInput?.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      adminProductFilters.keyword = currentSearchInput.value || "";
+      renderAdminProducts();
+    }
+  });
+}
+
+function renderAdminProducts() {
+  const productTable = document.getElementById("adminProductTable");
+  if (!productTable) return;
+
+  const filteredProducts = getFilteredAdminProducts();
+
+  productTable.innerHTML = filteredProducts.length ? filteredProducts.map((product, index) => {
+    const stock = index % 6 === 5 ? 0 : 120 - (index * 7 % 90);
+    const sold = 320 - (index * 20 % 250);
+    const createdDay = String(18 - (index % 5)).padStart(2, "0");
+    const statusText = stock === 0 ? "Hết hàng" : index % 9 === 8 ? "Ngừng kinh doanh" : "Đang bán";
+    const statusClass = stock === 0 ? "out" : index % 9 === 8 ? "stop" : "selling";
+    const oldPrice = product.oldPrice || Math.round(product.price * 1.15 / 1000) * 1000;
+
+    return `
+      <tr>
+        <td><input type="checkbox" aria-label="Chon ${product.name}"></td>
+        <td>
+          <div class="admin-product-cell">
+            <img src="${product.image}" alt="${product.name}">
+            <div>
+              <strong>${product.name}</strong>
+              <small>SP${String(index + 1).padStart(3, "0")}</small>
+            </div>
+          </div>
+        </td>
+        <td>${product.category}</td>
+        <td>
+          <strong class="admin-product-price">${formatMoney(product.price)}</strong>
+          <small class="admin-product-old-price">${formatMoney(oldPrice)}</small>
+        </td>
+        <td>${stock}</td>
+        <td><span class="admin-product-status ${statusClass}">${statusText}</span></td>
+        <td>${sold}</td>
+        <td>${createdDay}/05/2024</td>
+        <td class="admin-product-actions">
+          <button type="button" title="Sửa" onclick="editAdminProduct(${product.id})">Sửa</button>
+          <button type="button" title="Copy">Copy</button>
+          <button type="button" title="Xóa" onclick="hideAdminProduct(${product.id})">Xóa</button>
+        </td>
+      </tr>
+    `;
+  }).join("") : `<tr><td colspan="9">Khong tim thay san pham phu hop.</td></tr>`;
 }
 
 function renderAdminCustomers() {
@@ -1576,14 +1964,15 @@ function renderAdminOrders() {
 
   const keyword = adminOrderFilters.keyword.trim().toLowerCase();
   const adminUserIds = new Set(getUsers().filter((user) => user.role === "admin").map((user) => user.id));
-  const orders = getOrders().filter((order) => !adminUserIds.has(order.customerId)).filter((order) => {
+  const customerOrders = getOrders().filter((order) => !adminUserIds.has(order.customerId));
+  const orders = customerOrders.filter((order) => {
     const createdDate = new Date(order.createdAt);
     const fromDate = adminOrderFilters.dateFrom ? new Date(`${adminOrderFilters.dateFrom}T00:00:00`) : null;
     const toDate = adminOrderFilters.dateTo ? new Date(`${adminOrderFilters.dateTo}T23:59:59`) : null;
     const normalizedStatus = String(order.status || "").toLowerCase();
     const statusMap = {
-      pending: ["chờ", "pending"],
-      confirmed: ["xác thực", "confirmed"],
+      pending: ["đang xử", "chờ", "pending"],
+      confirmed: ["đã xử", "xác thực", "confirmed"],
       shipping: ["giao", "shipping"],
       done: ["đã giao", "done"],
       cancel: ["hủy", "cancel"]
@@ -1594,6 +1983,7 @@ function renderAdminOrders() {
     const matchesDateTo = !toDate || createdDate <= toDate;
     const matchesKeyword = !keyword || [
       order.id,
+      formatOrderCode(order, customerOrders),
       order.customerName,
       order.email,
       order.status,
@@ -1612,29 +2002,247 @@ function renderAdminOrders() {
     return `
     <tr>
       <td>${index + 1}</td>
-      <td><strong class="admin-order-code">${order.id}</strong></td>
+      <td><strong class="admin-order-code">${formatOrderCode(order, customerOrders)}</strong></td>
       <td>${order.customerName || "Khách"}</td>
       <td>${productSummary}</td>
       <td>${formatMoney(order.total)}</td>
       <td>${createdAt.toLocaleTimeString("vi-VN")}<br>${createdAt.toLocaleDateString("vi-VN")}</td>
-      <td><span class="order-state order-state-process">${order.status || "Đang chờ xử lý"}</span></td>
+      <td><span class="order-state ${getOrderStatusClass(order.status)}">${order.status || "Đang xử lí"}</span></td>
       <td class="admin-order-actions">
-        <button type="button" title="Xác nhận">✓</button>
-        <button type="button" title="Hủy">×</button>
+        <button type="button" title="Xác nhận" onclick="updateAdminOrderStatus('${order.id}', 'Đã xử lí')">✓</button>
+        <button type="button" title="Hủy" onclick="updateAdminOrderStatus('${order.id}', 'Đã hủy')">×</button>
       </td>
     </tr>
   `;
   }).join("") : `<tr><td colspan="8">Chưa có đơn hàng phù hợp.</td></tr>`;
 }
 
+function renderAdminOrderLayout() {
+  const orderPanel = document.getElementById("adminOrders");
+  if (!orderPanel || orderPanel.dataset.enhanced === "true") return;
+
+  orderPanel.dataset.enhanced = "true";
+  orderPanel.innerHTML = `
+    <div class="admin-order-summary-grid">
+      <article class="hot"><i>♡</i><span>Tổng đơn hàng</span><strong id="adminOrderTotalCount">0</strong><small>+ 12.5% so với tháng trước</small></article>
+      <article class="orange"><i>□</i><span>Chờ xử lí</span><strong id="adminOrderPendingCount">0</strong><small>+ 8.2% so với tháng trước</small></article>
+      <article class="blue"><i>▣</i><span>Đang xử lí</span><strong id="adminOrderProcessingCount">0</strong><small>+ 10.3% so với tháng trước</small></article>
+      <article class="green"><i>✓</i><span>Đã xử lí</span><strong id="adminOrderDoneCount">0</strong><small>+ 9.8% so với tháng trước</small></article>
+      <article class="red"><i>×</i><span>Đã hủy</span><strong id="adminOrderCancelCount">0</strong><small>- 4.1% so với tháng trước</small></article>
+    </div>
+
+    <div class="admin-order-workspace">
+      <section class="admin-order-list-card">
+        <div class="admin-order-tabs">
+          <button class="active" type="button" data-order-filter="all">Tất cả</button>
+          <button type="button" data-order-filter="pending">Chờ xác nhận</button>
+          <button type="button" data-order-filter="confirmed">Đang xử lí</button>
+          <button type="button" data-order-filter="done">Hoàn thành</button>
+          <button type="button" data-order-filter="cancel">Đã hủy</button>
+        </div>
+        <div class="admin-order-toolbar">
+          <button class="admin-clear-filter-btn" type="button" id="adminClearOrderFilters">Bộ lọc</button>
+          <input type="search" id="adminOrderSearch" placeholder="Tìm kiếm đơn hàng, khách hàng...">
+          <button type="button" id="adminSearchOrders">Tìm</button>
+        </div>
+        <div class="admin-order-date-filter">
+          <label>Từ ngày<input type="date" id="adminOrderDateFrom"></label>
+          <label>Đến ngày<input type="date" id="adminOrderDateTo"></label>
+          <button type="button" id="adminFilterOrderDate">Lọc thời gian</button>
+        </div>
+        <div class="admin-table-wrap">
+          <table class="admin-table admin-order-table">
+            <thead>
+              <tr>
+                <th><input type="checkbox"></th>
+                <th>Mã đơn hàng</th>
+                <th>Khách hàng</th>
+                <th>Ngày đặt</th>
+                <th>Tổng tiền</th>
+                <th>Trạng thái</th>
+                <th>Thao tác</th>
+              </tr>
+            </thead>
+            <tbody id="adminOrderTable"></tbody>
+          </table>
+        </div>
+        <div class="admin-order-footer">
+          <span id="adminOrderPageInfo">Hiển thị 0 đơn hàng</span>
+          <div><button type="button">‹</button><button class="active" type="button">1</button><button type="button">2</button><button type="button">3</button><button type="button">›</button></div>
+        </div>
+      </section>
+      <aside class="admin-order-detail-panel" id="adminOrderDetailPanel"></aside>
+    </div>
+  `;
+
+  document.querySelectorAll("#adminOrders [data-order-filter]").forEach((button) => {
+    button.addEventListener("click", () => {
+      adminOrderFilters.status = button.dataset.orderFilter || "all";
+      document.querySelectorAll("#adminOrders [data-order-filter]").forEach((item) => item.classList.toggle("active", item === button));
+      renderAdminOrders();
+    });
+  });
+
+  document.getElementById("adminSearchOrders")?.addEventListener("click", applyAdminOrderFilters);
+  document.getElementById("adminClearOrderFilters")?.addEventListener("click", resetAdminOrderFilters);
+  document.getElementById("adminFilterOrderDate")?.addEventListener("click", applyAdminOrderDateFilter);
+  document.getElementById("adminOrderSearch")?.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      applyAdminOrderFilters();
+    }
+  });
+}
+
+function renderAdminOrders() {
+  renderAdminOrderLayout();
+  const orderTable = document.getElementById("adminOrderTable");
+  const detailPanel = document.getElementById("adminOrderDetailPanel");
+  if (!orderTable) return;
+
+  const keyword = adminOrderFilters.keyword.trim().toLowerCase();
+  const adminUserIds = new Set(getUsers().filter((user) => user.role === "admin").map((user) => user.id));
+  const customerOrders = getOrders().filter((order) => !adminUserIds.has(order.customerId));
+  const orders = customerOrders.filter((order) => {
+    const createdDate = new Date(order.createdAt);
+    const fromDate = adminOrderFilters.dateFrom ? new Date(`${adminOrderFilters.dateFrom}T00:00:00`) : null;
+    const toDate = adminOrderFilters.dateTo ? new Date(`${adminOrderFilters.dateTo}T23:59:59`) : null;
+    const normalizedStatus = String(order.status || "").toLowerCase();
+    const statusMap = {
+      pending: ["đang xử", "chờ", "pending"],
+      confirmed: ["đã xử", "xác thực", "confirmed"],
+      done: ["đã xử", "đã giao", "done", "hoàn thành"],
+      cancel: ["hủy", "cancel"]
+    };
+    const matchesStatus = adminOrderFilters.status === "all" ||
+      (statusMap[adminOrderFilters.status] || []).some((value) => normalizedStatus.includes(value));
+    const matchesDateFrom = !fromDate || createdDate >= fromDate;
+    const matchesDateTo = !toDate || createdDate <= toDate;
+    const matchesKeyword = !keyword || [
+      order.id,
+      formatOrderCode(order, customerOrders),
+      order.customerName,
+      order.email,
+      order.status,
+      String(order.total)
+    ].some((value) => String(value || "").toLowerCase().includes(keyword));
+
+    return matchesStatus && matchesDateFrom && matchesDateTo && matchesKeyword;
+  });
+
+  const pendingOrders = customerOrders.filter((order) => getOrderStatusClass(order.status) === "is-pending").length;
+  const doneOrders = customerOrders.filter((order) => getOrderStatusClass(order.status) === "is-success").length;
+  const cancelOrders = customerOrders.filter((order) => getOrderStatusClass(order.status) === "is-cancelled").length;
+  const setText = (id, value) => {
+    const target = document.getElementById(id);
+    if (target) target.textContent = value;
+  };
+
+  setText("adminOrderTotalCount", customerOrders.length);
+  setText("adminOrderPendingCount", pendingOrders);
+  setText("adminOrderProcessingCount", pendingOrders);
+  setText("adminOrderDoneCount", doneOrders);
+  setText("adminOrderCancelCount", cancelOrders);
+  setText("adminOrderPageInfo", `Hiển thị ${orders.length} đơn hàng`);
+
+  if (selectedAdminOrderId && !customerOrders.some((order) => String(order.id) === String(selectedAdminOrderId))) {
+    selectedAdminOrderId = null;
+  }
+
+  const selectedOrder = selectedAdminOrderId
+    ? customerOrders.find((order) => String(order.id) === String(selectedAdminOrderId))
+    : null;
+
+  orderTable.innerHTML = orders.length ? orders.map((order) => {
+    const createdAt = new Date(order.createdAt);
+
+    return `
+      <tr class="${String(order.id) === String(selectedOrder?.id) ? "active" : ""}">
+        <td><input type="checkbox"></td>
+        <td><strong class="admin-order-code">${formatOrderCode(order, customerOrders)}</strong></td>
+        <td><strong>${order.customerName || "Khách hàng"}</strong><small>${order.phone || order.email || ""}</small></td>
+        <td>${createdAt.toLocaleDateString("vi-VN")}<br><small>${createdAt.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })}</small></td>
+        <td><strong>${formatMoney(order.total || 0)}</strong></td>
+        <td><span class="order-state ${getOrderStatusClass(order.status)}">${order.status || "Đang xử lí"}</span></td>
+        <td class="admin-order-actions">
+          <button type="button" title="Xem chi tiết" onclick="selectAdminOrder('${order.id}')">◉</button>
+          <button type="button" title="Xác nhận" onclick="updateAdminOrderStatus('${order.id}', 'Đã xử lí')">✓</button>
+        </td>
+      </tr>
+    `;
+  }).join("") : `<tr><td colspan="7">Chưa có đơn hàng phù hợp.</td></tr>`;
+
+  if (!detailPanel) return;
+
+  if (!selectedOrder) {
+    detailPanel.innerHTML = `<p class="admin-order-empty">Bấm nút tròn trong cột thao tác để xem chi tiết đơn hàng.</p>`;
+    return;
+  }
+
+  const createdAt = new Date(selectedOrder.createdAt);
+  const items = selectedOrder.items || [];
+  const subtotal = selectedOrder.subtotal || items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const shipping = selectedOrder.shipping || 0;
+  const total = selectedOrder.total || subtotal + shipping;
+
+  detailPanel.innerHTML = `
+    <div class="admin-order-detail-head">
+      <div>
+        <h3>Chi tiết đơn hàng</h3>
+        <strong>${formatOrderCode(selectedOrder, customerOrders)}</strong>
+      </div>
+      <button type="button" onclick="selectAdminOrder(null)">×</button>
+    </div>
+    <span class="order-state ${getOrderStatusClass(selectedOrder.status)}">${selectedOrder.status || "Đang xử lí"}</span>
+    <section>
+      <h4>Thông tin khách hàng</h4>
+      <p>${selectedOrder.customerName || "Khách hàng"}</p>
+      <p>${selectedOrder.phone || "Chưa cập nhật SĐT"}</p>
+      <p>${selectedOrder.email || "Chưa cập nhật email"}</p>
+      <p>${selectedOrder.address || "Chưa cập nhật địa chỉ"}</p>
+    </section>
+    <section>
+      <h4>Thông tin đơn hàng</h4>
+      <div><span>Ngày đặt</span><strong>${createdAt.toLocaleDateString("vi-VN")} ${createdAt.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })}</strong></div>
+      <div><span>Thanh toán</span><strong>COD</strong></div>
+      <div><span>Vận chuyển</span><strong>Giao hàng nhanh</strong></div>
+    </section>
+    <section class="admin-order-detail-items">
+      <h4>Sản phẩm</h4>
+      ${items.map((item) => `
+        <article>
+          <img src="${item.image}" alt="${item.name}">
+          <div><strong>${item.name}</strong><small>${item.color || "Pastel"} - ${item.size || "M"}</small></div>
+          <span>x${item.quantity}</span>
+          <b>${formatMoney(item.price)}</b>
+        </article>
+      `).join("") || "<p>Không có sản phẩm.</p>"}
+    </section>
+    <div class="admin-order-detail-total">
+      <div><span>Tạm tính</span><strong>${formatMoney(subtotal)}</strong></div>
+      <div><span>Phí vận chuyển</span><strong>${shipping ? formatMoney(shipping) : "Miễn phí"}</strong></div>
+      <div class="total"><span>Tổng cộng</span><strong>${formatMoney(total)}</strong></div>
+    </div>
+    <div class="admin-order-detail-actions">
+      <button type="button" onclick="updateAdminOrderStatus('${selectedOrder.id}', 'Đã xử lí')">Cập nhật trạng thái</button>
+      <button type="button" onclick="updateAdminOrderStatus('${selectedOrder.id}', 'Đã hủy')">Hủy đơn</button>
+    </div>
+  `;
+}
+
+function selectAdminOrder(orderId) {
+  selectedAdminOrderId = orderId;
+  renderAdminOrders();
+}
+
 function applyAdminOrderFilters() {
-  adminOrderFilters.keyword = adminOrderSearch?.value || "";
+  adminOrderFilters.keyword = document.getElementById("adminOrderSearch")?.value || "";
   renderAdminOrders();
 }
 
 function applyAdminOrderDateFilter() {
-  adminOrderFilters.dateFrom = adminOrderDateFrom?.value || "";
-  adminOrderFilters.dateTo = adminOrderDateTo?.value || "";
+  adminOrderFilters.dateFrom = document.getElementById("adminOrderDateFrom")?.value || "";
+  adminOrderFilters.dateTo = document.getElementById("adminOrderDateTo")?.value || "";
   renderAdminOrders();
 }
 
@@ -1645,13 +2253,29 @@ function resetAdminOrderFilters() {
     dateTo: "",
     keyword: ""
   };
-  if (adminOrderDateFrom) adminOrderDateFrom.value = "";
-  if (adminOrderDateTo) adminOrderDateTo.value = "";
-  if (adminOrderSearch) adminOrderSearch.value = "";
-  adminOrderFilterButtons.forEach((button) => {
+  const dateFrom = document.getElementById("adminOrderDateFrom");
+  const dateTo = document.getElementById("adminOrderDateTo");
+  const searchInput = document.getElementById("adminOrderSearch");
+  if (dateFrom) dateFrom.value = "";
+  if (dateTo) dateTo.value = "";
+  if (searchInput) searchInput.value = "";
+  document.querySelectorAll("#adminOrders [data-order-filter]").forEach((button) => {
     button.classList.toggle("active", button.dataset.orderFilter === "all");
   });
   renderAdminOrders();
+}
+
+function updateAdminOrderStatus(orderId, status) {
+  const orders = getOrders();
+  const orderIndex = orders.findIndex((order) => String(order.id) === String(orderId));
+  if (orderIndex === -1) return;
+
+  orders[orderIndex] = { ...orders[orderIndex], status };
+  saveOrders(orders);
+  renderAdminOrders();
+  renderUserOrders();
+  renderAccountPage();
+  showToast(`Đã cập nhật đơn hàng thành "${status}".`);
 }
 
 function resetAdminProductForm() {
@@ -1750,23 +2374,43 @@ function resetAdminProductFilters() {
 function showAdminSection(sectionId = "adminDashboard") {
   const targetId = sectionId.replace("#", "");
   const targetPanel = document.getElementById(targetId) || document.getElementById("adminDashboard");
+  const adminTopTitle = document.querySelector(".admin-topbar h1");
+  const adminTopSubtitle = document.querySelector(".admin-topbar p");
+  const sectionTitles = {
+    adminDashboard: ["Dashboard", "Control panel"],
+    adminProducts: ["Quản lý sản phẩm", "Danh sách và trạng thái sản phẩm"],
+    adminOrders: ["Quản lý đơn hàng", "Theo dõi và xử lý đơn hàng"],
+    adminCustomers: ["Quản lý khách hàng", "Thông tin tài khoản khách hàng"]
+  };
+  const [title, subtitle] = sectionTitles[targetPanel.id] || sectionTitles.adminDashboard;
+
+  if (adminTopTitle) adminTopTitle.textContent = title;
+  if (adminTopSubtitle) adminTopSubtitle.textContent = subtitle;
 
   adminPanels.forEach((panel) => {
     panel.classList.toggle("active", panel === targetPanel);
   });
 
-  adminSectionLinks.forEach((link) => {
+  document.querySelectorAll(".admin-sidebar nav a[href^='#admin']").forEach((link) => {
     link.classList.toggle("active", link.getAttribute("href") === `#${targetPanel.id}`);
   });
 }
 
 function initAdminSections() {
-  if (!adminPanels.length) return;
+  const currentAdminPanels = document.querySelectorAll(".admin-panel");
+  const currentSectionTriggers = document.querySelectorAll(".admin-sidebar a[href^='#admin']");
+  if (!currentAdminPanels.length) return;
 
-  adminSectionTriggers.forEach((link) => {
+  currentSectionTriggers.forEach((link) => {
     link.addEventListener("click", (event) => {
       event.preventDefault();
       const sectionId = link.getAttribute("href");
+      if (sectionId === "#adminLogout") {
+        localStorage.removeItem("lunaCurrentUser");
+        currentUser = null;
+        window.location.href = "login.html";
+        return;
+      }
       showAdminSection(sectionId);
       history.replaceState(null, "", sectionId);
     });
@@ -1777,6 +2421,9 @@ function initAdminSections() {
 
 function initAdminPage() {
   if (!adminApp || !requireAdminAccess()) return;
+  renderAdminSidebar();
+  renderAdminDashboard();
+  renderAdminProductLayout();
   const adminTodayLabel = document.getElementById("adminTodayLabel");
   if (adminTodayLabel) {
     adminTodayLabel.textContent = new Date().toLocaleDateString("vi-VN", {
@@ -2016,6 +2663,22 @@ function closeQuickView() {
 
 if (quickCloseBtn) quickCloseBtn.addEventListener("click", closeQuickView);
 
+function initPasswordToggles() {
+  document.querySelectorAll(".password-field").forEach((field) => {
+    const input = field.querySelector("input");
+    const button = field.querySelector("button");
+
+    if (!input || !button) return;
+
+    button.addEventListener("click", () => {
+      const shouldShow = input.type === "password";
+      input.type = shouldShow ? "text" : "password";
+      button.textContent = shouldShow ? "◈" : "◇";
+      button.setAttribute("aria-label", shouldShow ? "Ẩn mật khẩu" : "Hiện mật khẩu");
+    });
+  });
+}
+
 function showToast(message) {
   if (!toast) return;
 
@@ -2111,6 +2774,7 @@ normalizeCurrentUserRole();
 guardAdminWebsiteAccess();
 syncCategoryControls(currentFilter);
 updateLoginLinks();
+initPasswordToggles();
 initHeroBanner();
 renderProducts();
 renderProductDetail();
