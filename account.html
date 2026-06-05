@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Giỏ hàng - Luna Fashion</title>
+  <title>Thông tin tài khoản - Luna Fashion</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -38,75 +38,20 @@
           <input type="text" id="searchInput" placeholder="Tìm kiếm sản phẩm..." />
           <span>⌕</span>
         </div>
-        <a class="login-link" href="login.html" aria-label="Đăng nhập"><span>👤</span><small>Đăng nhập</small></a>
-        <a class="cart-button" href="cart.html" aria-label="Mở giỏ hàng">🛍<span id="cartCount">0</span></a>
+        <a class="login-link" href="login.html" aria-label="Tài khoản"><span>👤</span><small>Tài khoản</small></a>
+        <a class="cart-button" href="cart.html" aria-label="Giỏ hàng">🛍<span id="cartCount">0</span></a>
       </div>
     </div>
   </header>
 
-  <main class="cart-page">
+  <main class="account-page">
     <div class="container">
-      <div class="cart-breadcrumb">Trang chủ / Giỏ hàng</div>
-      <div class="cart-page-title">
-        <h1>Giỏ hàng của bạn <span id="cartPageCount">(0 sản phẩm)</span></h1>
-        <p id="cartPageNotice">Bạn đang có 0 sản phẩm trong giỏ hàng.</p>
+      <div class="orders-title">
+        <span>Trang chủ / Tài khoản</span>
+        <h1>Thông tin tài khoản</h1>
+        <p>Quản lý thông tin cá nhân, địa chỉ và hoạt động mua sắm của bạn.</p>
       </div>
-
-      <div class="cart-page-layout">
-        <section class="cart-page-table">
-          <div class="cart-page-head">
-            <div><input type="checkbox" checked aria-label="Chọn tất cả"></div>
-            <div>Sản phẩm</div>
-            <div>Giá</div>
-            <div>Số lượng</div>
-            <div>Tạm tính</div>
-            <div>Xóa</div>
-          </div>
-          <div id="cartPageItems"></div>
-        </section>
-
-        <aside class="cart-summary">
-          <section class="cart-summary-card">
-            <h2>Tóm tắt đơn hàng</h2>
-            <div class="summary-line">
-              <span>Tạm tính</span>
-              <strong id="cartPageSubtotal">0đ</strong>
-            </div>
-            <div class="summary-line">
-              <span>Phí vận chuyển</span>
-              <strong id="cartPageShipping">0đ</strong>
-            </div>
-            <div class="summary-line discount">
-              <span>Giảm giá</span>
-              <strong>-0đ</strong>
-            </div>
-            <div class="coupon-form">
-              <input type="text" placeholder="Nhập mã giảm giá" />
-              <button type="button">Áp dụng</button>
-            </div>
-            <div class="summary-line total">
-              <span>Tổng cộng</span>
-              <strong id="cartPageTotal">0đ</strong>
-            </div>
-            <small>(Đã bao gồm VAT)</small>
-            <button class="checkout-main-btn" type="button">Tiến hành thanh toán</button>
-            <div class="cart-secure-note">Thanh toán 100% bảo mật</div>
-            <div class="cart-payment-list"><span>VISA</span><span>MC</span><span>Momo</span><span>ZaloPay</span><span>Apple Pay</span></div>
-          </section>
-        </aside>
-      </div>
-
-      <div class="cart-page-actions">
-        <a class="continue-shopping" href="products.html">← Tiếp tục mua sắm</a>
-        <button class="cart-clear-btn" type="button">Xóa tất cả</button>
-      </div>
-
-      <section class="cart-service-strip">
-        <article><span>🚚</span><div><strong>Miễn phí vận chuyển</strong><small>Cho đơn hàng từ 500K</small></div></article>
-        <article><span>🛡</span><div><strong>Thanh toán an toàn</strong><small>Bảo mật thông tin 100%</small></div></article>
-        <article><span>🔁</span><div><strong>Đổi trả dễ dàng</strong><small>Trong vòng 7 ngày</small></div></article>
-        <article><span>🎧</span><div><strong>Hỗ trợ 24/7</strong><small>Hotline: 0123 456 789</small></div></article>
-      </section>
+      <section id="userAccountPageContent" class="account-page-content"></section>
     </div>
   </main>
 

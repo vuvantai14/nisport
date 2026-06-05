@@ -120,6 +120,9 @@ const cartPageSubtotal = document.getElementById("cartPageSubtotal");
 const cartPageShipping = document.getElementById("cartPageShipping");
 const cartPageTotal = document.getElementById("cartPageTotal");
 const cartPageNotice = document.getElementById("cartPageNotice");
+const cartClearBtn = document.querySelector(".cart-clear-btn");
+const userOrdersContent = document.getElementById("userOrdersContent");
+const userAccountPageContent = document.getElementById("userAccountPageContent");
 const clearProductFiltersBtn = document.getElementById("clearProductFilters");
 const applyProductFiltersBtn = document.getElementById("applyProductFilters");
 const registerForm = document.getElementById("registerForm");
@@ -337,23 +340,52 @@ function initHeroBanner() {
 }
 
 function updateLoginLinks() {
+  document.querySelectorAll(".account-dropdown").forEach((menu) => menu.remove());
+
   document.querySelectorAll(".login-link").forEach((link) => {
-    if (!currentUser) return;
-    link.innerHTML = `<span>👤</span><small>${currentUser.firstName}</small>`;
-    link.href = "#user-info";
+    if (!currentUser) {
+      link.innerHTML = `<span>👤</span><small>Tài khoản</small>`;
+      link.href = "login.html";
+      link.setAttribute("aria-label", "Tài khoản");
+      return;
+    }
+    link.innerHTML = `<span>👤</span><small>${currentUser.firstName || "Tài khoản"}</small>`;
+    link.href = "#account-menu";
     link.setAttribute("aria-label", `Tài khoản ${currentUser.firstName}`);
+    const actions = link.closest(".header-actions");
+
+    if (actions) {
+      const menu = document.createElement("div");
+      menu.className = "account-dropdown";
+      menu.innerHTML = `
+        <a href="account.html">Thông tin người dùng</a>
+        <a href="orders.html">Đơn hàng của tôi</a>
+      `;
+      actions.appendChild(menu);
+    }
+
     link.addEventListener("click", (event) => {
       event.preventDefault();
-      showUserInfo();
+      event.stopPropagation();
+      const menu = link.closest(".header-actions")?.querySelector(".account-dropdown");
+      if (menu) menu.classList.toggle("show");
     });
   });
 }
+
+document.addEventListener("click", () => {
+  document.querySelectorAll(".account-dropdown.show").forEach((menu) => menu.classList.remove("show"));
+});
 
 function showUserInfo() {
   if (!currentUser) {
     window.location.href = "login.html";
     return;
   }
+
+  const userOrders = getOrders().filter((order) => order.customerId === currentUser.id || order.email === currentUser.email);
+  const deliveredOrders = userOrders.filter((order) => String(order.status || "").toLowerCase().includes("giao")).length;
+  const recentOrders = userOrders.slice(0, 4);
 
   let modal = document.getElementById("userInfoModal");
   if (!modal) {
@@ -366,42 +398,118 @@ function showUserInfo() {
   modal.innerHTML = `
     <div class="user-info-card">
       <button class="user-info-close" type="button" aria-label="Đóng">×</button>
-      <div class="user-info-avatar">👤</div>
-      <div class="user-info-title-row">
-        <h2>Thông tin tài khoản</h2>
-        <button class="edit-user-btn" type="button">Chỉnh sửa</button>
-      </div>
-      <dl>
-        <div>
-          <dt>Họ tên</dt>
-          <dd class="user-view-value">${currentUser.lastName} ${currentUser.firstName}</dd>
-          <div class="user-edit-fields">
-            <input type="text" id="userLastNameInput" value="${currentUser.lastName || ""}" placeholder="Nhập họ">
-            <input type="text" id="userFirstNameInput" value="${currentUser.firstName || ""}" placeholder="Nhập tên">
+      <aside class="user-account-sidebar">
+        <div class="user-sidebar-profile">
+          <div class="user-info-avatar">👤</div>
+          <strong>${currentUser.lastName || ""} ${currentUser.firstName || ""}</strong>
+          <span>${currentUser.phone || "Chưa cập nhật SĐT"}</span>
+        </div>
+        <nav>
+          <button class="active" type="button">Thông tin tài khoản</button>
+          <a href="orders.html">Đơn hàng của bạn</a>
+          <a href="orders.html">Đơn hàng đã hủy</a>
+          <button type="button">Sổ địa chỉ</button>
+          <button type="button">Phương thức thanh toán</button>
+          <button type="button">Đổi mật khẩu</button>
+          <button type="button">Mã giảm giá</button>
+          <button type="button">Sản phẩm yêu thích</button>
+        </nav>
+        <button class="logout-btn single-logout-btn" type="button">Đăng xuất</button>
+      </aside>
+
+      <section class="user-account-main">
+        <div class="user-info-title-row">
+          <div>
+            <h2>Thông tin tài khoản</h2>
+            <p>Quản lý thông tin tài khoản và bảo mật</p>
+          </div>
+          <button class="edit-user-btn" type="button">Chỉnh sửa thông tin</button>
+        </div>
+
+        <div class="user-profile-panel">
+          <div class="user-profile-photo">
+            <div class="user-info-avatar">👤</div>
+            <button type="button">Thay đổi ảnh</button>
+          </div>
+          <dl>
+            <div>
+              <dt>Họ và tên</dt>
+              <dd class="user-view-value">${currentUser.lastName || ""} ${currentUser.firstName || ""}</dd>
+              <div class="user-edit-fields">
+                <input type="text" id="userLastNameInput" value="${currentUser.lastName || ""}" placeholder="Nhập họ">
+                <input type="text" id="userFirstNameInput" value="${currentUser.firstName || ""}" placeholder="Nhập tên">
+              </div>
+            </div>
+            <div><dt>Email</dt><dd>${currentUser.email}</dd></div>
+            <div>
+              <dt>Số điện thoại</dt>
+              <dd class="user-view-value">${currentUser.phone || "Chưa cập nhật"}</dd>
+              <div class="user-edit-fields">
+                <input type="tel" id="userPhoneInput" value="${currentUser.phone || ""}" placeholder="Nhập số điện thoại">
+              </div>
+            </div>
+            <div>
+              <dt>Địa chỉ</dt>
+              <dd class="user-view-value">${currentUser.address || "Chưa cập nhật"}</dd>
+              <div class="user-edit-fields">
+                <input type="text" id="userAddressInput" value="${currentUser.address || ""}" placeholder="Nhập địa chỉ">
+              </div>
+            </div>
+          </dl>
+          <div class="user-profile-meta">
+            <div><span>Tài khoản được tạo</span><strong>${new Date(currentUser.createdAt || Date.now()).toLocaleDateString("vi-VN")}</strong></div>
+            <div><span>Cập nhật lần cuối</span><strong>${new Date().toLocaleDateString("vi-VN")}</strong></div>
+            <div><span>Trạng thái tài khoản</span><em>Hoạt động</em></div>
           </div>
         </div>
-        <div><dt>Email</dt><dd>${currentUser.email}</dd></div>
-        <div>
-          <dt>Số điện thoại</dt>
-          <dd class="user-view-value">${currentUser.phone || "Chưa cập nhật"}</dd>
-          <div class="user-edit-fields">
-            <input type="tel" id="userPhoneInput" value="${currentUser.phone || ""}" placeholder="Nhập số điện thoại">
-          </div>
+
+        <div class="user-action-grid user-edit-actions">
+          <button class="save-user-btn" type="button">Cập nhật</button>
+          <button class="cancel-edit-btn" type="button">Hủy</button>
         </div>
-        <div>
-          <dt>Địa chỉ</dt>
-          <dd class="user-view-value">${currentUser.address || "Chưa cập nhật"}</dd>
-          <div class="user-edit-fields">
-            <input type="text" id="userAddressInput" value="${currentUser.address || ""}" placeholder="Nhập địa chỉ">
-          </div>
+
+        <div class="user-account-stats">
+          <article><span>🛍</span><strong>${userOrders.length}</strong><small>Đơn hàng</small><a href="orders.html">Xem chi tiết</a></article>
+          <article><span>🚚</span><strong>${Math.max(userOrders.length - deliveredOrders, 0)}</strong><small>Đơn đang giao</small><a href="orders.html">Xem chi tiết</a></article>
+          <article><span>☑</span><strong>${deliveredOrders}</strong><small>Sản phẩm đã mua</small><a href="orders.html">Xem chi tiết</a></article>
+          <article><span>♡</span><strong>${cart.length}</strong><small>Sản phẩm yêu thích</small><a href="products.html">Xem chi tiết</a></article>
+          <article><span>%</span><strong>4</strong><small>Mã giảm giá</small><a href="sale.html">Xem chi tiết</a></article>
         </div>
-      </dl>
-      <div class="user-action-grid user-edit-actions">
-        <button class="save-user-btn" type="button">Cập nhật</button>
-        <button class="cancel-edit-btn" type="button">Hủy</button>
-      </div>
-      ${currentUser.role === "admin" ? `<a class="admin-shortcut-btn" href="admin.html">Vào trang admin</a>` : ""}
-      <button class="logout-btn single-logout-btn" type="button">Đăng xuất</button>
+
+        <div class="user-account-bottom">
+          <section class="user-address-panel">
+            <div class="user-section-head"><h3>Địa chỉ của tôi</h3><button type="button">+ Thêm địa chỉ</button></div>
+            <article>
+              <span>Địa chỉ mặc định</span>
+              <strong>${currentUser.lastName || ""} ${currentUser.firstName || ""}</strong>
+              <p>${currentUser.phone || "Chưa cập nhật SĐT"}</p>
+              <p>${currentUser.address || "Chưa cập nhật địa chỉ"}</p>
+            </article>
+            <a href="#user-info">Xem tất cả địa chỉ</a>
+          </section>
+
+          <section class="user-recent-orders">
+            <div class="user-section-head"><h3>Đơn hàng gần đây</h3><a href="orders.html">Xem tất cả đơn hàng</a></div>
+            ${recentOrders.length ? recentOrders.map((order) => {
+              const createdAt = new Date(order.createdAt);
+              const firstItem = order.items?.[0];
+              return `
+                <article>
+                  <img src="${firstItem?.image || "assets/product-1.jpg"}" alt="${firstItem?.name || "Sản phẩm"}">
+                  <div class="user-order-code">
+                    <strong>#${order.id}</strong>
+                    <span>${createdAt.toLocaleDateString("vi-VN")}</span>
+                  </div>
+                  <b>${formatMoney(order.total || 0)}</b>
+                  <em>${order.status || "Chờ xử lý"}</em>
+                </article>
+              `;
+            }).join("") : `<p class="user-no-orders">Chưa có đơn hàng gần đây.</p>`}
+          </section>
+        </div>
+
+        ${currentUser.role === "admin" ? `<a class="admin-shortcut-btn" href="admin.html">Vào trang admin</a>` : ""}
+      </section>
     </div>
   `;
 
@@ -905,13 +1013,13 @@ function renderCartPage() {
 
   cartPageCount.textContent = `(${totalQuantity} sản phẩm)`;
   cartPageSubtotal.textContent = formatMoney(subtotal);
-  cartPageShipping.textContent = formatMoney(shipping);
+  cartPageShipping.textContent = shipping === 0 ? "Miễn phí" : formatMoney(shipping);
   cartPageTotal.textContent = formatMoney(total);
 
   if (cartPageNotice) {
     cartPageNotice.textContent = totalQuantity
-      ? `Quý khách đã thêm ${totalQuantity} sản phẩm vào giỏ hàng.`
-      : "Giỏ hàng của Quý khách đang trống.";
+      ? `Bạn đang có ${totalQuantity} sản phẩm trong giỏ hàng.`
+      : "Bạn đang có 0 sản phẩm trong giỏ hàng.";
   }
 
   if (cart.length === 0) {
@@ -966,6 +1074,292 @@ function getOrders() {
 
 function saveOrders(orders) {
   localStorage.setItem("lunaOrders", JSON.stringify(orders));
+}
+
+function renderUserOrders() {
+  if (!userOrdersContent) return;
+
+  if (!currentUser) {
+    userOrdersContent.innerHTML = `
+      <div class="orders-empty">
+        <h2>Bạn chưa đăng nhập</h2>
+        <p>Vui lòng đăng nhập để xem lịch sử đơn hàng.</p>
+        <a class="btn btn-primary" href="login.html">Đăng nhập</a>
+      </div>
+    `;
+    return;
+  }
+
+  const orders = getOrders().filter((order) => order.customerId === currentUser.id || order.email === currentUser.email);
+
+  if (orders.length === 0) {
+    userOrdersContent.innerHTML = `
+      <div class="orders-empty">
+        <h2>Chưa có đơn hàng</h2>
+        <p>Các đơn hàng bạn đã đặt sẽ được hiển thị tại đây.</p>
+        <a class="btn btn-primary" href="products.html">Mua sắm ngay</a>
+      </div>
+    `;
+    return;
+  }
+
+  const selectedOrder = orders[0];
+  const selectedDate = new Date(selectedOrder.createdAt);
+  const selectedItems = selectedOrder.items || [];
+  const selectedSubtotal = selectedOrder.subtotal || selectedItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const selectedShipping = selectedOrder.shipping || 0;
+  const selectedTotal = selectedOrder.total || selectedSubtotal + selectedShipping;
+  const discount = Math.max(selectedSubtotal + selectedShipping - selectedTotal, 0);
+
+  userOrdersContent.innerHTML = `
+    <div class="user-orders-layout">
+      <section class="user-orders-list">
+        <div class="user-order-tabs">
+          <button class="active" type="button">Tất cả</button>
+          <button type="button">Chờ xác nhận</button>
+          <button type="button">Đang xử lý</button>
+          <button type="button">Đang giao</button>
+          <button type="button">Đã giao</button>
+          <button type="button">Đã hủy</button>
+        </div>
+        <div class="user-order-table">
+          <div class="user-order-head">
+            <span>Mã đơn hàng</span>
+            <span>Ngày đặt</span>
+            <span>Tổng tiền</span>
+            <span>Trạng thái</span>
+            <span>Thao tác</span>
+          </div>
+          ${orders.map((order) => {
+            const createdAt = new Date(order.createdAt);
+            return `
+              <article class="user-order-row">
+                <strong>#${order.id}</strong>
+                <span>${createdAt.toLocaleDateString("vi-VN")} ${createdAt.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })}</span>
+                <b>${formatMoney(order.total || 0)}</b>
+                <em>${order.status || "Chờ xử lý"}</em>
+                <button type="button">Xem chi tiết</button>
+              </article>
+            `;
+          }).join("")}
+        </div>
+        <div class="user-order-pagination">
+          <span>Hiển thị 1 đến ${orders.length} của ${orders.length} đơn hàng</span>
+          <div><button type="button">‹</button><button class="active" type="button">1</button><button type="button">›</button></div>
+        </div>
+      </section>
+
+      <aside class="user-order-detail">
+        <div class="user-order-detail-head">
+          <div>
+            <h2>Chi tiết đơn hàng</h2>
+            <strong>#${selectedOrder.id}</strong>
+          </div>
+          <em>${selectedOrder.status || "Chờ xử lý"}</em>
+        </div>
+        <div class="user-order-detail-meta">
+          <p>Ngày đặt: ${selectedDate.toLocaleDateString("vi-VN")} ${selectedDate.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })}</p>
+          <p>Phương thức thanh toán: Thanh toán khi giao hàng</p>
+          <p>Phương thức vận chuyển: Giao hàng nhanh</p>
+        </div>
+
+        <section class="user-order-address">
+          <h3>Địa chỉ giao hàng</h3>
+          <strong>${selectedOrder.customerName || `${currentUser.lastName || ""} ${currentUser.firstName || ""}`}</strong>
+          <p>${selectedOrder.phone || currentUser.phone || "Chưa cập nhật SĐT"}</p>
+          <p>${selectedOrder.address || currentUser.address || "Chưa cập nhật địa chỉ"}</p>
+        </section>
+
+        <section class="user-order-products">
+          <div class="user-section-head"><h3>Sản phẩm (${selectedItems.length})</h3><a href="products.html">Xem tất cả</a></div>
+          ${selectedItems.map((item) => `
+            <article>
+              <img src="${item.image}" alt="${item.name}">
+              <div><strong>${item.name}</strong><span>${item.color || "Pastel Pink"} - ${item.size || "M"}</span></div>
+              <small>x${item.quantity}</small>
+              <b>${formatMoney(item.price)}</b>
+            </article>
+          `).join("")}
+        </section>
+
+        <div class="user-order-summary">
+          <div><span>Tạm tính</span><strong>${formatMoney(selectedSubtotal)}</strong></div>
+          <div><span>Phí vận chuyển</span><strong>${selectedShipping ? formatMoney(selectedShipping) : "Miễn phí"}</strong></div>
+          <div><span>Giảm giá</span><strong>-${formatMoney(discount)}</strong></div>
+          <div class="total"><span>Tổng cộng</span><strong>${formatMoney(selectedTotal)}</strong></div>
+        </div>
+        <a class="user-buy-again" href="products.html">Mua lại</a>
+      </aside>
+    </div>
+  `;
+}
+
+function renderAccountPage() {
+  if (!userAccountPageContent) return;
+
+  if (!currentUser) {
+    userAccountPageContent.innerHTML = `
+      <div class="orders-empty">
+        <h2>Bạn chưa đăng nhập</h2>
+        <p>Vui lòng đăng nhập để xem và chỉnh sửa thông tin tài khoản.</p>
+        <a class="btn btn-primary" href="login.html">Đăng nhập</a>
+      </div>
+    `;
+    return;
+  }
+
+  const userOrders = getOrders().filter((order) => order.customerId === currentUser.id || order.email === currentUser.email);
+  const deliveredOrders = userOrders.filter((order) => String(order.status || "").toLowerCase().includes("giao")).length;
+  const recentOrders = userOrders.slice(0, 4);
+
+  userAccountPageContent.innerHTML = `
+    <div class="user-info-card account-page-card">
+      <aside class="user-account-sidebar">
+        <div class="user-sidebar-profile">
+          <div class="user-info-avatar">👤</div>
+          <strong>${currentUser.lastName || ""} ${currentUser.firstName || ""}</strong>
+          <span>${currentUser.phone || "Chưa cập nhật SĐT"}</span>
+        </div>
+        <nav>
+          <button class="active" type="button">Thông tin tài khoản</button>
+          <a href="orders.html">Đơn hàng của bạn</a>
+          <a href="orders.html">Đơn hàng đã hủy</a>
+          <button type="button">Sổ địa chỉ</button>
+          <button type="button">Phương thức thanh toán</button>
+          <button type="button">Đổi mật khẩu</button>
+          <button type="button">Mã giảm giá</button>
+          <button type="button">Sản phẩm yêu thích</button>
+        </nav>
+        <button class="logout-btn single-logout-btn" type="button">Đăng xuất</button>
+      </aside>
+
+      <section class="user-account-main">
+        <div class="user-info-title-row">
+          <div>
+            <h2>Thông tin tài khoản</h2>
+            <p>Quản lý thông tin tài khoản và bảo mật</p>
+          </div>
+          <button class="edit-user-btn" type="button">Chỉnh sửa thông tin</button>
+        </div>
+
+        <div class="user-profile-panel">
+          <div class="user-profile-photo">
+            <div class="user-info-avatar">👤</div>
+            <button type="button">Thay đổi ảnh</button>
+          </div>
+          <dl>
+            <div>
+              <dt>Họ và tên</dt>
+              <dd class="user-view-value">${currentUser.lastName || ""} ${currentUser.firstName || ""}</dd>
+              <div class="user-edit-fields">
+                <input type="text" id="userLastNameInput" value="${currentUser.lastName || ""}" placeholder="Nhập họ">
+                <input type="text" id="userFirstNameInput" value="${currentUser.firstName || ""}" placeholder="Nhập tên">
+              </div>
+            </div>
+            <div><dt>Email</dt><dd>${currentUser.email}</dd></div>
+            <div>
+              <dt>Số điện thoại</dt>
+              <dd class="user-view-value">${currentUser.phone || "Chưa cập nhật"}</dd>
+              <div class="user-edit-fields">
+                <input type="tel" id="userPhoneInput" value="${currentUser.phone || ""}" placeholder="Nhập số điện thoại">
+              </div>
+            </div>
+            <div>
+              <dt>Địa chỉ</dt>
+              <dd class="user-view-value">${currentUser.address || "Chưa cập nhật"}</dd>
+              <div class="user-edit-fields">
+                <input type="text" id="userAddressInput" value="${currentUser.address || ""}" placeholder="Nhập địa chỉ">
+              </div>
+            </div>
+          </dl>
+          <div class="user-profile-meta">
+            <div><span>Tài khoản được tạo</span><strong>${new Date(currentUser.createdAt || Date.now()).toLocaleDateString("vi-VN")}</strong></div>
+            <div><span>Cập nhật lần cuối</span><strong>${new Date().toLocaleDateString("vi-VN")}</strong></div>
+            <div><span>Trạng thái tài khoản</span><em>Hoạt động</em></div>
+          </div>
+        </div>
+
+        <div class="user-action-grid user-edit-actions">
+          <button class="save-user-btn" type="button">Cập nhật</button>
+          <button class="cancel-edit-btn" type="button">Hủy</button>
+        </div>
+
+        <div class="user-account-stats">
+          <article><span>🛍</span><strong>${userOrders.length}</strong><small>Đơn hàng</small><a href="orders.html">Xem chi tiết</a></article>
+          <article><span>🚚</span><strong>${Math.max(userOrders.length - deliveredOrders, 0)}</strong><small>Đơn đang giao</small><a href="orders.html">Xem chi tiết</a></article>
+          <article><span>☑</span><strong>${deliveredOrders}</strong><small>Sản phẩm đã mua</small><a href="orders.html">Xem chi tiết</a></article>
+          <article><span>♡</span><strong>${cart.length}</strong><small>Sản phẩm yêu thích</small><a href="products.html">Xem chi tiết</a></article>
+          <article><span>%</span><strong>4</strong><small>Mã giảm giá</small><a href="sale.html">Xem chi tiết</a></article>
+        </div>
+
+        <div class="user-account-bottom">
+          <section class="user-address-panel">
+            <div class="user-section-head"><h3>Địa chỉ của tôi</h3><button type="button">+ Thêm địa chỉ</button></div>
+            <article>
+              <span>Địa chỉ mặc định</span>
+              <strong>${currentUser.lastName || ""} ${currentUser.firstName || ""}</strong>
+              <p>${currentUser.phone || "Chưa cập nhật SĐT"}</p>
+              <p>${currentUser.address || "Chưa cập nhật địa chỉ"}</p>
+            </article>
+          </section>
+
+          <section class="user-recent-orders">
+            <div class="user-section-head"><h3>Đơn hàng gần đây</h3><a href="orders.html">Xem tất cả đơn hàng</a></div>
+            ${recentOrders.length ? recentOrders.map((order) => {
+              const createdAt = new Date(order.createdAt);
+              const firstItem = order.items?.[0];
+              return `
+                <article>
+                  <img src="${firstItem?.image || "assets/product-1.jpg"}" alt="${firstItem?.name || "Sản phẩm"}">
+                  <div class="user-order-code">
+                    <strong>#${order.id}</strong>
+                    <span>${createdAt.toLocaleDateString("vi-VN")}</span>
+                  </div>
+                  <b>${formatMoney(order.total || 0)}</b>
+                  <em>${order.status || "Chờ xử lý"}</em>
+                </article>
+              `;
+            }).join("") : `<p class="user-no-orders">Chưa có đơn hàng gần đây.</p>`}
+          </section>
+        </div>
+      </section>
+    </div>
+  `;
+
+  userAccountPageContent.querySelector(".edit-user-btn").addEventListener("click", () => {
+    userAccountPageContent.querySelector(".user-info-card").classList.add("editing");
+  });
+  userAccountPageContent.querySelector(".cancel-edit-btn").addEventListener("click", () => {
+    userAccountPageContent.querySelector(".user-info-card").classList.remove("editing");
+  });
+  userAccountPageContent.querySelector(".logout-btn").addEventListener("click", () => {
+    localStorage.removeItem("lunaCurrentUser");
+    currentUser = null;
+    window.location.href = "index.html";
+  });
+  userAccountPageContent.querySelector(".save-user-btn").addEventListener("click", () => {
+    const lastName = document.getElementById("userLastNameInput").value.trim();
+    const firstName = document.getElementById("userFirstNameInput").value.trim();
+    const phone = document.getElementById("userPhoneInput").value.trim();
+    const address = document.getElementById("userAddressInput").value.trim();
+    const users = getUsers();
+    const userIndex = users.findIndex((user) => user.id === currentUser.id);
+
+    if (!lastName || !firstName) {
+      showCenterNotice("Vui lòng nhập đầy đủ họ và tên.", "error");
+      return;
+    }
+
+    currentUser = { ...currentUser, lastName, firstName, phone, address };
+    localStorage.setItem("lunaCurrentUser", JSON.stringify(currentUser));
+
+    if (userIndex !== -1) {
+      users[userIndex] = { ...users[userIndex], lastName, firstName, phone, address };
+      saveUsers(users);
+    }
+
+    showCenterNotice("Cập nhật thông tin thành công.", "success", renderAccountPage);
+  });
 }
 
 function createOrderFromCart() {
@@ -1676,6 +2070,14 @@ if (checkoutMainBtn) {
   checkoutMainBtn.addEventListener("click", createOrderFromCart);
 }
 
+if (cartClearBtn) {
+  cartClearBtn.addEventListener("click", () => {
+    cart = [];
+    saveCart();
+    updateCart();
+  });
+}
+
 if (adminLogoutLink) {
   adminLogoutLink.addEventListener("click", (event) => {
     event.preventDefault();
@@ -1714,4 +2116,6 @@ renderProducts();
 renderProductDetail();
 renderCart();
 renderCartPage();
+renderUserOrders();
+renderAccountPage();
 initAdminPage();
