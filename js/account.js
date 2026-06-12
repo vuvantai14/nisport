@@ -9,7 +9,7 @@ import {
   showCenterNotice
 } from "./common.js";
 import { getCart, initCartControls } from "./cart.js";
-import { formatOrderCode, getOrderStatusClass } from "./orders.js";
+import { formatOrderCode, formatOrderStatusText, getOrderStatusClass } from "./orders.js";
 import { getOrders, saveOrders } from "./common.js";
 
 function getUserOrders(currentUser) {
@@ -107,7 +107,6 @@ function accountMarkup(currentUser, mode = "page") {
           <button type="button">Mã giảm giá</button>
           <button type="button">Sản phẩm yêu thích</button>
         </nav>
-        <button class="logout-btn single-logout-btn" type="button">Đăng xuất</button>
       </aside>
 
       <section class="user-account-main">
@@ -116,7 +115,10 @@ function accountMarkup(currentUser, mode = "page") {
             <h2>Thông tin tài khoản</h2>
             <p>Quản lý thông tin tài khoản và bảo mật</p>
           </div>
-          <button class="edit-user-btn" type="button">Chỉnh sửa thông tin</button>
+          <div class="user-title-actions">
+            <button class="edit-user-btn" type="button">Chỉnh sửa thông tin</button>
+            <button class="logout-btn single-logout-btn" type="button">Đăng xuất</button>
+          </div>
         </div>
 
         <div class="user-profile-panel">
@@ -168,11 +170,11 @@ function accountMarkup(currentUser, mode = "page") {
         </div>
 
         <div class="user-account-stats">
-          <article><span>🛍</span><strong>${userOrders.length}</strong><small>Đơn hàng</small><a href="orders.html">Xem chi tiết</a></article>
-          <article><span>🚚</span><strong>${Math.max(userOrders.length - deliveredOrders, 0)}</strong><small>Đơn đang giao</small><a href="orders.html">Xem chi tiết</a></article>
-          <article><span>☑</span><strong>${deliveredOrders}</strong><small>Sản phẩm đã mua</small><a href="orders.html">Xem chi tiết</a></article>
-          <article><span>♡</span><strong>${cart.length}</strong><small>Sản phẩm yêu thích</small><a href="products.html">Xem chi tiết</a></article>
-          <article><span>%</span><strong>4</strong><small>Mã giảm giá</small><a href="sale.html">Xem chi tiết</a></article>
+          <article><strong>${userOrders.length}</strong><small>Đơn hàng</small><a href="orders.html">Xem chi tiết</a></article>
+          <article><strong>${Math.max(userOrders.length - deliveredOrders, 0)}</strong><small>Đơn đang giao</small><a href="orders.html">Xem chi tiết</a></article>
+          <article><strong>${deliveredOrders}</strong><small>Sản phẩm đã mua</small><a href="orders.html">Xem chi tiết</a></article>
+          <article><strong>${cart.length}</strong><small>Sản phẩm yêu thích</small><a href="products.html">Xem chi tiết</a></article>
+          <article><strong>4</strong><small>Mã giảm giá</small><a href="sale.html">Xem chi tiết</a></article>
         </div>
 
         <div class="user-account-bottom">
@@ -198,7 +200,7 @@ function accountMarkup(currentUser, mode = "page") {
                     <span>${createdAt.toLocaleDateString("vi-VN")}</span>
                   </div>
                   <b>${formatMoney(order.total || 0)}</b>
-                  <em class="order-status-pill ${getOrderStatusClass(order.status)}">${order.status || "Đang xử lí"}</em>
+                  <em class="order-status-pill ${getOrderStatusClass(order.status)}">${formatOrderStatusText(order.status)}</em>
                 </article>
               `;
             }).join("") : `<p class="user-no-orders">Chưa có đơn hàng gần đây.</p>`}

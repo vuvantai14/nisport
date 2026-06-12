@@ -3890,3 +3890,56 @@ body,
     width: 100%;
   }
 }
+
+.admin-dashboard-orders .order-status-pill,
+#adminOrders .order-state,
+.admin-order-detail-panel .order-state {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  min-width: 76px;
+  min-height: auto !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  font-size: 0.9rem !important;
+  font-style: normal;
+  font-weight: 500 !important;
+  line-height: 1.45 !important;
+  text-align: center;
+}
+
+.admin-dashboard-orders .order-status-pill.is-success,
+#adminOrders .order-state.is-success,
+.admin-order-detail-panel .order-state.is-success {
+  color: #007a43 !important;
+}
+
+.admin-dashboard-orders .order-status-pill.is-pending,
+#adminOrders .order-state.is-pending,
+.admin-order-detail-panel .order-state.is-pending {
+  color: #c87500 !important;
+}
+
+.admin-dashboard-orders .order-status-pill.is-cancelled,
+#adminOrders .order-state.is-cancelled,
+.admin-order-detail-panel .order-state.is-cancelled {
+  color: #d83d6b !important;
+}
+
+#adminOrders .order-state::before,
+.admin-order-detail-panel .order-state::before {
+  display: none !important;
+}
+
+.admin-dashboard-orders .order-status-pill,
+#adminOrders .order-state,
+.admin-order-detail-panel .order-state {
+  min-width: 82px !important;
+  font-family: "Segoe UI", Arial, sans-serif !important;
+  font-size: 0.88rem !important;
+  font-weight: 400 !important;
+  letter-spacing: 0 !important;
+  line-height: 1.45 !important;
+}

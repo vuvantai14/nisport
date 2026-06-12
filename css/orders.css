@@ -235,6 +235,115 @@
   background: #fff0d2;
 }
 
+.orders-page .order-status-pill,
+.orders-page .user-order-row em,
+.orders-page .user-order-detail-head em,
+.user-order-row .order-status-pill,
+.user-order-row em.order-status-pill {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  min-width: 82px;
+  min-height: auto !important;
+  padding: 0 !important;
+  color: inherit;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  font-family: "Segoe UI", Arial, sans-serif !important;
+  font-size: 0.88rem !important;
+  font-style: normal !important;
+  font-weight: 400 !important;
+  letter-spacing: 0 !important;
+  line-height: 1.45 !important;
+  text-align: center;
+}
+
+.orders-page .order-status-pill.is-success,
+.orders-page .user-order-row em.is-success,
+.orders-page .user-order-detail-head em.is-success {
+  color: #008653 !important;
+}
+
+.orders-page .order-status-pill.is-pending,
+.orders-page .user-order-row em.is-pending,
+.orders-page .user-order-detail-head em.is-pending {
+  color: #c97700 !important;
+}
+
+.orders-page .order-status-pill.is-cancelled,
+.orders-page .user-order-row em.is-cancelled,
+.orders-page .user-order-detail-head em.is-cancelled {
+  color: #d83d6b !important;
+}
+
+.order-status-pill,
+.user-order-row em,
+.user-order-detail-head em {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 76px;
+  min-height: auto;
+  padding: 0;
+  background: transparent !important;
+  border-radius: 0;
+  font-size: 0.9rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 1.45;
+  text-align: center;
+}
+
+.order-status-pill.is-success,
+.user-order-row em.is-success,
+.user-order-detail-head em.is-success {
+  color: #007a43;
+}
+
+.order-status-pill.is-pending,
+.user-order-row em.is-pending,
+.user-order-detail-head em.is-pending {
+  color: #c87500;
+}
+
+.order-status-pill.is-cancelled,
+.user-order-row em.is-cancelled,
+.user-order-detail-head em.is-cancelled {
+  color: #d83d6b;
+}
+
+.order-status-pill,
+.user-order-row em,
+.user-order-detail-head em {
+  min-height: auto;
+  padding: 0;
+  background: transparent !important;
+  border-radius: 0;
+  font-size: 0.9rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.order-status-pill.is-success,
+.user-order-row em.is-success,
+.user-order-detail-head em.is-success {
+  color: #07865c;
+}
+
+.order-status-pill.is-pending,
+.user-order-row em.is-pending,
+.user-order-detail-head em.is-pending {
+  color: #c77a05;
+}
+
+.order-status-pill.is-cancelled,
+.user-order-row em.is-cancelled,
+.user-order-detail-head em.is-cancelled {
+  color: #d83d6b;
+}
+
 .order-status-pill.is-success {
   color: #138a51;
   background: #dff8eb;

@@ -17,6 +17,10 @@ export function getOrderStatusClass(status) {
   return "is-pending";
 }
 
+export function formatOrderStatusText(status) {
+  return String(status || "Đang xử lý").replaceAll("xử lí", "xử lý").replaceAll("Xử lí", "Xử lý");
+}
+
 function getCurrentUserOrderMatch(order, currentUser) {
   return String(order.customerId) === String(currentUser.id) || order.email === currentUser.email;
 }
@@ -130,7 +134,7 @@ export function renderUserOrders() {
                 <strong>${formatOrderCode(order, orders)}</strong>
                 <span>${createdAt.toLocaleDateString("vi-VN")} ${createdAt.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })}</span>
                 <b>${formatMoney(order.total || 0)}</b>
-                <em class="order-status-pill ${getOrderStatusClass(order.status)}">${order.status || "Đang xử lí"}</em>
+                <em class="order-status-pill ${getOrderStatusClass(order.status)}">${formatOrderStatusText(order.status)}</em>
                 <button type="button" data-user-order-id="${order.id}">Xem chi tiết</button>
               </article>
             `;
@@ -148,7 +152,7 @@ export function renderUserOrders() {
             <h2>Chi tiết đơn hàng</h2>
             <strong>${formatOrderCode(selectedOrder, orders)}</strong>
           </div>
-          <em class="order-status-pill ${getOrderStatusClass(selectedOrder.status)}">${selectedOrder.status || "Đang xử lí"}</em>
+          <em class="order-status-pill ${getOrderStatusClass(selectedOrder.status)}">${formatOrderStatusText(selectedOrder.status)}</em>
         </div>
         <div class="user-order-detail-meta">
           <p>Ngày đặt: ${selectedDate.toLocaleDateString("vi-VN")} ${selectedDate.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })}</p>

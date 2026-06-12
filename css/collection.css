@@ -105,7 +105,10 @@
 }
 
 .collection-photo-focus img {
-  object-position: center 62%;
+  padding: 18px 38px 0;
+  background: #ffffff;
+  object-fit: contain;
+  object-position: center bottom;
 }
 
 .collection-icon {

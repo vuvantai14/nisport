@@ -16,7 +16,7 @@ import {
   refreshProductsFromAdminState,
   saveProductAdminState
 } from "./products.js";
-import { formatOrderCode, getOrderStatusClass } from "./orders.js";
+import { formatOrderCode, formatOrderStatusText, getOrderStatusClass } from "./orders.js";
 
 let adminProductFilters = { category: "all", price: "all", tag: "all", keyword: "" };
 let adminCustomerKeyword = "";
@@ -31,6 +31,190 @@ const adminCustomerSeed = [
   { id: 4, name: "Hoàng Gia Bảo", email: "baohg@gmail.com", phone: "0909090909", address: "Gò Vấp, TP.HCM", createdAt: "30/05/2026", status: "Tạm khóa" },
   { id: 5, name: "Phạm Thảo Vy", email: "thaovy@gmail.com", phone: "0911222333", address: "Thủ Đức, TP.HCM", createdAt: "29/05/2026", status: "Hoạt động" },
   { id: 6, name: "Đặng Khánh Linh", email: "linhdk@gmail.com", phone: "0988776655", address: "Tân Bình, TP.HCM", createdAt: "28/05/2026", status: "Đã khóa" }
+];
+
+const adminSampleOrders = [
+  {
+    id: "sample-order-001",
+    customerId: "sample-customer-001",
+    customerName: "Nguyễn Mến",
+    email: "nguyenmen@gmail.com",
+    phone: "0903665225",
+    address: "Tân Phú, TP.HCM",
+    createdAt: "2026-06-09T16:53:00",
+    paidAt: "2026-06-09T17:05:00",
+    status: "Đã xử lý",
+    subtotal: 1036000,
+    shipping: 0,
+    total: 1036000,
+    items: [
+      { id: 2, name: "Đầm dự tiệc đen", price: 499000, quantity: 1, image: "../assets/product-2.jpg", color: "Black", size: "M" },
+      { id: 24, name: "Túi xách mini", price: 229000, quantity: 1, image: "../assets/product-24.jpg", color: "Pastel Pink", size: "M" },
+      { id: 17, name: "Váy công sở thanh lịch", price: 369000, quantity: 1, image: "../assets/product-17.jpg", color: "Beige", size: "L" }
+    ]
+  },
+  {
+    id: "sample-order-002",
+    customerId: "sample-customer-002",
+    customerName: "Trần Phương Anh",
+    email: "anhtran@gmail.com",
+    phone: "0912345678",
+    address: "Quận 3, TP.HCM",
+    createdAt: "2026-06-08T10:22:00",
+    paidAt: "2026-06-08T10:35:00",
+    status: "Đang xử lý",
+    subtotal: 548000,
+    shipping: 30000,
+    total: 578000,
+    items: [
+      { id: 9, name: "Áo sơ mi trắng nữ", price: 259000, quantity: 1, image: "../assets/product-9.jpg", color: "Ivory", size: "S" },
+      { id: 21, name: "Váy tennis xếp ly", price: 289000, quantity: 1, image: "../assets/product-21.jpg", color: "Pastel Pink", size: "M" }
+    ]
+  },
+  {
+    id: "sample-order-003",
+    customerId: "sample-customer-003",
+    customerName: "Lê Minh Quân",
+    email: "lequan@gmail.com",
+    phone: "0933123456",
+    address: "Bình Thạnh, TP.HCM",
+    createdAt: "2026-06-07T19:15:00",
+    paidAt: "2026-06-07T19:25:00",
+    status: "Đã xử lý",
+    subtotal: 788000,
+    shipping: 0,
+    total: 788000,
+    items: [
+      { id: 4, name: "Đầm cổ yếm dự tiệc", price: 529000, quantity: 1, image: "../assets/product-4.jpg", color: "Black", size: "M" },
+      { id: 25, name: "Túi đeo vai pastel", price: 259000, quantity: 1, image: "../assets/product-25.jpg", color: "Pastel Pink", size: "M" }
+    ]
+  },
+  {
+    id: "sample-order-004",
+    customerId: "sample-customer-004",
+    customerName: "Hoàng Gia Bảo",
+    email: "baohg@gmail.com",
+    phone: "0909090909",
+    address: "Gò Vấp, TP.HCM",
+    createdAt: "2026-06-06T14:40:00",
+    paidAt: "2026-06-06T14:55:00",
+    status: "Đã hủy",
+    subtotal: 459000,
+    shipping: 30000,
+    total: 489000,
+    items: [
+      { id: 6, name: "Đầm satin hai dây", price: 459000, quantity: 1, image: "../assets/product-6.jpg", color: "Ivory", size: "S" }
+    ]
+  },
+  {
+    id: "sample-order-005",
+    customerId: "sample-customer-005",
+    customerName: "Phạm Thảo Vy",
+    email: "thaovy@gmail.com",
+    phone: "0911222333",
+    address: "Thủ Đức, TP.HCM",
+    createdAt: "2026-06-05T09:18:00",
+    paidAt: "2026-06-05T09:30:00",
+    status: "Đã xử lý",
+    subtotal: 647000,
+    shipping: 0,
+    total: 647000,
+    items: [
+      { id: 10, name: "Áo croptop basic", price: 199000, quantity: 1, image: "../assets/product-10.jpg", color: "Ivory", size: "M" },
+      { id: 18, name: "Chân váy midi xếp ly", price: 319000, quantity: 1, image: "../assets/product-18.jpg", color: "Beige", size: "M" },
+      { id: 26, name: "Băng đô ngọc trai", price: 129000, quantity: 1, image: "../assets/product-26.jpg", color: "Ivory", size: "M" }
+    ]
+  },
+  {
+    id: "sample-order-006",
+    customerId: "sample-customer-006",
+    customerName: "Đặng Khánh Linh",
+    email: "linhdk@gmail.com",
+    phone: "0988776655",
+    address: "Tân Bình, TP.HCM",
+    createdAt: "2026-06-04T20:05:00",
+    paidAt: "2026-06-04T20:12:00",
+    status: "Đã xử lý",
+    subtotal: 708000,
+    shipping: 0,
+    total: 708000,
+    items: [
+      { id: 1, name: "Đầm hoa pastel", price: 329000, quantity: 1, image: "../assets/product-1.jpg", color: "Pastel Pink", size: "M" },
+      { id: 7, name: "Đầm babydoll tay bồng", price: 379000, quantity: 1, image: "../assets/product-7.jpg", color: "Ivory", size: "S" }
+    ]
+  },
+  {
+    id: "sample-order-007",
+    customerId: "sample-customer-007",
+    customerName: "Vũ Tài",
+    email: "vutai1406@gmail.com",
+    phone: "0903265721",
+    address: "Tân Phú, TP.HCM",
+    createdAt: "2026-06-03T11:45:00",
+    paidAt: "2026-06-03T11:52:00",
+    status: "Đang xử lý",
+    subtotal: 408000,
+    shipping: 30000,
+    total: 438000,
+    items: [
+      { id: 12, name: "Áo thun rib ôm dáng", price: 179000, quantity: 1, image: "../assets/product-12.jpg", color: "Ivory", size: "L" },
+      { id: 24, name: "Túi xách mini", price: 229000, quantity: 1, image: "../assets/product-24.jpg", color: "Pastel Pink", size: "M" }
+    ]
+  },
+  {
+    id: "sample-order-008",
+    customerId: "sample-customer-008",
+    customerName: "Mai Ngọc Hân",
+    email: "hanmai@gmail.com",
+    phone: "0977123456",
+    address: "Quận 7, TP.HCM",
+    createdAt: "2026-06-02T08:26:00",
+    paidAt: "2026-06-02T08:40:00",
+    status: "Đã xử lý",
+    subtotal: 559000,
+    shipping: 0,
+    total: 559000,
+    items: [
+      { id: 8, name: "Đầm maxi hoa nhí", price: 559000, quantity: 1, image: "../assets/product-8.jpg", color: "Pastel Pink", size: "L" }
+    ]
+  },
+  {
+    id: "sample-order-009",
+    customerId: "sample-customer-009",
+    customerName: "Bùi Thanh Tâm",
+    email: "tambui@gmail.com",
+    phone: "0966332211",
+    address: "Phú Nhuận, TP.HCM",
+    createdAt: "2026-06-01T13:12:00",
+    paidAt: "2026-06-01T13:20:00",
+    status: "Đã hủy",
+    subtotal: 498000,
+    shipping: 30000,
+    total: 528000,
+    items: [
+      { id: 14, name: "Áo khoác cardigan mỏng", price: 349000, quantity: 1, image: "../assets/product-14.jpg", color: "Beige", size: "M" },
+      { id: 27, name: "Khăn lụa họa tiết", price: 149000, quantity: 1, image: "../assets/product-27.jpg", color: "Pastel Pink", size: "M" }
+    ]
+  },
+  {
+    id: "sample-order-010",
+    customerId: "sample-customer-010",
+    customerName: "Ngô Yến Nhi",
+    email: "nhingo@gmail.com",
+    phone: "0944556677",
+    address: "Quận 10, TP.HCM",
+    createdAt: "2026-05-31T18:08:00",
+    paidAt: "2026-05-31T18:18:00",
+    status: "Đã xử lý",
+    subtotal: 747000,
+    shipping: 0,
+    total: 747000,
+    items: [
+      { id: 13, name: "Áo kiểu cổ nơ", price: 299000, quantity: 1, image: "../assets/product-13.jpg", color: "Ivory", size: "M" },
+      { id: 16, name: "Chân váy chữ A", price: 279000, quantity: 1, image: "../assets/product-16.jpg", color: "Black", size: "M" },
+      { id: 28, name: "Thắt lưng bản nhỏ", price: 169000, quantity: 1, image: "../assets/product-28.jpg", color: "Beige", size: "M" }
+    ]
+  }
 ];
 
 function requireAdminAccess() {
@@ -369,8 +553,8 @@ function renderAdminDashboard() {
         <div class="admin-card-head"><div><h3>Tỉ lệ đơn hàng</h3></div></div>
         <div class="admin-pie-chart" aria-label="Tỉ lệ đơn hàng"><div class="admin-pie-center"><strong>${getCustomerOrders().length}</strong><span>Tổng đơn</span></div></div>
         <ul class="admin-pie-legend">
-          <li><i></i>Đã xử lí <strong>69%</strong></li>
-          <li><i></i>Đang xử lí <strong>20%</strong></li>
+          <li><i></i>Đã xử lý <strong>69%</strong></li>
+          <li><i></i>Đang xử lý <strong>20%</strong></li>
           <li><i></i>Đã hủy <strong>10%</strong></li>
           <li><i></i>Hoàn trả <strong>5%</strong></li>
         </ul>
@@ -383,7 +567,7 @@ function renderAdminDashboard() {
           <div><span>Mã đơn</span><span>Khách hàng</span><span>Ngày đặt</span><span>Tổng tiền</span><span>Trạng thái</span></div>
           ${recentOrders.length ? recentOrders.map((order) => {
             const createdAt = new Date(order.createdAt);
-            return `<div><strong>${formatOrderCode(order, getCustomerOrders())}</strong><span>${order.customerName || "Khách hàng"}</span><span>${createdAt.toLocaleDateString("vi-VN")} ${createdAt.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })}</span><b>${formatMoney(order.total || 0)}</b><em class="order-status-pill ${getOrderStatusClass(order.status)}">${order.status || "Đang xử lí"}</em></div>`;
+            return `<div><strong>${formatOrderCode(order, getCustomerOrders())}</strong><span>${order.customerName || "Khách hàng"}</span><span>${createdAt.toLocaleDateString("vi-VN")} ${createdAt.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })}</span><b>${formatMoney(order.total || 0)}</b><em class="order-status-pill ${getOrderStatusClass(order.status)}">${formatOrderStatusText(order.status)}</em></div>`;
           }).join("") : `<div class="admin-dashboard-order-empty"><span>Chưa có đơn hàng mới.</span></div>`}
         </div>
       </article>
@@ -622,6 +806,14 @@ function getCustomerOrders() {
   return getOrders().filter((order) => !adminUserIds.has(order.customerId));
 }
 
+function seedAdminSampleOrders() {
+  const orders = getOrders();
+  const existingIds = new Set(orders.map((order) => String(order.id)));
+  const missingOrders = adminSampleOrders.filter((order) => !existingIds.has(String(order.id)));
+
+  if (missingOrders.length) saveOrders([...orders, ...missingOrders]);
+}
+
 function renderAdminOrderLayout() {
   const orderPanel = document.getElementById("adminOrders");
   const orderManager = orderPanel?.querySelector(".admin-order-manager");
@@ -631,16 +823,16 @@ function renderAdminOrderLayout() {
   orderManager.innerHTML = `
     <div class="admin-order-summary-grid">
       <article class="hot"><span>Tổng đơn hàng</span><strong id="adminOrderTotalCount">0</strong><small>+ 12.5% so với tháng trước</small></article>
-      <article class="orange"><span>Đang xử lí</span><strong id="adminOrderPendingCount">0</strong><small>+ 8.2% so với tháng trước</small></article>
-      <article class="green"><span>Đã xử lí</span><strong id="adminOrderDoneCount">0</strong><small>+ 9.8% so với tháng trước</small></article>
+      <article class="orange"><span>Đang xử lý</span><strong id="adminOrderPendingCount">0</strong><small>+ 8.2% so với tháng trước</small></article>
+      <article class="green"><span>Đã xử lý</span><strong id="adminOrderDoneCount">0</strong><small>+ 9.8% so với tháng trước</small></article>
       <article class="red"><span>Đã hủy</span><strong id="adminOrderCancelCount">0</strong><small>- 4.1% so với tháng trước</small></article>
     </div>
     <div class="admin-order-workspace">
       <section class="admin-order-list-card">
         <div class="admin-order-tabs">
           <button class="active" type="button" data-order-filter="all">Tất cả</button>
-          <button type="button" data-order-filter="pending">Đang xử lí</button>
-          <button type="button" data-order-filter="done">Đã xử lí</button>
+          <button type="button" data-order-filter="pending">Đang xử lý</button>
+          <button type="button" data-order-filter="done">Đã xử lý</button>
           <button type="button" data-order-filter="cancel">Đã hủy</button>
         </div>
         <div class="admin-order-toolbar">
@@ -685,7 +877,7 @@ function filterAdminOrders() {
     const matchesKeyword = !keyword || [order.id, formatOrderCode(order, customerOrders), order.customerName, order.email, order.status, order.total]
       .some((value) => String(value || "").toLowerCase().includes(keyword));
     return matchesStatus && matchesDateFrom && matchesDateTo && matchesKeyword;
-  });
+  }).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 }
 
 function renderAdminOrders() {
@@ -705,7 +897,11 @@ function renderAdminOrders() {
   setText("adminOrderDoneCount", customerOrders.filter((order) => getOrderStatusClass(order.status) === "is-success").length);
   setText("adminOrderCancelCount", customerOrders.filter((order) => getOrderStatusClass(order.status) === "is-cancelled").length);
 
-  const selectedOrder = selectedAdminOrderId ? customerOrders.find((order) => String(order.id) === String(selectedAdminOrderId)) : null;
+  if (orders.length && (!selectedAdminOrderId || !orders.some((order) => String(order.id) === String(selectedAdminOrderId)))) {
+    selectedAdminOrderId = orders[0].id;
+  }
+
+  const selectedOrder = selectedAdminOrderId ? orders.find((order) => String(order.id) === String(selectedAdminOrderId)) : null;
   orderTable.innerHTML = orders.length ? orders.map((order) => {
     const createdAt = new Date(order.createdAt);
     return `
@@ -714,10 +910,10 @@ function renderAdminOrders() {
         <td><strong>${order.customerName || "Khách hàng"}</strong><small>${order.phone || order.email || ""}</small></td>
         <td>${createdAt.toLocaleDateString("vi-VN")}<br><small>${createdAt.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })}</small></td>
         <td><strong>${formatMoney(order.total || 0)}</strong></td>
-        <td><span class="order-state ${getOrderStatusClass(order.status)}">${order.status || "Đang xử lí"}</span></td>
+        <td><span class="order-state ${getOrderStatusClass(order.status)}">${formatOrderStatusText(order.status)}</span></td>
         <td class="admin-order-actions">
           <button type="button" title="Xem chi tiết" onclick="selectAdminOrder('${order.id}')">◉</button>
-          <button type="button" title="Xác nhận" onclick="updateAdminOrderStatus('${order.id}', 'Đã xử lí')">✓</button>
+          <button type="button" title="Xác nhận" onclick="updateAdminOrderStatus('${order.id}', 'Đã xử lý')">✓</button>
           <button type="button" title="Hủy" onclick="updateAdminOrderStatus('${order.id}', 'Đã hủy')">×</button>
         </td>
       </tr>
@@ -741,7 +937,7 @@ function renderAdminOrders() {
       <div><h3>Chi tiết đơn hàng</h3><strong>${formatOrderCode(selectedOrder, customerOrders)}</strong></div>
       <button type="button" onclick="selectAdminOrder(null)">×</button>
     </div>
-    <span class="order-state ${getOrderStatusClass(selectedOrder.status)}">${selectedOrder.status || "Đang xử lí"}</span>
+    <span class="order-state ${getOrderStatusClass(selectedOrder.status)}">${formatOrderStatusText(selectedOrder.status)}</span>
     <section><h4>Thông tin khách hàng</h4><p>${selectedOrder.customerName || "Khách hàng"}</p><p>${selectedOrder.phone || "Chưa cập nhật SĐT"}</p><p>${selectedOrder.email || "Chưa cập nhật email"}</p><p>${selectedOrder.address || "Chưa cập nhật địa chỉ"}</p></section>
     <section><h4>Thông tin đơn hàng</h4><div><span>Ngày đặt</span><strong>${createdAt.toLocaleDateString("vi-VN")} ${createdAt.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })}</strong></div><div><span>Thanh toán</span><strong>COD</strong></div><div><span>Vận chuyển</span><strong>Giao hàng nhanh</strong></div></section>
     <section class="admin-order-detail-items">
@@ -749,7 +945,7 @@ function renderAdminOrders() {
       ${items.map((item) => `<article><img src="${getAdminImageSrc(item.image)}" alt="${item.name}"><div><strong>${item.name}</strong><small>${item.color || "Pastel"} - ${item.size || "M"}</small></div><span>x${item.quantity}</span><b>${formatMoney(item.price)}</b></article>`).join("") || "<p>Không có sản phẩm.</p>"}
     </section>
     <div class="admin-order-detail-total"><div><span>Tạm tính</span><strong>${formatMoney(subtotal)}</strong></div><div><span>Phí vận chuyển</span><strong>${shipping ? formatMoney(shipping) : "Miễn phí"}</strong></div><div class="total"><span>Tổng cộng</span><strong>${formatMoney(total)}</strong></div></div>
-    <div class="admin-order-detail-actions"><button type="button" onclick="updateAdminOrderStatus('${selectedOrder.id}', 'Đã xử lí')">Cập nhật trạng thái</button><button type="button" onclick="updateAdminOrderStatus('${selectedOrder.id}', 'Đã hủy')">Hủy đơn</button></div>
+    <div class="admin-order-detail-actions"><button type="button" onclick="updateAdminOrderStatus('${selectedOrder.id}', 'Đã xử lý')">Cập nhật trạng thái</button><button type="button" onclick="updateAdminOrderStatus('${selectedOrder.id}', 'Đã hủy')">Hủy đơn</button></div>
   `;
 }
 
@@ -856,6 +1052,7 @@ function initAdminPage() {
   seedAdminAccount();
   if (!requireAdminAccess()) return;
   refreshProductsFromAdminState();
+  seedAdminSampleOrders();
   renderAdminSidebar();
   renderAdminDashboard();
   renderAdminProductLayout();

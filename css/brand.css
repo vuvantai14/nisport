@@ -174,6 +174,8 @@
   min-height: 0;
   align-self: start;
   padding-top: 74px;
+  display: grid;
+  gap: 18px;
 }
 
 .brand-story-visual::before {
@@ -204,6 +206,12 @@
   display: block;
   object-fit: cover;
   object-position: center center;
+}
+
+.brand-visual-frame-secondary {
+  aspect-ratio: 16 / 7;
+  max-width: 760px;
+  margin-left: auto;
 }
 
 .brand-stats {
@@ -256,6 +264,10 @@
     aspect-ratio: 16 / 10;
   }
 
+.brand-visual-frame-secondary {
+    aspect-ratio: 16 / 8;
+  }
+
 .brand-stats {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -286,6 +298,10 @@
     width: 100%;
     height: auto;
     aspect-ratio: 1.12 / 1;
+  }
+
+.brand-visual-frame-secondary {
+    aspect-ratio: 1.12 / 0.72;
   }
 
 .brand-stats {
