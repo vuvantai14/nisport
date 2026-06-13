@@ -174,11 +174,3 @@ Luna-Fashion/
 5. Truy cập các trang như `products.html`, `cart.html`, `login.html` hoặc `admin.html` từ menu hoặc URL.
 
 Có thể mở trực tiếp các file HTML trong thư mục `html/` bằng trình duyệt, nhưng dùng Live Server sẽ phù hợp hơn khi làm việc với ES6 module.
-
-## Ghi chú
-
-- Dự án không dùng backend thật.
-- Dữ liệu được lưu bằng LocalStorage, nên dữ liệu nằm theo từng trình duyệt/máy.
-- Xóa dữ liệu trình duyệt hoặc clear LocalStorage sẽ làm mất người dùng, giỏ hàng, đơn hàng và chỉnh sửa sản phẩm.
-- Chức năng thanh toán chỉ là mô phỏng đặt hàng front-end.
-- Project phù hợp cho đồ án web tĩnh/front-end và có thể phát triển tiếp bằng backend/API thật.
