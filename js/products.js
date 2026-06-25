@@ -1,34 +1,34 @@
 import { formatMoney, initCommonLayout, normalizeText, saveData, getData } from "./common.js";
 
 export const productSeed = [
-  ["Đầm hoa pastel", "Đầm", 329000, 420000, "Đầm hoa pastel nhẹ nhàng, phù hợp đi chơi, đi cà phê hoặc dạo phố cuối tuần.", "Sale"],
-  ["Đầm dự tiệc đen", "Đầm", 499000, 650000, "Đầm dự tiệc màu đen sang trọng, thiết kế đơn giản nhưng nổi bật.", "Hot"],
-  ["Đầm linen cổ vuông", "Đầm", 389000, 480000, "Đầm linen cổ vuông nhẹ mát, phù hợp đi làm, đi chơi và những ngày thời tiết nóng.", "Sale"],
-  ["Đầm cổ yếm dự tiệc", "Đầm", 529000, 690000, "Đầm cổ yếm thanh lịch cho tiệc tối, sinh nhật hoặc những buổi hẹn quan trọng.", "Hot"],
-  ["Đầm sơ mi thắt eo", "Đầm", 419000, 520000, "Đầm sơ mi thắt eo gọn gàng, dễ mặc đi làm và có thể phối cùng túi mini.", "Sale"],
-  ["Đầm satin hai dây", "Đầm", 459000, 560000, "Đầm satin hai dây mềm rũ, thích hợp cho các buổi tiệc tối và hẹn hò.", "Hot"],
-  ["Đầm babydoll tay bồng", "Đầm", 379000, 460000, "Đầm babydoll tay bồng tạo dáng trẻ trung, dễ mặc trong những buổi dạo phố.", "New"],
-  ["Đầm maxi hoa nhí", "Đầm", 559000, 690000, "Đầm maxi hoa nhí mềm mại, phù hợp du lịch, đi biển hoặc những ngày cuối tuần.", "Sale"],
-  ["Áo sơ mi trắng nữ", "Áo", 259000, 0, "Áo sơ mi trắng basic, dễ phối cùng quần jeans, chân váy hoặc quần tây.", "New"],
-  ["Áo croptop basic", "Áo", 199000, 0, "Áo croptop basic trẻ trung, chất vải mềm, dễ phối với chân váy hoặc quần jean.", "New"],
-  ["Áo blouse tay phồng", "Áo", 289000, 350000, "Áo blouse tay phồng nữ tính, dễ phối cùng chân váy chữ A hoặc quần jeans.", "New"],
-  ["Áo thun rib ôm dáng", "Áo", 179000, 0, "Áo thun rib co giãn nhẹ, ôm dáng vừa phải và dễ phối trong outfit hằng ngày.", "New"],
-  ["Áo kiểu cổ nơ", "Áo", 299000, 360000, "Áo kiểu cổ nơ tạo điểm nhấn nữ tính, hợp với phong cách công sở nhẹ nhàng.", "New"],
-  ["Áo khoác cardigan mỏng", "Áo", 349000, 430000, "Áo khoác cardigan mỏng nhẹ, dễ khoác ngoài váy hai dây hoặc áo basic.", "Sale"],
-  ["Áo peplum công sở", "Áo", 319000, 390000, "Áo peplum công sở giúp tôn eo, phù hợp phối cùng chân váy hoặc quần tây.", "Sale"],
-  ["Chân váy chữ A", "Váy", 279000, 350000, "Chân váy chữ A tôn dáng, phù hợp phong cách đi học và công sở.", "Sale"],
-  ["Váy công sở thanh lịch", "Váy", 369000, 450000, "Váy công sở dáng dài vừa phải, thanh lịch, phù hợp đi làm và gặp khách hàng.", "Sale"],
-  ["Chân váy midi xếp ly", "Váy", 319000, 390000, "Chân váy midi xếp ly mềm mại, tạo chuyển động nhẹ nhàng khi di chuyển.", "Sale"],
-  ["Váy bút chì công sở", "Váy", 339000, 420000, "Váy bút chì công sở có độ co giãn nhẹ, giúp dáng mặc gọn và thanh lịch.", "Sale"],
-  ["Chân váy jean chữ A", "Váy", 309000, 0, "Chân váy jean chữ A trẻ trung, dễ phối với áo thun, sơ mi hoặc croptop.", "New"],
-  ["Váy tennis xếp ly", "Váy", 289000, 350000, "Váy tennis xếp ly năng động, phù hợp phong cách trẻ trung khi đi học hoặc dạo phố.", "New"],
-  ["Chân váy lụa midi", "Váy", 359000, 450000, "Chân váy lụa midi mềm rũ, dễ phối với áo sơ mi, áo thun hoặc cardigan.", "New"],
-  ["Chân váy xếp tầng", "Váy", 399000, 490000, "Chân váy xếp tầng nữ tính, tạo độ bay nhẹ cho outfit đi chơi hoặc dự tiệc.", "Hot"],
-  ["Túi xách mini", "Phụ kiện", 229000, 0, "Túi xách mini nữ tính, dễ phối cùng đầm, váy hoặc set công sở.", "New"],
-  ["Túi đeo vai pastel", "Phụ kiện", 259000, 320000, "Túi đeo vai pastel nhỏ gọn, phù hợp đi chơi, đi học hoặc phối cùng đầm nhẹ.", "Sale"],
-  ["Băng đô ngọc trai", "Phụ kiện", 129000, 0, "Băng đô ngọc trai nhỏ xinh, tạo điểm nhấn nhẹ cho outfit váy hoặc đầm pastel.", "New"],
-  ["Khăn lụa họa tiết", "Phụ kiện", 149000, 0, "Khăn lụa họa tiết nhẹ nhàng, có thể buộc cổ, buộc tóc hoặc trang trí túi.", "New"],
-  ["Thắt lưng bản nhỏ", "Phụ kiện", 169000, 220000, "Thắt lưng bản nhỏ giúp nhấn eo khi phối cùng đầm, váy hoặc áo blazer.", "Sale"]
+  ["Dam hoa pastel", "Nu", 329000, 420000, "Dam hoa pastel nhe nhang, phu hop di choi, di cafe hoac dao pho cuoi tuan.", "Sale"],
+  ["Dam du tiec den", "Nu", 499000, 650000, "Dam du tiec mau den sang trong, thiet ke don gian nhung noi bat.", "Hot"],
+  ["Ao blouse tay phong", "Nu", 289000, 350000, "Ao blouse tay phong nu tinh, de phoi cung chan vay chu A hoac quan jeans.", "New"],
+  ["Chan vay midi xep ly", "Nu", 319000, 390000, "Chan vay midi xep ly mem mai, tao chuyen dong nhe khi di chuyen.", "Sale"],
+  ["Ao kieu co no", "Nu", 299000, 360000, "Ao kieu co no tao diem nhan thanh lich, hop voi phong cach cong so nhe nhang.", "New"],
+  ["Vay cong so thanh lich", "Nu", 369000, 450000, "Vay cong so dang dai vua phai, thanh lich, phu hop di lam va gap khach hang.", "Sale"],
+  ["Dam satin hai day", "Nu", 459000, 560000, "Dam satin hai day mem ru, thich hop cho cac buoi tiec toi va hen ho.", "Hot"],
+  ["Chan vay jean chu A", "Nu", 309000, 0, "Chan vay jean chu A tre trung, de phoi voi ao thun, so mi hoac croptop.", "New"],
+  ["Ao so mi nam Oxford", "Nam", 329000, 420000, "Ao so mi nam Oxford dung form, phu hop di lam, gap khach hang hoac phoi smart casual.", "New"],
+  ["Ao polo nam basic", "Nam", 249000, 320000, "Ao polo nam basic thoang mat, de phoi cung quan jeans, kaki hoac short.", "Sale"],
+  ["Quan tay nam slimfit", "Nam", 429000, 520000, "Quan tay nam slimfit co do co gian nhe, phu hop cong so va su kien lich su.", "Hot"],
+  ["Ao thun nam cotton", "Nam", 199000, 0, "Ao thun nam cotton mem, form de mac cho outfit hang ngay.", "New"],
+  ["Ao khoac bomber nam", "Nam", 559000, 690000, "Ao khoac bomber nam nang dong, de phoi voi ao thun, jeans va sneaker.", "Hot"],
+  ["Quan jeans nam straight", "Nam", 459000, 560000, "Quan jeans nam dang straight gon gang, ben mau va de ung dung.", "Sale"],
+  ["Ao so mi nam caro", "Nam", 349000, 430000, "Ao so mi nam caro tre trung, phu hop di choi cuoi tuan hoac mac khoac ngoai.", "New"],
+  ["Quan short kaki nam", "Nam", 289000, 350000, "Quan short kaki nam thoai mai, phu hop dao pho, du lich va ngay cuoi tuan.", "Sale"],
+  ["Ao hoodie unisex", "Unisex", 449000, 560000, "Ao hoodie unisex phom rong vua phai, phu hop ca nam va nu trong thoi tiet se lanh.", "Hot"],
+  ["Ao thun oversize unisex", "Unisex", 229000, 290000, "Ao thun oversize unisex chat cotton mem, de phoi theo phong cach tre trung.", "New"],
+  ["So mi trang unisex", "Unisex", 319000, 390000, "So mi trang unisex toi gian, co the phoi cong so hoac casual.", "Sale"],
+  ["Quan jogger unisex", "Unisex", 359000, 450000, "Quan jogger unisex thoai mai, phu hop van dong nhe va mac hang ngay.", "New"],
+  ["Ao cardigan unisex", "Unisex", 389000, 480000, "Ao cardigan unisex mem nhe, de khoac ngoai ao basic cho ca nam va nu.", "Sale"],
+  ["Set the thao unisex", "Unisex", 529000, 650000, "Set the thao unisex nang dong, phu hop di choi, tap nhe hoac du lich.", "Hot"],
+  ["Mu luoi trai basic", "Phu kien", 149000, 0, "Mu luoi trai basic de phoi cung outfit nam, nu hoac unisex.", "New"],
+  ["Tui deo cheo unisex", "Phu kien", 259000, 320000, "Tui deo cheo unisex nho gon, dung vat dung ca nhan khi di hoc, di lam hoac dao pho.", "Sale"],
+  ["That lung da nam", "Phu kien", 229000, 290000, "That lung da nam toi gian, phu hop quan tay, kaki va jeans.", "New"],
+  ["Tui xach mini nu", "Phu kien", 229000, 0, "Tui xach mini nu tinh, de phoi cung dam, vay hoac set cong so.", "New"],
+  ["Khan lua hoa tiet", "Phu kien", 149000, 0, "Khan lua hoa tiet nhe nhang, co the buoc co, buoc toc hoac trang tri tui.", "New"],
+  ["Vi da mini unisex", "Phu kien", 199000, 250000, "Vi da mini unisex gon nhe, phu hop su dung hang ngay hoac lam qua tang.", "Sale"]
 ];
 
 export let products = productSeed.map(([name, category, price, oldPrice, description, tag], index) => ({
@@ -43,9 +43,9 @@ export let products = productSeed.map(([name, category, price, oldPrice, descrip
 }));
 
 export const defaultProducts = products.map((product) => ({ ...product }));
-export const PRODUCT_ADMIN_STATE_VERSION = "manual-assets-v1";
+export const PRODUCT_ADMIN_STATE_VERSION = "men-women-v2";
 
-let currentFilter = new URLSearchParams(window.location.search).get("category") || "Tất cả";
+let currentFilter = new URLSearchParams(window.location.search).get("category") || "Tat ca";
 let currentPage = 1;
 let appliedSidebarFilters = { priceValue: "all", colors: [] };
 const productsPerPage = window.location.pathname.endsWith("products.html") ? 8 : 10;
@@ -94,12 +94,12 @@ export function getProductById(productId) {
 
 export function getProductColors(product) {
   const colorsByCategory = {
-    "Đầm": ["Pastel Pink", "Ivory", "Black"],
-    "Áo": ["Ivory", "Pastel Pink", "Beige"],
-    "Váy": ["Black", "Beige", "Pastel Pink"],
-    "Phụ kiện": ["Pastel Pink", "Ivory", "Beige"]
+    "Nam": ["Black", "Beige", "Navy"],
+    "Nu": ["Pastel Pink", "Ivory", "Black"],
+    "Unisex": ["Black", "Ivory", "Beige"],
+    "Phu kien": ["Black", "Beige", "Pastel Pink"]
   };
-  return colorsByCategory[product.category] || ["Pastel Pink"];
+  return colorsByCategory[product.category] || ["Black"];
 }
 
 export function getProductSizes() {
@@ -133,7 +133,7 @@ function resetSidebarFilters() {
 }
 
 function interleaveProductsByCategory(productList) {
-  const categoryOrder = ["Đầm", "Áo", "Váy", "Phụ kiện"];
+  const categoryOrder = ["Nam", "Nu", "Unisex", "Phu kien"];
   const groups = categoryOrder.map((category) => productList.filter((product) => product.category === category));
   const mixedProducts = [];
   let index = 0;
@@ -198,7 +198,7 @@ export function renderProducts() {
 
   const keyword = normalizeText(searchInput.value.trim());
   const filteredProducts = products.filter((product) => {
-    const matchCategory = currentFilter === "Tất cả" || product.category === currentFilter;
+    const matchCategory = currentFilter === "Tat ca" || product.category === currentFilter;
     const matchSearch = normalizeText(product.name).includes(keyword);
     const matchPrice = appliedSidebarFilters.priceValue === "all"
       || (() => {
@@ -221,7 +221,7 @@ export function renderProducts() {
 
   emptyMessage.style.display = "none";
 
-  const displayProducts = currentFilter === "Tất cả"
+  const displayProducts = currentFilter === "Tat ca"
     ? interleaveProductsByCategory(filteredProducts)
     : filteredProducts;
   const totalPages = Math.ceil(displayProducts.length / productsPerPage);
@@ -282,7 +282,7 @@ export function initProductFilters() {
   });
 
   document.getElementById("clearProductFilters")?.addEventListener("click", () => {
-    currentFilter = "Tất cả";
+    currentFilter = "Tat ca";
     syncCategoryControls(currentFilter);
     resetSidebarFilters();
     appliedSidebarFilters = getSidebarFilters();

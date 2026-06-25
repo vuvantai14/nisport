@@ -48,9 +48,9 @@ const adminSampleOrders = [
     shipping: 0,
     total: 1036000,
     items: [
-      { id: 2, name: "Đầm dự tiệc đen", price: 499000, quantity: 1, image: "../assets/product-2.jpg", color: "Black", size: "M" },
+      { id: 2, name: "Ao so mi nam Oxford", price: 499000, quantity: 1, image: "../assets/product-2.jpg", color: "Black", size: "M" },
       { id: 24, name: "Túi xách mini", price: 229000, quantity: 1, image: "../assets/product-24.jpg", color: "Pastel Pink", size: "M" },
-      { id: 17, name: "Váy công sở thanh lịch", price: 369000, quantity: 1, image: "../assets/product-17.jpg", color: "Beige", size: "L" }
+      { id: 17, name: "Quan tay nam slimfit", price: 369000, quantity: 1, image: "../assets/product-17.jpg", color: "Beige", size: "L" }
     ]
   },
   {
@@ -67,8 +67,8 @@ const adminSampleOrders = [
     shipping: 30000,
     total: 578000,
     items: [
-      { id: 9, name: "Áo sơ mi trắng nữ", price: 259000, quantity: 1, image: "../assets/product-9.jpg", color: "Ivory", size: "S" },
-      { id: 21, name: "Váy tennis xếp ly", price: 289000, quantity: 1, image: "../assets/product-21.jpg", color: "Pastel Pink", size: "M" }
+      { id: 9, name: "Ao blouse tay phong", price: 259000, quantity: 1, image: "../assets/product-9.jpg", color: "Ivory", size: "S" },
+      { id: 21, name: "Ao thun oversize unisex", price: 289000, quantity: 1, image: "../assets/product-21.jpg", color: "Pastel Pink", size: "M" }
     ]
   },
   {
@@ -85,7 +85,7 @@ const adminSampleOrders = [
     shipping: 0,
     total: 788000,
     items: [
-      { id: 4, name: "Đầm cổ yếm dự tiệc", price: 529000, quantity: 1, image: "../assets/product-4.jpg", color: "Black", size: "M" },
+      { id: 4, name: "Dam du tiec den", price: 529000, quantity: 1, image: "../assets/product-4.jpg", color: "Black", size: "M" },
       { id: 25, name: "Túi đeo vai pastel", price: 259000, quantity: 1, image: "../assets/product-25.jpg", color: "Pastel Pink", size: "M" }
     ]
   },
@@ -103,7 +103,7 @@ const adminSampleOrders = [
     shipping: 30000,
     total: 489000,
     items: [
-      { id: 6, name: "Đầm satin hai dây", price: 459000, quantity: 1, image: "../assets/product-6.jpg", color: "Ivory", size: "S" }
+      { id: 6, name: "Ao hoodie unisex", price: 459000, quantity: 1, image: "../assets/product-6.jpg", color: "Ivory", size: "S" }
     ]
   },
   {
@@ -120,7 +120,7 @@ const adminSampleOrders = [
     shipping: 0,
     total: 647000,
     items: [
-      { id: 10, name: "Áo croptop basic", price: 199000, quantity: 1, image: "../assets/product-10.jpg", color: "Ivory", size: "M" },
+      { id: 10, name: "Ao thun nam cotton", price: 199000, quantity: 1, image: "../assets/product-10.jpg", color: "Ivory", size: "M" },
       { id: 18, name: "Chân váy midi xếp ly", price: 319000, quantity: 1, image: "../assets/product-18.jpg", color: "Beige", size: "M" },
       { id: 26, name: "Băng đô ngọc trai", price: 129000, quantity: 1, image: "../assets/product-26.jpg", color: "Ivory", size: "M" }
     ]
@@ -139,8 +139,8 @@ const adminSampleOrders = [
     shipping: 0,
     total: 708000,
     items: [
-      { id: 1, name: "Đầm hoa pastel", price: 329000, quantity: 1, image: "../assets/product-1.jpg", color: "Pastel Pink", size: "M" },
-      { id: 7, name: "Đầm babydoll tay bồng", price: 379000, quantity: 1, image: "../assets/product-7.jpg", color: "Ivory", size: "S" }
+      { id: 1, name: "Dam hoa pastel", price: 329000, quantity: 1, image: "../assets/product-1.jpg", color: "Pastel Pink", size: "M" },
+      { id: 7, name: "Ao cardigan unisex", price: 379000, quantity: 1, image: "../assets/product-7.jpg", color: "Ivory", size: "S" }
     ]
   },
   {
@@ -157,7 +157,7 @@ const adminSampleOrders = [
     shipping: 30000,
     total: 438000,
     items: [
-      { id: 12, name: "Áo thun rib ôm dáng", price: 179000, quantity: 1, image: "../assets/product-12.jpg", color: "Ivory", size: "L" },
+      { id: 12, name: "Ao polo nam basic", price: 179000, quantity: 1, image: "../assets/product-12.jpg", color: "Ivory", size: "L" },
       { id: 24, name: "Túi xách mini", price: 229000, quantity: 1, image: "../assets/product-24.jpg", color: "Pastel Pink", size: "M" }
     ]
   },
@@ -175,7 +175,7 @@ const adminSampleOrders = [
     shipping: 0,
     total: 559000,
     items: [
-      { id: 8, name: "Đầm maxi hoa nhí", price: 559000, quantity: 1, image: "../assets/product-8.jpg", color: "Pastel Pink", size: "L" }
+      { id: 8, name: "Set the thao unisex", price: 559000, quantity: 1, image: "../assets/product-8.jpg", color: "Pastel Pink", size: "L" }
     ]
   },
   {
@@ -192,7 +192,7 @@ const adminSampleOrders = [
     shipping: 30000,
     total: 528000,
     items: [
-      { id: 14, name: "Áo khoác cardigan mỏng", price: 349000, quantity: 1, image: "../assets/product-14.jpg", color: "Beige", size: "M" },
+      { id: 14, name: "Ao khoac bomber nam", price: 349000, quantity: 1, image: "../assets/product-14.jpg", color: "Beige", size: "M" },
       { id: 27, name: "Khăn lụa họa tiết", price: 149000, quantity: 1, image: "../assets/product-27.jpg", color: "Pastel Pink", size: "M" }
     ]
   },
@@ -210,7 +210,7 @@ const adminSampleOrders = [
     shipping: 0,
     total: 747000,
     items: [
-      { id: 13, name: "Áo kiểu cổ nơ", price: 299000, quantity: 1, image: "../assets/product-13.jpg", color: "Ivory", size: "M" },
+      { id: 13, name: "Tui deo cheo unisex", price: 299000, quantity: 1, image: "../assets/product-13.jpg", color: "Ivory", size: "M" },
       { id: 16, name: "Chân váy chữ A", price: 279000, quantity: 1, image: "../assets/product-16.jpg", color: "Black", size: "M" },
       { id: 28, name: "Thắt lưng bản nhỏ", price: 169000, quantity: 1, image: "../assets/product-28.jpg", color: "Beige", size: "M" }
     ]

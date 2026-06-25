@@ -3,41 +3,36 @@ import { addToCart, initCartControls } from "./cart.js";
 import { getProductById, products, refreshProductsFromAdminState } from "./products.js";
 
 const detailSpecsMap = {
-  "Đầm": [
-    ["Chất liệu", "Voan lụa mềm, có lót"],
-    ["Phom dáng", "Xòe nhẹ, tôn eo"],
-    ["Chiều dài", "Qua gối"],
-    ["Màu sắc", "Pastel / Đen / Kem"],
-    ["Size", "S, M, L"],
-    ["Phù hợp", "Dạo phố, đi làm, dự tiệc nhẹ"],
-    ["Bảo quản", "Giặt tay hoặc giặt túi lưới"]
+  "Nam": [
+    ["Chat lieu", "Cotton, kaki, denim hoac vai tong hop tuy mau"],
+    ["Phom dang", "Regular, slimfit hoac relaxed"],
+    ["Mau sac", "Den, navy, be, trang"],
+    ["Size", "S, M, L, XL, XXL"],
+    ["Phu hop", "Di lam, dao pho, du lich, smart casual"],
+    ["Bao quan", "Giat may che do nhe, phoi noi thoang mat"]
   ],
-  "Áo": [
-    ["Chất liệu", "Cotton pha mềm mịn"],
-    ["Phom dáng", "Basic dễ phối"],
-    ["Tay áo", "Ngắn / dài tùy mẫu"],
-    ["Màu sắc", "Trắng, kem, hồng nhạt"],
-    ["Size", "S, M, L"],
-    ["Phù hợp", "Đi học, đi làm, dạo phố"],
-    ["Bảo quản", "Ủi nhiệt thấp"]
+  "Nu": [
+    ["Chat lieu", "Voan, cotton, denim hoac satin tuy mau"],
+    ["Phom dang", "Ton dang, de phoi hang ngay"],
+    ["Mau sac", "Pastel, den, kem, be"],
+    ["Size", "S, M, L, XL, XXL"],
+    ["Phu hop", "Di lam, dao pho, du tiec nhe"],
+    ["Bao quan", "Giat tay hoac giat tui luoi"]
   ],
-  "Váy": [
-    ["Chất liệu", "Tuyết mưa co giãn nhẹ"],
-    ["Phom dáng", "Chữ A thanh lịch"],
-    ["Chiều dài", "Trên gối hoặc midi"],
-    ["Màu sắc", "Đen, be, nâu sữa"],
-    ["Size", "S, M, L"],
-    ["Phù hợp", "Công sở, gặp khách hàng"],
-    ["Bảo quản", "Không dùng chất tẩy mạnh"]
+  "Unisex": [
+    ["Chat lieu", "Cotton pha mem min"],
+    ["Phom dang", "Oversize / regular de mac"],
+    ["Mau sac", "Den, trang, be, navy"],
+    ["Size", "S, M, L, XL, XXL"],
+    ["Phu hop", "Di hoc, di choi, du lich, mac hang ngay"],
+    ["Bao quan", "Ui nhiet thap, tranh chat tay manh"]
   ],
-  "Phụ kiện": [
-    ["Chất liệu", "Da tổng hợp cao cấp"],
-    ["Kiểu dáng", "Mini bag nữ tính"],
-    ["Kích thước", "20 x 14 x 7 cm"],
-    ["Màu sắc", "Kem, đen, hồng"],
-    ["Ngăn chứa", "1 ngăn chính, 1 ngăn phụ"],
-    ["Phù hợp", "Dạo phố, đi tiệc"],
-    ["Bảo quản", "Tránh nước và ánh nắng gắt"]
+  "Phu kien": [
+    ["Chat lieu", "Da tong hop, vai hoac kim loai tuy mau"],
+    ["Kieu dang", "Basic, de phoi nam nu"],
+    ["Mau sac", "Den, be, kem, hong"],
+    ["Phu hop", "Dao pho, di lam, di hoc, du lich"],
+    ["Bao quan", "Tranh nuoc va anh nang gat"]
   ]
 };
 
@@ -75,7 +70,7 @@ export function renderProductDetail() {
   const params = new URLSearchParams(window.location.search);
   const id = Number(params.get("id")) || 1;
   const product = getProductById(id) || products[0];
-  const specs = detailSpecsMap[product.category] || detailSpecsMap["Đầm"];
+  const specs = detailSpecsMap[product.category] || detailSpecsMap["Unisex"];
   const detailCategory = document.getElementById("detailCategory");
   const detailImage = document.getElementById("detailImage");
   const detailPrice = document.getElementById("detailPrice");

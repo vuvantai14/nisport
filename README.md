@@ -1,8 +1,8 @@
-﻿# Luna Fashion
+﻿﻿# Luna Fashion
 
 ## Giới thiệu dự án
 
-Luna Fashion là website bán thời trang nữ dạng front-end tĩnh. Dự án mô phỏng một cửa hàng online với các luồng chính như xem sản phẩm, lọc/tìm kiếm, thêm vào giỏ hàng, đặt hàng, quản lý tài khoản người dùng và trang quản trị cho admin.
+Luna Fashion la website ban thoi trang nam va nu dang front-end tinh. Du an mo phong mot cua hang online voi cac luong chinh nhu xem san pham, loc/tim kiem, them vao gio hang, dat hang, quan ly tai khoan nguoi dung va trang quan tri cho admin.
 
 Website phù hợp cho đồ án HTML/CSS/JavaScript, demo giao diện thương mại điện tử hoặc làm nền để phát triển tiếp với backend thật.
 
