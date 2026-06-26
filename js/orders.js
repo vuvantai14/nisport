@@ -9,16 +9,36 @@ export function formatOrderCode(order, orders = []) {
   return `#DH${String(number).padStart(4, "0")}`;
 }
 
+const orderStatusLabels = {
+  PENDING: "Chờ xác nhận",
+  CONFIRMED: "Đã xác nhận",
+  SHIPPING: "Đang giao",
+  COMPLETED: "Hoàn thành",
+  CANCELLED: "Đã hủy"
+};
+
+export function normalizeOrderStatus(status) {
+  const rawStatus = String(status || "PENDING").trim();
+  const upperStatus = rawStatus.toUpperCase();
+  if (orderStatusLabels[upperStatus]) return upperStatus;
+
+  const normalizedStatus = rawStatus.toLowerCase();
+  if (normalizedStatus.includes("hủy") || normalizedStatus.includes("huỷ") || normalizedStatus.includes("cancel")) return "CANCELLED";
+  if (normalizedStatus.includes("hoàn") || normalizedStatus.includes("đã giao") || normalizedStatus.includes("done") || normalizedStatus.includes("completed")) return "COMPLETED";
+  if (normalizedStatus.includes("giao") || normalizedStatus.includes("shipping")) return "SHIPPING";
+  if (normalizedStatus.includes("đã xử") || normalizedStatus.includes("xác") || normalizedStatus.includes("confirmed")) return "CONFIRMED";
+  return "PENDING";
+}
+
 export function getOrderStatusClass(status) {
-  const normalizedStatus = String(status || "").toLowerCase();
-  if (normalizedStatus.includes("hủy")) return "is-cancelled";
-  if (normalizedStatus.includes("đã xử") || normalizedStatus.includes("đã giao") || normalizedStatus.includes("hoàn thành")) return "is-success";
-  if (normalizedStatus.includes("đang") || normalizedStatus.includes("chờ")) return "is-pending";
+  const normalizedStatus = normalizeOrderStatus(status);
+  if (normalizedStatus === "CANCELLED") return "is-cancelled";
+  if (normalizedStatus === "COMPLETED") return "is-success";
   return "is-pending";
 }
 
 export function formatOrderStatusText(status) {
-  return String(status || "Đang xử lý").replaceAll("xử lí", "xử lý").replaceAll("Xử lí", "Xử lý");
+  return orderStatusLabels[normalizeOrderStatus(status)];
 }
 
 function getCurrentUserOrderMatch(order, currentUser) {
@@ -114,9 +134,9 @@ export function renderUserOrders() {
         <div class="user-order-tabs">
           <button class="active" type="button">Tất cả</button>
           <button type="button">Chờ xác nhận</button>
-          <button type="button">Đang xử lý</button>
+          <button type="button">Đã xác nhận</button>
           <button type="button">Đang giao</button>
-          <button type="button">Đã giao</button>
+          <button type="button">Hoàn thành</button>
           <button type="button">Đã hủy</button>
         </div>
         <div class="user-order-table">

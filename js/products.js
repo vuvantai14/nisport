@@ -1,51 +1,92 @@
 import { formatMoney, initCommonLayout, normalizeText, saveData, getData } from "./common.js";
 
 export const productSeed = [
-  ["Dam hoa pastel", "FEMALE", 3, "Vay", 329000, 420000, "Dam hoa pastel nhe nhang, phu hop di choi, di cafe hoac dao pho cuoi tuan.", "Sale"],
-  ["Dam du tiec den", "FEMALE", 3, "Vay", 499000, 650000, "Dam du tiec mau den sang trong, thiet ke don gian nhung noi bat.", "Hot"],
-  ["Ao blouse tay phong", "FEMALE", 1, "Ao", 289000, 350000, "Ao blouse tay phong nu tinh, de phoi cung chan vay chu A hoac quan jeans.", "New"],
-  ["Chan vay midi xep ly", "FEMALE", 4, "Chan vay", 319000, 390000, "Chan vay midi xep ly mem mai, tao chuyen dong nhe khi di chuyen.", "Sale"],
-  ["Ao kieu co no", "FEMALE", 1, "Ao", 299000, 360000, "Ao kieu co no tao diem nhan thanh lich, hop voi phong cach cong so nhe nhang.", "New"],
-  ["Vay cong so thanh lich", "FEMALE", 3, "Vay", 369000, 450000, "Vay cong so dang dai vua phai, thanh lich, phu hop di lam va gap khach hang.", "Sale"],
-  ["Dam satin hai day", "FEMALE", 3, "Vay", 459000, 560000, "Dam satin hai day mem ru, thich hop cho cac buoi tiec toi va hen ho.", "Hot"],
-  ["Chan vay jean chu A", "FEMALE", 4, "Chan vay", 309000, 0, "Chan vay jean chu A tre trung, de phoi voi ao thun, so mi hoac croptop.", "New"],
-  ["Ao so mi nam Oxford", "MALE", 1, "Ao", 329000, 420000, "Ao so mi nam Oxford dung form, phu hop di lam, gap khach hang hoac phoi smart casual.", "New"],
-  ["Ao polo nam basic", "MALE", 1, "Ao", 249000, 320000, "Ao polo nam basic thoang mat, de phoi cung quan jeans, kaki hoac short.", "Sale"],
-  ["Quan tay nam slimfit", "MALE", 2, "Quan", 429000, 520000, "Quan tay nam slimfit co do co gian nhe, phu hop cong so va su kien lich su.", "Hot"],
-  ["Ao thun nam cotton", "MALE", 1, "Ao", 199000, 0, "Ao thun nam cotton mem, form de mac cho outfit hang ngay.", "New"],
-  ["Ao khoac bomber nam", "MALE", 6, "Ao khoac", 559000, 690000, "Ao khoac bomber nam nang dong, de phoi voi ao thun, jeans va sneaker.", "Hot"],
-  ["Quan jeans nam straight", "MALE", 2, "Quan", 459000, 560000, "Quan jeans nam dang straight gon gang, ben mau va de ung dung.", "Sale"],
-  ["Ao so mi nam caro", "MALE", 1, "Ao", 349000, 430000, "Ao so mi nam caro tre trung, phu hop di choi cuoi tuan hoac mac khoac ngoai.", "New"],
-  ["Quan short kaki nam", "MALE", 2, "Quan", 289000, 350000, "Quan short kaki nam thoai mai, phu hop dao pho, du lich va ngay cuoi tuan.", "Sale"],
-  ["Ao hoodie unisex", "UNISEX", 5, "Hoodie", 449000, 560000, "Ao hoodie unisex phom rong vua phai, phu hop ca nam va nu trong thoi tiet se lanh.", "Hot"],
-  ["Ao thun oversize unisex", "UNISEX", 1, "Ao", 229000, 290000, "Ao thun oversize unisex chat cotton mem, de phoi theo phong cach tre trung.", "New"],
-  ["So mi trang unisex", "UNISEX", 1, "Ao", 319000, 390000, "So mi trang unisex toi gian, co the phoi cong so hoac casual.", "Sale"],
-  ["Quan jogger unisex", "UNISEX", 2, "Quan", 359000, 450000, "Quan jogger unisex thoai mai, phu hop van dong nhe va mac hang ngay.", "New"],
-  ["Ao cardigan unisex", "UNISEX", 6, "Ao khoac", 389000, 480000, "Ao cardigan unisex mem nhe, de khoac ngoai ao basic cho ca nam va nu.", "Sale"],
-  ["Set the thao unisex", "UNISEX", 2, "Quan", 529000, 650000, "Set the thao unisex nang dong, phu hop di choi, tap nhe hoac du lich.", "Hot"],
-  ["Mu luoi trai basic", "UNISEX", 7, "Phu kien", 149000, 0, "Mu luoi trai basic de phoi cung outfit nam, nu hoac unisex.", "New"],
-  ["Tui deo cheo unisex", "UNISEX", 7, "Phu kien", 259000, 320000, "Tui deo cheo unisex nho gon, dung vat dung ca nhan khi di hoc, di lam hoac dao pho.", "Sale"],
-  ["That lung da nam", "MALE", 7, "Phu kien", 229000, 290000, "That lung da nam toi gian, phu hop quan tay, kaki va jeans.", "New"],
-  ["Tui xach mini nu", "FEMALE", 7, "Phu kien", 229000, 0, "Tui xach mini nu tinh, de phoi cung dam, vay hoac set cong so.", "New"],
-  ["Khan lua hoa tiet", "FEMALE", 7, "Phu kien", 149000, 0, "Khan lua hoa tiet nhe nhang, co the buoc co, buoc toc hoac trang tri tui.", "New"],
-  ["Vi da mini unisex", "UNISEX", 7, "Phu kien", 199000, 250000, "Vi da mini unisex gon nhe, phu hop su dung hang ngay hoac lam qua tang.", "Sale"]
+  ["Quần jeans nam basic", "MALE", 2, "Quần", 399000, 499000, "Quần jeans nam basic dễ mặc, phù hợp đi học, đi làm và dạo phố hằng ngày.", "New"],
+  ["Quần kaki nam slimfit", "MALE", 2, "Quần", 429000, 529000, "Quần kaki nam slimfit gọn dáng, hợp phong cách công sở và smart casual.", "Sale"],
+  ["Quần tây nam công sở", "MALE", 2, "Quần", 459000, 559000, "Quần tây nam công sở lịch sự, chất vải đứng form và dễ phối áo sơ mi.", "Hot"],
+  ["Quần short nam casual", "MALE", 2, "Quần", 289000, 359000, "Quần short nam casual thoải mái cho ngày cuối tuần, du lịch hoặc dạo phố.", "New"],
+  ["Quần jogger nam thể thao", "MALE", 2, "Quần", 349000, 429000, "Quần jogger nam thể thao co giãn nhẹ, phù hợp vận động và mặc hằng ngày.", "Sale"],
+  ["Quần cargo nam streetwear", "MALE", 2, "Quần", 479000, 590000, "Quần cargo nam streetwear nhiều túi, tạo điểm nhấn năng động cho outfit.", "Hot"],
+  ["Quần jeans nam ống suông", "MALE", 2, "Quần", 449000, 540000, "Quần jeans nam ống suông dễ phối áo thun, hoodie hoặc áo khoác.", "New"],
+  ["Quần jeans nữ ống rộng", "FEMALE", 2, "Quần", 429000, 529000, "Quần jeans nữ ống rộng tôn dáng, phù hợp phong cách trẻ trung.", "Sale"],
+  ["Quần baggy nữ lưng cao", "FEMALE", 2, "Quần", 389000, 469000, "Quần baggy nữ lưng cao thoải mái, dễ phối với croptop hoặc áo sơ mi.", "New"],
+  ["Quần tây nữ công sở", "FEMALE", 2, "Quần", 419000, 510000, "Quần tây nữ công sở thanh lịch, phù hợp đi làm và gặp khách hàng.", "Hot"],
+  ["Quần short nữ basic", "FEMALE", 2, "Quần", 269000, 329000, "Quần short nữ basic nhẹ mát, dễ phối cho outfit mùa hè.", "New"],
+  ["Quần culottes nữ thanh lịch", "FEMALE", 2, "Quần", 399000, 489000, "Quần culottes nữ thanh lịch, tạo cảm giác mềm mại khi di chuyển.", "Sale"],
+  ["Quần jeans nữ ống loe", "FEMALE", 2, "Quần", 439000, 539000, "Quần jeans nữ ống loe tạo dáng cổ điển, phù hợp giày cao gót hoặc sneaker.", "Hot"],
+  ["Quần linen nữ mùa hè", "FEMALE", 2, "Quần", 369000, 450000, "Quần linen nữ mùa hè thoáng mát, hợp đi chơi và du lịch.", "New"],
+  ["Quần ống suông nữ Hàn Quốc", "FEMALE", 2, "Quần", 409000, 499000, "Quần ống suông nữ Hàn Quốc phom mềm, dễ phối áo kiểu và cardigan.", "Sale"],
+  ["Áo thun nam cổ tròn", "MALE", 1, "Áo", 199000, 249000, "Áo thun nam cổ tròn chất cotton mềm, phù hợp mặc hằng ngày.", "New"],
+  ["Áo sơ mi nam trắng", "MALE", 1, "Áo", 329000, 420000, "Áo sơ mi nam trắng tối giản, dễ phối công sở hoặc casual.", "Sale"],
+  ["Áo polo nam basic", "MALE", 1, "Áo", 259000, 329000, "Áo polo nam basic thoáng mát, hợp quần jeans, kaki hoặc short.", "New"],
+  ["Áo sơ mi nam caro", "MALE", 1, "Áo", 349000, 430000, "Áo sơ mi nam caro trẻ trung, có thể mặc riêng hoặc khoác ngoài áo thun.", "Sale"],
+  ["Áo thun nam graphic", "MALE", 1, "Áo", 239000, 299000, "Áo thun nam graphic nổi bật, phù hợp phong cách dạo phố năng động.", "Hot"],
+  ["Áo kiểu nữ tay bồng", "FEMALE", 1, "Áo", 299000, 369000, "Áo kiểu nữ tay bồng nữ tính, dễ phối quần jeans hoặc chân váy.", "New"],
+  ["Áo blouse nữ công sở", "FEMALE", 1, "Áo", 319000, 390000, "Áo blouse nữ công sở thanh lịch, phù hợp đi làm và gặp khách hàng.", "Sale"],
+  ["Áo croptop nữ basic", "FEMALE", 1, "Áo", 219000, 269000, "Áo croptop nữ basic trẻ trung, hợp phối quần lưng cao.", "New"],
+  ["Áo thun nữ pastel", "FEMALE", 1, "Áo", 199000, 249000, "Áo thun nữ pastel nhẹ nhàng, dễ phối trong outfit hằng ngày.", "Sale"],
+  ["Áo len mỏng nữ Hàn Quốc", "FEMALE", 1, "Áo", 349000, 430000, "Áo len mỏng nữ Hàn Quốc mềm mại, phù hợp thời tiết se lạnh.", "Hot"],
+  ["Áo thun unisex form rộng", "UNISEX", 1, "Áo", 249000, 319000, "Áo thun unisex form rộng dễ mặc cho cả nam và nữ.", "New"],
+  ["Áo thun unisex basic", "UNISEX", 1, "Áo", 219000, 279000, "Áo thun unisex basic tối giản, phù hợp nhiều phong cách.", "Sale"],
+  ["Áo sơ mi unisex oversize", "UNISEX", 1, "Áo", 359000, 449000, "Áo sơ mi unisex oversize phom rộng, dễ phối layer.", "Hot"],
+  ["Áo khoác denim unisex", "UNISEX", 6, "Áo khoác", 559000, 690000, "Áo khoác denim unisex cá tính, hợp phối streetwear.", "Hot"],
+  ["Áo khoác bomber unisex", "UNISEX", 6, "Áo khoác", 589000, 720000, "Áo khoác bomber unisex năng động, phù hợp đi học và dạo phố.", "Sale"],
+  ["Hoodie unisex basic", "UNISEX", 5, "Hoodie", 449000, 560000, "Hoodie unisex basic phom thoải mái, phù hợp thời tiết se lạnh.", "New"],
+  ["Hoodie unisex form rộng", "UNISEX", 5, "Hoodie", 489000, 590000, "Hoodie unisex form rộng trẻ trung, dễ phối quần jeans hoặc jogger.", "Sale"],
+  ["Hoodie zip unisex", "UNISEX", 5, "Hoodie", 529000, 650000, "Hoodie zip unisex tiện dụng, có thể mặc khoác ngoài áo thun.", "Hot"],
+  ["Sweater unisex tối giản", "UNISEX", 5, "Hoodie", 419000, 510000, "Sweater unisex tối giản với màu dễ mặc, phù hợp outfit hằng ngày.", "New"],
+  ["Sweater unisex vintage", "UNISEX", 5, "Hoodie", 459000, 560000, "Sweater unisex vintage tạo cảm giác retro, hợp phối layer.", "Sale"],
+  ["Quần jogger unisex", "UNISEX", 2, "Quần", 379000, 459000, "Quần jogger unisex thoải mái, phù hợp vận động nhẹ và mặc thường ngày.", "New"],
+  ["Quần short unisex thể thao", "UNISEX", 2, "Quần", 299000, 360000, "Quần short unisex thể thao nhẹ, thoáng và dễ phối áo thun.", "Sale"],
+  ["Áo khoác gió unisex", "UNISEX", 6, "Áo khoác", 499000, 620000, "Áo khoác gió unisex nhẹ, tiện lợi khi đi chơi hoặc du lịch.", "Hot"],
+  ["Áo cardigan unisex", "UNISEX", 6, "Áo khoác", 429000, 520000, "Áo cardigan unisex mềm nhẹ, dễ khoác ngoài áo basic.", "New"],
+  ["Set đồ unisex basic", "UNISEX", 1, "Áo", 559000, 690000, "Set đồ unisex basic đồng bộ, phù hợp phong cách tối giản.", "Sale"],
+  ["Túi tote canvas basic", "UNISEX", 7, "Phụ kiện", 169000, 220000, "Túi tote canvas basic rộng rãi, phù hợp đi học, đi làm và đi chơi.", "New"],
+  ["Mũ lưỡi trai unisex", "UNISEX", 7, "Phụ kiện", 149000, 0, "Mũ lưỡi trai unisex dễ phối cùng nhiều outfit nam nữ.", "New"],
+  ["Thắt lưng da basic", "UNISEX", 7, "Phụ kiện", 199000, 250000, "Thắt lưng da basic tối giản, phù hợp quần jeans, kaki hoặc quần tây.", "Sale"],
+  ["Vớ cổ cao basic", "UNISEX", 7, "Phụ kiện", 89000, 120000, "Vớ cổ cao basic mềm, dễ phối sneaker và outfit thường ngày.", "New"],
+  ["Túi đeo chéo mini", "UNISEX", 7, "Phụ kiện", 249000, 320000, "Túi đeo chéo mini nhỏ gọn, tiện đựng vật dụng cá nhân.", "Hot"],
+  ["Khăn bandana họa tiết", "UNISEX", 7, "Phụ kiện", 129000, 0, "Khăn bandana họa tiết dùng buộc cổ, buộc tóc hoặc trang trí túi.", "New"],
+  ["Kính thời trang basic", "UNISEX", 7, "Phụ kiện", 189000, 240000, "Kính thời trang basic tạo điểm nhấn hiện đại cho outfit.", "Sale"],
+  ["Mũ bucket unisex", "UNISEX", 7, "Phụ kiện", 159000, 210000, "Mũ bucket unisex trẻ trung, phù hợp đi chơi và du lịch.", "New"],
+  ["Ví da mini", "UNISEX", 7, "Phụ kiện", 199000, 250000, "Ví da mini gọn nhẹ, phù hợp sử dụng hằng ngày hoặc làm quà tặng.", "Sale"],
+  ["Dây chuyền basic", "UNISEX", 7, "Phụ kiện", 119000, 0, "Dây chuyền basic tối giản, dễ phối cùng áo thun hoặc sơ mi.", "New"]
 ];
 
 export const genderLabels = {
   MALE: "Nam",
-  FEMALE: "Nu",
+  FEMALE: "Nữ",
   UNISEX: "Unisex"
 };
 
 export const productCategories = [
-  { id: 1, name: "Ao" },
-  { id: 2, name: "Quan" },
-  { id: 3, name: "Vay" },
-  { id: 4, name: "Chan vay" },
+  { id: 1, name: "Áo" },
+  { id: 2, name: "Quần" },
   { id: 5, name: "Hoodie" },
-  { id: 6, name: "Ao khoac" },
-  { id: 7, name: "Phu kien" }
+  { id: 6, name: "Áo khoác" },
+  { id: 7, name: "Phụ kiện" }
 ];
+
+function getVariantStock(productId, sizeIndex, colorIndex) {
+  return 10 + ((productId * 7 + sizeIndex * 5 + colorIndex * 3) % 41);
+}
+
+function buildProductVariants(product) {
+  const isAccessory = product.categoryId === 7;
+  const sizes = isAccessory ? ["FREE_SIZE"] : ["S", "M", "L", "XL"];
+  const colors = isAccessory ? ["Black", "White", "Beige", "Brown"] : ["Black", "White", "Beige"];
+
+  return sizes.flatMap((size, sizeIndex) => colors.map((color, colorIndex) => ({
+    id: `${product.id}-${size}-${color}`,
+    productId: product.id,
+    product_id: product.id,
+    size,
+    color,
+    stock: getVariantStock(product.id, sizeIndex, colorIndex),
+    sku: `LUNA-${String(product.id).padStart(3, "0")}-${size}-${color.toUpperCase()}`,
+    price: product.price
+  })));
+}
 
 export let products = productSeed.map(([name, gender, categoryId, category, price, oldPrice, description, tag], index) => ({
   id: index + 1,
@@ -55,26 +96,47 @@ export let products = productSeed.map(([name, gender, categoryId, category, pric
   category,
   price,
   oldPrice,
-  image: `../assets/product-${index + 1}.jpg`,
+  image: `/assets/products/product-${index + 1}.jpg`,
+  image_url: `/assets/products/product-${index + 1}.jpg`,
+  images: [{
+    image_url: `/assets/products/product-${index + 1}.jpg`,
+    is_thumbnail: true,
+    sort_order: 1
+  }],
   description,
   tag
+})).map((product) => ({
+  ...product,
+  variants: buildProductVariants(product)
 }));
 
+export const productImages = products.map((product) => ({
+  id: product.id,
+  productId: product.id,
+  product_id: product.id,
+  image_url: product.image_url,
+  is_thumbnail: true,
+  sort_order: 1
+}));
+
+export const productVariants = products.flatMap((product) => product.variants);
+
 export const defaultProducts = products.map((product) => ({ ...product }));
-export const PRODUCT_ADMIN_STATE_VERSION = "backend-shape-v1";
+export const PRODUCT_ADMIN_STATE_VERSION = "product-50-assets-v1";
 
 const params = new URLSearchParams(window.location.search);
 let currentGender = params.get("gender") || "ALL";
 let currentCategoryId = params.get("categoryId") || "all";
 let currentPage = 1;
-let appliedSidebarFilters = { categoryId: currentCategoryId, priceValue: "all", colors: [] };
+let appliedSidebarFilters = { categoryId: currentCategoryId, priceValue: "all", colors: [], sizes: [] };
 const productsPerPage = window.location.pathname.endsWith("products.html") ? 8 : 10;
 
 export function getProductAdminState() {
   const savedState = getData("lunaProductAdminState", {});
 
   if (savedState.version !== PRODUCT_ADMIN_STATE_VERSION) {
-    const customOnly = (savedState.customProducts || []).filter((product) => product.id > defaultProducts.length);
+    const customOnly = (savedState.customProducts || [])
+      .filter((product) => product.id > defaultProducts.length && product.gender && product.categoryId);
     const freshState = {
       version: PRODUCT_ADMIN_STATE_VERSION,
       customProducts: customOnly,
@@ -113,16 +175,12 @@ export function getProductById(productId) {
 }
 
 export function getProductColors(product) {
-  const colorsByGender = {
-    MALE: ["Black", "Beige", "Navy"],
-    FEMALE: ["Pastel Pink", "Ivory", "Black"],
-    UNISEX: ["Black", "Ivory", "Beige"]
-  };
-  return colorsByGender[product.gender] || ["Black"];
+  return [...new Set((product.variants || []).map((variant) => variant.color))];
 }
 
-export function getProductSizes() {
-  return ["S", "M", "L", "XL", "XXL"];
+export function getProductSizes(product) {
+  if (!product) return ["S", "M", "L", "XL"];
+  return [...new Set((product.variants || []).map((variant) => variant.size))];
 }
 
 function getCheckedValues(name) {
@@ -133,7 +191,8 @@ function getSidebarFilters() {
   const categoryId = document.querySelector('input[name="sidebarCategory"]:checked')?.value || "all";
   const priceValue = document.querySelector('input[name="priceFilter"]:checked')?.value || "all";
   const colors = getCheckedValues("colorFilter");
-  return { categoryId, priceValue, colors };
+  const sizes = getCheckedValues("sizeFilter");
+  return { categoryId, priceValue, colors, sizes };
 }
 
 function syncFilterControls() {
@@ -228,8 +287,10 @@ export function renderProducts() {
       })();
     const matchColor = appliedSidebarFilters.colors.length === 0
       || appliedSidebarFilters.colors.some((color) => getProductColors(product).includes(color));
+    const matchSize = (appliedSidebarFilters.sizes || []).length === 0
+      || appliedSidebarFilters.sizes.some((size) => getProductSizes(product).includes(size));
 
-    return matchGender && matchCategory && matchSearch && matchPrice && matchColor;
+    return matchGender && matchCategory && matchSearch && matchPrice && matchColor && matchSize;
   });
 
   productGrid.innerHTML = "";

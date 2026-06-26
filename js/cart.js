@@ -205,7 +205,7 @@ export function createOrderFromCart() {
     subtotal,
     shipping,
     total: subtotal + shipping,
-    status: "Đang xử lý",
+    status: "PENDING",
     createdAt: new Date().toISOString()
   };
 

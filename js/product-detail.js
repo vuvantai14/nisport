@@ -3,33 +3,19 @@ import { addToCart, initCartControls } from "./cart.js";
 import { genderLabels, getProductById, products, refreshProductsFromAdminState } from "./products.js";
 
 const detailSpecsMap = {
-  "Ao": [
+  "Áo": [
     ["Chat lieu", "Cotton, linen, kate hoac vai tong hop tuy mau"],
     ["Phom dang", "Regular, slimfit hoac oversize"],
     ["Mau sac", "Den, trang, be, navy, pastel"],
     ["Size", "S, M, L, XL, XXL"],
     ["Bao quan", "Giat may che do nhe, phoi noi thoang mat"]
   ],
-  "Quan": [
+  "Quần": [
     ["Chat lieu", "Kaki, denim, thun hoac vai tuyet mua"],
     ["Phom dang", "Slimfit, straight hoac jogger"],
     ["Mau sac", "Den, be, navy, xanh denim"],
     ["Size", "S, M, L, XL, XXL"],
     ["Bao quan", "Giat rieng mau dam trong lan dau"]
-  ],
-  "Vay": [
-    ["Chat lieu", "Voan, satin, cotton hoac vai mem"],
-    ["Phom dang", "Xoe nhe, om vua hoac dang dai"],
-    ["Mau sac", "Pastel, den, kem, be"],
-    ["Size", "S, M, L, XL"],
-    ["Bao quan", "Giat tay hoac giat tui luoi"]
-  ],
-  "Chan vay": [
-    ["Chat lieu", "Denim, kaki, lua hoac vai xep ly"],
-    ["Phom dang", "Chu A, midi hoac xep ly"],
-    ["Mau sac", "Den, be, xanh denim, pastel"],
-    ["Size", "S, M, L, XL"],
-    ["Bao quan", "Ui nhiet thap, tranh chat tay manh"]
   ],
   "Hoodie": [
     ["Chat lieu", "Ni cotton hoac thun day dan"],
@@ -38,14 +24,14 @@ const detailSpecsMap = {
     ["Size", "S, M, L, XL, XXL"],
     ["Bao quan", "Phan loai mau truoc khi giat"]
   ],
-  "Ao khoac": [
+  "Áo khoác": [
     ["Chat lieu", "Kaki, ni, len mong hoac polyester"],
     ["Phom dang", "Bomber, cardigan hoac jacket"],
     ["Mau sac", "Den, be, navy, pastel"],
     ["Size", "S, M, L, XL, XXL"],
     ["Bao quan", "Treo moc sau khi mac, tranh nang gat"]
   ],
-  "Phu kien": [
+  "Phụ kiện": [
     ["Chat lieu", "Da tong hop, vai hoac kim loai tuy mau"],
     ["Kieu dang", "Basic, de phoi nam nu"],
     ["Mau sac", "Den, be, kem, hong"],
@@ -87,7 +73,7 @@ export function renderProductDetail() {
   const params = new URLSearchParams(window.location.search);
   const id = Number(params.get("id")) || 1;
   const product = getProductById(id) || products[0];
-  const specs = detailSpecsMap[product.category] || detailSpecsMap["Ao"];
+  const specs = detailSpecsMap[product.category] || detailSpecsMap["Áo"];
   const detailCategory = document.getElementById("detailCategory");
   const detailImage = document.getElementById("detailImage");
   const detailPrice = document.getElementById("detailPrice");
@@ -113,7 +99,7 @@ export function renderProductDetail() {
     detailImage.alt = product.name;
     detailImage.onerror = () => {
       detailImage.onerror = null;
-      detailImage.src = "../assets/product-1.jpg";
+      detailImage.src = `../assets/product-${product.id}.jpg`;
     };
   }
   if (detailPrice) detailPrice.textContent = formatMoney(product.price);
