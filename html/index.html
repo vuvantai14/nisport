@@ -118,37 +118,37 @@
         </div>
 
         <div class="category-grid">
-          <article class="category-card" data-category="Nam">
+          <article class="category-card" data-gender="MALE" data-category-id="all">
             <span class="category-image"><img src="../assets/category-1.jpg" alt="Thoi trang nam" /></span>
             <h3>Thoi Trang Nam</h3>
           </article>
-          <article class="category-card" data-category="Nu">
+          <article class="category-card" data-gender="FEMALE" data-category-id="all">
             <span class="category-image"><img src="../assets/category-2.jpg" alt="Thoi trang nu" /></span>
             <h3>Thoi Trang Nu</h3>
           </article>
-          <article class="category-card" data-category="Unisex">
+          <article class="category-card" data-gender="UNISEX" data-category-id="all">
             <span class="category-image"><img src="../assets/category-3.jpg" alt="Do unisex" /></span>
             <h3>Unisex</h3>
           </article>
-          <article class="category-card" data-category="Phu kien">
-            <span class="category-image"><img src="../assets/category-4.jpg" alt="Phu kien thoi trang" /></span>
+          <article class="category-card" data-gender="ALL" data-category-id="1">
+            <span class="category-image"><img src="../assets/category-4.jpg" alt="Ao thoi trang" /></span>
+            <h3>Ao</h3>
+          </article>
+          <article class="category-card" data-gender="ALL" data-category-id="2">
+            <span class="category-image"><img src="../assets/category-5.jpg" alt="Quan thoi trang" /></span>
+            <h3>Quan</h3>
+          </article>
+          <article class="category-card" data-gender="FEMALE" data-category-id="3">
+            <span class="category-image"><img src="../assets/category-6.jpg" alt="Vay nu" /></span>
+            <h3>Vay Nu</h3>
+          </article>
+          <article class="category-card" data-gender="ALL" data-category-id="6">
+            <span class="category-image"><img src="../assets/category-7.jpg" alt="Ao khoac" /></span>
+            <h3>Ao Khoac</h3>
+          </article>
+          <article class="category-card" data-gender="ALL" data-category-id="7">
+            <span class="category-image"><img src="../assets/category-8.jpg" alt="Phu kien" /></span>
             <h3>Phu Kien</h3>
-          </article>
-          <article class="category-card" data-category="Nam">
-            <span class="category-image"><img src="../assets/category-5.jpg" alt="Do nam cong so" /></span>
-            <h3>Nam Cong So</h3>
-          </article>
-          <article class="category-card" data-category="Nu">
-            <span class="category-image"><img src="../assets/category-6.jpg" alt="Do nu thanh lich" /></span>
-            <h3>Nu Thanh Lich</h3>
-          </article>
-          <article class="category-card" data-category="Unisex">
-            <span class="category-image"><img src="../assets/category-7.jpg" alt="Do basic unisex" /></span>
-            <h3>Basic Unisex</h3>
-          </article>
-          <article class="category-card" data-category="Phu kien">
-            <span class="category-image"><img src="../assets/category-8.jpg" alt="Phu kien nam nu" /></span>
-            <h3>Phu Kien Nam Nu</h3>
           </article>
         </div>
       </div>
@@ -164,11 +164,10 @@
         </div>
 
         <div class="filter-bar">
-          <button class="filter-btn active" data-filter="Tat ca">Tat ca</button>
-          <button class="filter-btn" data-filter="Nam">Nam</button>
-          <button class="filter-btn" data-filter="Nu">Nu</button>
-          <button class="filter-btn" data-filter="Unisex">Unisex</button>
-          <button class="filter-btn" data-filter="Phu kien">Phu kien</button>
+          <button class="filter-btn active" data-gender="ALL">Tat ca</button>
+          <button class="filter-btn" data-gender="MALE">Nam</button>
+          <button class="filter-btn" data-gender="FEMALE">Nu</button>
+          <button class="filter-btn" data-gender="UNISEX">Unisex</button>
         </div>
 
         <div class="product-grid" id="productGrid"></div>

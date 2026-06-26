@@ -11,14 +11,16 @@ import {
 import { seedAdminAccount } from "./auth.js";
 import {
   defaultProducts,
+  genderLabels,
   getProductAdminState,
+  productCategories,
   products,
   refreshProductsFromAdminState,
   saveProductAdminState
 } from "./products.js";
 import { formatOrderCode, formatOrderStatusText, getOrderStatusClass } from "./orders.js";
 
-let adminProductFilters = { category: "all", price: "all", tag: "all", keyword: "" };
+let adminProductFilters = { gender: "all", category: "all", price: "all", tag: "all", keyword: "" };
 let adminCustomerKeyword = "";
 let adminOrderFilters = { status: "all", dateFrom: "", dateTo: "", keyword: "" };
 let selectedAdminOrderId = null;
@@ -597,16 +599,17 @@ function getFilteredAdminProducts() {
   const keyword = adminProductFilters.keyword.trim().toLowerCase();
 
   return products.filter((product) => {
-    const matchesCategory = adminProductFilters.category === "all" || product.category === adminProductFilters.category;
+    const matchesGender = adminProductFilters.gender === "all" || product.gender === adminProductFilters.gender;
+    const matchesCategory = adminProductFilters.category === "all" || Number(product.categoryId) === Number(adminProductFilters.category);
     const matchesPrice =
       adminProductFilters.price === "all" ||
       (adminProductFilters.price === "under250" && product.price < 250000) ||
       (adminProductFilters.price === "250to400" && product.price >= 250000 && product.price <= 400000) ||
       (adminProductFilters.price === "over400" && product.price > 400000);
     const matchesTag = adminProductFilters.tag === "all" || product.tag === adminProductFilters.tag;
-    const matchesKeyword = !keyword || [product.name, product.category, product.tag, product.description, product.price]
+    const matchesKeyword = !keyword || [product.name, product.gender, product.category, product.tag, product.description, product.price]
       .some((value) => String(value || "").toLowerCase().includes(keyword));
-    return matchesCategory && matchesPrice && matchesTag && matchesKeyword;
+    return matchesGender && matchesCategory && matchesPrice && matchesTag && matchesKeyword;
   });
 }
 
@@ -658,6 +661,7 @@ function renderAdminProducts() {
             <div><strong>${product.name}</strong><small>SP${String(index + 1).padStart(3, "0")}</small></div>
           </div>
         </td>
+        <td>${genderLabels[product.gender] || product.gender || ""}</td>
         <td>${product.category}</td>
         <td><strong class="admin-product-price">${formatMoney(product.price)}</strong>${product.oldPrice ? `<small class="admin-product-old-price">${formatMoney(product.oldPrice)}</small>` : ""}</td>
         <td>${stock}</td>
@@ -671,11 +675,12 @@ function renderAdminProducts() {
         </td>
       </tr>
     `;
-  }).join("") : `<tr><td colspan="9">Không tìm thấy sản phẩm phù hợp.</td></tr>`;
+  }).join("") : `<tr><td colspan="10">Không tìm thấy sản phẩm phù hợp.</td></tr>`;
 }
 
 function applyAdminProductFilters() {
   adminProductFilters = {
+    gender: document.getElementById("adminFilterGender")?.value || "all",
     category: document.getElementById("adminFilterCategory")?.value || "all",
     price: document.getElementById("adminFilterPrice")?.value || "all",
     tag: document.getElementById("adminFilterTag")?.value || "all",
@@ -685,8 +690,8 @@ function applyAdminProductFilters() {
 }
 
 function resetAdminProductFilters() {
-  adminProductFilters = { category: "all", price: "all", tag: "all", keyword: "" };
-  ["adminFilterCategory", "adminFilterPrice", "adminFilterTag"].forEach((id) => {
+  adminProductFilters = { gender: "all", category: "all", price: "all", tag: "all", keyword: "" };
+  ["adminFilterGender", "adminFilterCategory", "adminFilterPrice", "adminFilterTag"].forEach((id) => {
     const input = document.getElementById(id);
     if (input) input.value = "all";
   });
@@ -721,6 +726,10 @@ function closeAdminProductForm() {
   resetAdminProductForm();
 }
 
+function getProductCategoryName(categoryId) {
+  return productCategories.find((category) => Number(category.id) === Number(categoryId))?.name || "Ao";
+}
+
 function editAdminProduct(productId) {
   const product = products.find((item) => item.id === productId);
   const form = document.getElementById("adminProductForm");
@@ -730,7 +739,8 @@ function editAdminProduct(productId) {
   form.classList.add("show");
   form.productId.value = product.id;
   form.productName.value = product.name;
-  form.productCategory.value = product.category;
+  form.productGender.value = product.gender || "UNISEX";
+  form.productCategoryId.value = product.categoryId || 1;
   form.productPrice.value = product.price;
   form.productOldPrice.value = product.oldPrice || "";
   form.productImage.value = product.image;
@@ -1022,7 +1032,9 @@ function bindAdminEvents() {
     const product = {
       id,
       name: form.productName.value.trim(),
-      category: form.productCategory.value,
+      gender: form.productGender.value,
+      categoryId: Number(form.productCategoryId.value),
+      category: getProductCategoryName(form.productCategoryId.value),
       price: Number(form.productPrice.value),
       oldPrice: Number(form.productOldPrice.value) || 0,
       image: form.productImage.value.trim() || "../assets/product-1.jpg",

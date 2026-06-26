@@ -1,37 +1,54 @@
 import { formatMoney, initCommonLayout, showToast } from "./common.js";
 import { addToCart, initCartControls } from "./cart.js";
-import { getProductById, products, refreshProductsFromAdminState } from "./products.js";
+import { genderLabels, getProductById, products, refreshProductsFromAdminState } from "./products.js";
 
 const detailSpecsMap = {
-  "Nam": [
-    ["Chat lieu", "Cotton, kaki, denim hoac vai tong hop tuy mau"],
-    ["Phom dang", "Regular, slimfit hoac relaxed"],
-    ["Mau sac", "Den, navy, be, trang"],
+  "Ao": [
+    ["Chat lieu", "Cotton, linen, kate hoac vai tong hop tuy mau"],
+    ["Phom dang", "Regular, slimfit hoac oversize"],
+    ["Mau sac", "Den, trang, be, navy, pastel"],
     ["Size", "S, M, L, XL, XXL"],
-    ["Phu hop", "Di lam, dao pho, du lich, smart casual"],
     ["Bao quan", "Giat may che do nhe, phoi noi thoang mat"]
   ],
-  "Nu": [
-    ["Chat lieu", "Voan, cotton, denim hoac satin tuy mau"],
-    ["Phom dang", "Ton dang, de phoi hang ngay"],
-    ["Mau sac", "Pastel, den, kem, be"],
+  "Quan": [
+    ["Chat lieu", "Kaki, denim, thun hoac vai tuyet mua"],
+    ["Phom dang", "Slimfit, straight hoac jogger"],
+    ["Mau sac", "Den, be, navy, xanh denim"],
     ["Size", "S, M, L, XL, XXL"],
-    ["Phu hop", "Di lam, dao pho, du tiec nhe"],
+    ["Bao quan", "Giat rieng mau dam trong lan dau"]
+  ],
+  "Vay": [
+    ["Chat lieu", "Voan, satin, cotton hoac vai mem"],
+    ["Phom dang", "Xoe nhe, om vua hoac dang dai"],
+    ["Mau sac", "Pastel, den, kem, be"],
+    ["Size", "S, M, L, XL"],
     ["Bao quan", "Giat tay hoac giat tui luoi"]
   ],
-  "Unisex": [
-    ["Chat lieu", "Cotton pha mem min"],
-    ["Phom dang", "Oversize / regular de mac"],
-    ["Mau sac", "Den, trang, be, navy"],
-    ["Size", "S, M, L, XL, XXL"],
-    ["Phu hop", "Di hoc, di choi, du lich, mac hang ngay"],
+  "Chan vay": [
+    ["Chat lieu", "Denim, kaki, lua hoac vai xep ly"],
+    ["Phom dang", "Chu A, midi hoac xep ly"],
+    ["Mau sac", "Den, be, xanh denim, pastel"],
+    ["Size", "S, M, L, XL"],
     ["Bao quan", "Ui nhiet thap, tranh chat tay manh"]
+  ],
+  "Hoodie": [
+    ["Chat lieu", "Ni cotton hoac thun day dan"],
+    ["Phom dang", "Regular hoac oversize"],
+    ["Mau sac", "Den, be, xam, navy"],
+    ["Size", "S, M, L, XL, XXL"],
+    ["Bao quan", "Phan loai mau truoc khi giat"]
+  ],
+  "Ao khoac": [
+    ["Chat lieu", "Kaki, ni, len mong hoac polyester"],
+    ["Phom dang", "Bomber, cardigan hoac jacket"],
+    ["Mau sac", "Den, be, navy, pastel"],
+    ["Size", "S, M, L, XL, XXL"],
+    ["Bao quan", "Treo moc sau khi mac, tranh nang gat"]
   ],
   "Phu kien": [
     ["Chat lieu", "Da tong hop, vai hoac kim loai tuy mau"],
     ["Kieu dang", "Basic, de phoi nam nu"],
     ["Mau sac", "Den, be, kem, hong"],
-    ["Phu hop", "Dao pho, di lam, di hoc, du lich"],
     ["Bao quan", "Tranh nuoc va anh nang gat"]
   ]
 };
@@ -48,7 +65,7 @@ export function renderRelatedProducts(product, relatedGrid) {
         <img src="${item.image}" alt="${item.name}">
       </a>
       <div class="product-info">
-        <span class="product-category">${item.category}</span>
+        <span class="product-category">${genderLabels[item.gender]} / ${item.category}</span>
         <h3><a href="product-detail.html?id=${item.id}">${item.name}</a></h3>
         <div class="price-row">
           <span class="price">${formatMoney(item.price)}</span>
@@ -70,7 +87,7 @@ export function renderProductDetail() {
   const params = new URLSearchParams(window.location.search);
   const id = Number(params.get("id")) || 1;
   const product = getProductById(id) || products[0];
-  const specs = detailSpecsMap[product.category] || detailSpecsMap["Unisex"];
+  const specs = detailSpecsMap[product.category] || detailSpecsMap["Ao"];
   const detailCategory = document.getElementById("detailCategory");
   const detailImage = document.getElementById("detailImage");
   const detailPrice = document.getElementById("detailPrice");
@@ -89,7 +106,7 @@ export function renderProductDetail() {
 
   document.title = `${product.name} - Luna Fashion`;
   detailTitle.textContent = product.name;
-  if (detailCategory) detailCategory.textContent = product.category;
+  if (detailCategory) detailCategory.textContent = `${genderLabels[product.gender]} / ${product.category}`;
   if (detailRouteName) detailRouteName.textContent = product.name;
   if (detailImage) {
     detailImage.src = product.image;

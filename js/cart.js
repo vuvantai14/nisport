@@ -9,7 +9,7 @@ import {
   showCenterNotice,
   showToast
 } from "./common.js";
-import { getProductById, products, refreshProductsFromAdminState } from "./products.js";
+import { genderLabels, getProductById, products, refreshProductsFromAdminState } from "./products.js";
 
 export let cart = getData("lunaCart", []);
 
@@ -230,7 +230,7 @@ export function openQuickView(productId) {
     <div class="quick-view">
       <img src="${product.image}" alt="${product.name}">
       <div>
-        <span class="product-category">${product.category}</span>
+        <span class="product-category">${genderLabels[product.gender]} / ${product.category}</span>
         <h3>${product.name}</h3>
         <div class="price-row">
           <span class="price">${formatMoney(product.price)}</span>
