@@ -17,8 +17,8 @@ public class SwaggerConfig {
   public OpenAPI lunaFashionOpenApi() {
     return new OpenAPI()
         .info(new Info()
-            .title("Luna Fashion Backend API")
-            .description("REST API for Luna Fashion men, women and unisex fashion e-commerce system")
+            .title("Ni Sport Backend API")
+            .description("REST API for Ni Sport football clothing and accessories store")
             .version("v1.0.0"))
         .addSecurityItem(new SecurityRequirement().addList(BEARER_AUTH))
         .components(new Components()

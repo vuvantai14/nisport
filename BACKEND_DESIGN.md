@@ -19,7 +19,7 @@ Mục tiêu chính:
 
 ## Công nghệ đề xuất
 
-- Java 21
+- Java 25 (latest LTS)
 - Spring Boot 3
 - Spring Web
 - Spring Data JPA

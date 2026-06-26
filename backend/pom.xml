@@ -12,10 +12,10 @@
   </parent>
 
   <groupId>com.lunafashion</groupId>
-  <artifactId>luna-fashion-backend</artifactId>
+  <artifactId>ni-sport-backend</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <name>Luna Fashion Backend</name>
-  <description>Backend API for Luna Fashion</description>
+  <name>Ni Sport Backend</name>
+  <description>Backend API for Ni Sport</description>
 
   <properties>
     <java.version>21</java.version>

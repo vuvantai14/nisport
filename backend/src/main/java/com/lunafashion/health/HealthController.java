@@ -14,7 +14,7 @@ public class HealthController {
   public ApiResponse<Map<String, String>> health() {
     return ApiResponse.success(
         "Backend is running",
-        Map.of("message", "Luna Fashion Backend is running")
+        Map.of("message", "Ni Sport Backend is running")
     );
   }
 }

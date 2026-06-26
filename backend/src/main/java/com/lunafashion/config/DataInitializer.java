@@ -12,7 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 public class DataInitializer {
 
-  private static final String ADMIN_EMAIL = "admin@lunafashion.com";
+  private static final String ADMIN_EMAIL = "admin@nisport.com";
 
   @Bean
   public CommandLineRunner seedAdminUser(
@@ -25,11 +25,11 @@ public class DataInitializer {
       }
 
       User admin = User.builder()
-          .fullName("Luna Admin")
+          .fullName("Ni Sport Admin")
           .email(ADMIN_EMAIL)
           .passwordHash(passwordEncoder.encode("123456"))
           .phone("0900000000")
-          .address("Luna Fashion Store")
+          .address("Ni Sport Store")
           .role(Role.ADMIN)
           .status(UserStatus.ACTIVE)
           .build();
