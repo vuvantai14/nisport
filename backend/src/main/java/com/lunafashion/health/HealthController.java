@@ -1,5 +1,6 @@
 package com.lunafashion.health;
 
+import com.lunafashion.common.ApiResponse;
 import java.util.Map;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,7 +11,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class HealthController {
 
   @GetMapping
-  public Map<String, String> health() {
-    return Map.of("message", "Luna Fashion Backend is running");
+  public ApiResponse<Map<String, String>> health() {
+    return ApiResponse.success(
+        "Backend is running",
+        Map.of("message", "Luna Fashion Backend is running")
+    );
   }
 }
