@@ -10,16 +10,19 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
 
   private final JwtAuthenticationFilter jwtAuthenticationFilter;
@@ -34,7 +37,10 @@ public class SecurityConfig {
         .csrf(AbstractHttpConfigurer::disable)
         .cors(Customizer.withDefaults())
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        .exceptionHandling(exception -> exception.authenticationEntryPoint(authenticationEntryPoint()))
+        .exceptionHandling(exception -> exception
+            .authenticationEntryPoint(authenticationEntryPoint())
+            .accessDeniedHandler(accessDeniedHandler())
+        )
         .authorizeHttpRequests(auth -> auth
             .requestMatchers(HttpMethod.POST, "/api/v1/auth/register", "/api/v1/auth/login").permitAll()
             .requestMatchers(HttpMethod.GET, "/api/v1/products/**", "/api/v1/categories/**").permitAll()
@@ -64,5 +70,10 @@ public class SecurityConfig {
   @Bean
   public AuthenticationEntryPoint authenticationEntryPoint() {
     return new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED);
+  }
+
+  @Bean
+  public AccessDeniedHandler accessDeniedHandler() {
+    return (request, response, accessDeniedException) -> response.setStatus(HttpStatus.FORBIDDEN.value());
   }
 }

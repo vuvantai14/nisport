@@ -34,6 +34,12 @@ public final class ProductSpecification {
         : builder.equal(root.get("gender"), gender);
   }
 
+  public static Specification<Product> hasStatus(ProductStatus status) {
+    return (root, query, builder) -> status == null
+        ? builder.conjunction()
+        : builder.equal(root.get("status"), status);
+  }
+
   public static Specification<Product> hasCategory(Long categoryId) {
     return (root, query, builder) -> categoryId == null
         ? builder.conjunction()
