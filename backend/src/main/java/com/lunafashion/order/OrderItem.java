@@ -48,6 +48,9 @@ public class OrderItem {
   @Column(name = "product_name", nullable = false, length = 180)
   private String productName;
 
+  @Column(name = "product_slug", length = 220)
+  private String productSlug;
+
   @Column(name = "image_url", length = 500)
   private String imageUrl;
 
@@ -56,6 +59,9 @@ public class OrderItem {
 
   @Column(name = "color", length = 60)
   private String color;
+
+  @Column(name = "sku", length = 80)
+  private String sku;
 
   @Column(name = "quantity", nullable = false)
   private Integer quantity;
