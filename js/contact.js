@@ -27,7 +27,7 @@ function initContactForm() {
       return;
     }
 
-    formMessage.textContent = "Gửi liên hệ thành công. Luna Fashion sẽ phản hồi bạn sớm!";
+    formMessage.textContent = "Gửi liên hệ thành công. Ni Sport sẽ phản hồi bạn sớm!";
     formMessage.classList.add("success");
     contactForm.reset();
   });

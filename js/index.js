@@ -18,7 +18,7 @@ function setHeroBanner(index) {
   currentHeroBanner = (index + heroBanners.length) % heroBanners.length;
   heroBannerImage.style.display = "block";
   heroBannerImage.src = heroBanners[currentHeroBanner];
-  heroBannerImage.alt = `Banner Luna Fashion ${currentHeroBanner + 1}`;
+  heroBannerImage.alt = `Banner Ni Sport ${currentHeroBanner + 1}`;
   heroDots.forEach((dot, dotIndex) => {
     dot.classList.toggle("active", dotIndex === currentHeroBanner);
   });

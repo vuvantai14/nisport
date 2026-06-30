@@ -1,3 +1,7 @@
+export const APP_NAME = "Ni Sport";
+export const APP_SLOGAN = "Sẵn sàng ra sân";
+export const ADMIN_EMAIL = "admin@nisport.com";
+
 export function getData(key, fallback = null) {
   try {
     const raw = localStorage.getItem(key);
@@ -12,7 +16,7 @@ export function saveData(key, value) {
 }
 
 export function formatMoney(number) {
-  return Number(number || 0).toLocaleString("vi-VN") + "đ";
+  return Nữmber(number || 0).toLocaleString("vi-VN") + "đ";
 }
 
 export const formatCurrency = formatMoney;
@@ -26,31 +30,31 @@ export function normalizeText(value = "") {
 }
 
 export function getUsers() {
-  return getData("lunaUsers", []);
+  return getData("niSportUsers", []);
 }
 
 export function saveUsers(users) {
-  saveData("lunaUsers", users);
+  saveData("niSportUsers", users);
 }
 
 export function getOrders() {
-  return getData("lunaOrders", []);
+  return getData("niSportOrders", []);
 }
 
 export function saveOrders(orders) {
-  saveData("lunaOrders", orders);
+  saveData("niSportOrders", orders);
 }
 
 export function getCurrentUser() {
-  return getData("lunaCurrentUser", null);
+  return getData("niSportCurrentUser", null);
 }
 
 export function setCurrentUser(user) {
-  saveData("lunaCurrentUser", user);
+  saveData("niSportCurrentUser", user);
 }
 
 export function clearCurrentUser() {
-  localStorage.removeItem("lunaCurrentUser");
+  localStorage.removeItem("niSportCurrentUser");
 }
 
 export function checkLogin() {
@@ -65,7 +69,6 @@ export function logout(redirect = "login.html") {
 export function showToast(message) {
   const toast = document.getElementById("toast");
   if (!toast) return;
-
   toast.textContent = message;
   toast.classList.add("show");
   setTimeout(() => toast.classList.remove("show"), 2200);
@@ -73,7 +76,6 @@ export function showToast(message) {
 
 export function showCenterNotice(message, type = "success", callback) {
   let notice = document.getElementById("centerNotice");
-
   if (!notice) {
     notice = document.createElement("div");
     notice.id = "centerNotice";
@@ -83,7 +85,7 @@ export function showCenterNotice(message, type = "success", callback) {
 
   notice.innerHTML = `
     <div class="center-notice-box ${type}">
-      <span>${type === "success" ? "✓" : "!"}</span>
+      <span>${type === "success" ? "OK" : "!"}</span>
       <p>${message}</p>
     </div>
   `;
@@ -95,28 +97,40 @@ export function showCenterNotice(message, type = "success", callback) {
   }, 1200);
 }
 
+function renderBranding() {
+  document.querySelectorAll(".logo-main").forEach((logo) => {
+    logo.innerHTML = "Ni<span>Sport</span>";
+  });
+  document.querySelectorAll(".logo small, .footer-logo small, .auth-logo small").forEach((tagline) => {
+    tagline.textContent = APP_SLOGAN;
+  });
+  document.querySelectorAll('[aria-label="Ni Sport"]').forEach((element) => {
+    element.setAttribute("aria-label", APP_NAME);
+  });
+}
+
 export function updateLoginLinks() {
   const currentUser = getCurrentUser();
   document.querySelectorAll(".account-dropdown").forEach((menu) => menu.remove());
 
   document.querySelectorAll(".login-link").forEach((link) => {
     if (!currentUser) {
-      link.innerHTML = `<span>👤</span><small>Tài khoản</small>`;
+      link.innerHTML = `<span class="account-mark">TK</span><small>Tài khoản</small>`;
       link.href = "login.html";
       link.setAttribute("aria-label", "Tài khoản");
       return;
     }
 
-    link.innerHTML = `<span>👤</span><small>${currentUser.firstName || "Tài khoản"}</small>`;
+    link.innerHTML = `<span class="account-mark">TK</span><small>${currentUser.firstName || currentUser.fullName || "Tài khoản"}</small>`;
     link.href = "#account-menu";
-    link.setAttribute("aria-label", `Tài khoản ${currentUser.firstName || ""}`);
+    link.setAttribute("aria-label", `Tài khoản ${currentUser.firstName || currentUser.fullName || ""}`);
 
     const actions = link.closest(".header-actions");
     if (actions) {
       const menu = document.createElement("div");
       menu.className = "account-dropdown";
       menu.innerHTML = `
-        <a href="account.html">Thông tin người dùng</a>
+        <a href="account.html">Thông tin cá nhân</a>
         <a href="orders.html">Đơn hàng của tôi</a>
       `;
       actions.appendChild(menu);
@@ -137,10 +151,9 @@ export function normalizeCurrentUserRole() {
   const currentUser = getCurrentUser();
   if (!currentUser) return;
 
-  const normalizedUser = currentUser.email === "admin@lunafashion.com"
+  const normalizedUser = currentUser.email === ADMIN_EMAIL
     ? { ...currentUser, role: "admin" }
     : { ...currentUser, role: currentUser.role || "customer" };
-
   setCurrentUser(normalizedUser);
 }
 
@@ -163,7 +176,7 @@ export function initPasswordToggles() {
     button.addEventListener("click", () => {
       const shouldShow = input.type === "password";
       input.type = shouldShow ? "text" : "password";
-      button.textContent = shouldShow ? "◈" : "◇";
+      button.textContent = shouldShow ? "Ẩn" : "Hiện";
       button.setAttribute("aria-label", shouldShow ? "Ẩn mật khẩu" : "Hiện mật khẩu");
     });
   });
@@ -182,6 +195,7 @@ export function initMenuToggle() {
 }
 
 export function initCommonLayout() {
+  renderBranding();
   normalizeCurrentUserRole();
   guardAdminWebsiteAccess();
   updateLoginLinks();

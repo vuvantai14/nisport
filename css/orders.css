@@ -609,3 +609,72 @@
   color: #d97706;
   background: #fff0d2;
 }
+
+/* Ni Sport orders polish */
+.orders-page {
+  background: linear-gradient(180deg, #f8fafc, #eef4f8);
+}
+
+.orders-title h1 {
+  color: var(--sport-navy);
+}
+
+.orders-content,
+.user-orders-list,
+.user-order-detail {
+  border-color: var(--sport-line);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+}
+
+.orders-head,
+.user-order-head {
+  color: #334155;
+  background: #f8fafc;
+  border-bottom-color: var(--sport-line);
+}
+
+.orders-row,
+.user-order-row {
+  border-bottom-color: #e2e8f0;
+}
+
+.order-status-pill,
+.user-order-row em,
+.user-order-detail-head em {
+  border-radius: 999px;
+  font-weight: 900;
+}
+
+.order-status-pill.is-success,
+.user-order-row em.is-success {
+  color: #166534;
+  background: #dcfce7;
+}
+
+.order-status-pill.is-cancelled,
+.user-order-row em.is-cancelled {
+  color: #be123c;
+  background: #ffe4e6;
+}
+
+.order-status-pill.is-pending,
+.user-order-row em.is-pending {
+  color: #92400e;
+  background: #fef3c7;
+}
+
+.user-order-row button,
+.user-buy-again {
+  color: #07111f;
+  background: var(--sport-lime);
+  border-color: var(--sport-lime);
+  border-radius: 10px;
+}
+
+@media (max-width: 820px) {
+  .orders-content,
+  .user-order-table {
+    overflow-x: auto;
+  }
+}

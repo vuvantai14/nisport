@@ -642,6 +642,65 @@
   }
 }
 
+/* Ni Sport account polish */
+.account-page {
+  background: linear-gradient(180deg, #f8fafc, #eef4f8);
+}
+
+.account-page-content .user-info-card,
+.user-profile-panel,
+.user-address-panel,
+.user-recent-orders,
+.user-account-stats article {
+  border-color: var(--sport-line);
+  border-radius: 16px;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.07);
+}
+
+.user-account-sidebar {
+  background: var(--sport-navy);
+  border-right: 0;
+}
+
+.user-sidebar-profile strong,
+.user-account-sidebar nav a,
+.user-account-sidebar nav button {
+  color: #e5edf7;
+}
+
+.user-sidebar-profile span {
+  color: #94a3b8;
+}
+
+.user-account-sidebar nav .active,
+.user-account-sidebar nav a:hover,
+.user-account-sidebar nav button:hover {
+  color: #07111f;
+  background: var(--sport-lime);
+}
+
+.user-info-avatar {
+  color: #07111f;
+  background: var(--sport-lime);
+  font-weight: 900;
+}
+
+.edit-user-btn,
+.user-action-grid button,
+.admin-shortcut-btn {
+  color: #07111f;
+  background: var(--sport-lime);
+  border-color: var(--sport-lime);
+  border-radius: 10px;
+}
+
+.logout-btn,
+.user-account-sidebar .logout-btn {
+  color: #ffffff;
+  background: #ef4444;
+  border-color: #ef4444;
+}
+
 .user-recent-orders .order-status-pill,
 .user-recent-orders em {
   min-height: 28px;

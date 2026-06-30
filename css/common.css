@@ -1,15 +1,15 @@
 /* Shared base, layout, header, footer, overlays, utilities */
 
 :root {
-  --pink: #f36f9e;
-  --pink-soft: #fff0f6;
-  --pink-pale: #fff7fa;
-  --rose: #f9c8d9;
-  --text: #202027;
-  --muted: #7c7379;
+  --pink: #16a34a;
+  --pink-soft: #ecfdf3;
+  --pink-pale: #f4fff8;
+  --rose: #bbf7d0;
+  --text: #172018;
+  --muted: #66736a;
   --white: #ffffff;
-  --line: #f3dde6;
-  --shadow: 0 10px 30px rgba(196, 83, 121, 0.12);
+  --line: #dcefe2;
+  --shadow: 0 10px 30px rgba(22, 101, 52, 0.12);
   --radius: 8px;
   --transition: 0.22s ease;
 }
@@ -1209,5 +1209,256 @@ button {
   .collection-grid,
   .sale-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+/* Ni Sport UI polish - navy/lime sport ecommerce system */
+:root {
+  --sport-navy: #07111f;
+  --sport-navy-2: #0f172a;
+  --sport-ink: #111827;
+  --sport-muted: #64748b;
+  --sport-bg: #f6f8fb;
+  --sport-surface: #ffffff;
+  --sport-line: #dbe3ee;
+  --sport-lime: #b7ff2a;
+  --sport-green: #16a34a;
+  --sport-red: #ef4444;
+  --sport-blue: #2563eb;
+  --pink: var(--sport-green);
+  --pink-soft: #ecfdf5;
+  --pink-pale: #f8fafc;
+  --rose: #d9f99d;
+  --text: var(--sport-ink);
+  --muted: var(--sport-muted);
+  --line: var(--sport-line);
+  --shadow: 0 18px 44px rgba(15, 23, 42, 0.09);
+  --radius: 10px;
+  --transition: 0.2s ease;
+}
+
+body {
+  background: var(--sport-bg);
+  color: var(--sport-ink);
+}
+
+button,
+a,
+input,
+select,
+textarea {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid rgba(183, 255, 42, 0.75);
+  outline-offset: 2px;
+}
+
+.top-bar {
+  color: #dbeafe;
+  background: var(--sport-navy);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.site-header {
+  background: rgba(255, 255, 255, 0.94);
+  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05);
+}
+
+.logo-main {
+  color: var(--sport-navy);
+  font-weight: 900;
+  letter-spacing: 0;
+}
+
+.logo-main span {
+  color: var(--sport-green);
+}
+
+.logo small {
+  color: var(--sport-muted);
+  font-weight: 800;
+}
+
+.main-nav a {
+  color: #334155;
+  font-weight: 800;
+}
+
+.main-nav a::after {
+  bottom: -12px;
+  height: 3px;
+  background: var(--sport-lime);
+}
+
+.main-nav a:hover,
+.main-nav a.active {
+  color: var(--sport-navy);
+}
+
+.search-box {
+  background: #f8fafc;
+  border-color: #dbe3ee;
+  border-radius: 12px;
+}
+
+.search-box:focus-within {
+  border-color: var(--sport-green);
+  box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.12);
+}
+
+.icon-button,
+.cart-button,
+.login-link {
+  min-width: 58px;
+  color: #0f172a;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  font-weight: 800;
+}
+
+.icon-button:hover,
+.cart-button:hover,
+.login-link:hover {
+  color: var(--sport-navy);
+  background: #ecfdf5;
+  border-color: #bbf7d0;
+}
+
+.account-mark,
+.cart-mark {
+  display: grid;
+  place-items: center;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 6px;
+  color: var(--sport-navy);
+  background: var(--sport-lime);
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.cart-button span#cartCount {
+  top: -5px;
+  right: -5px;
+  background: var(--sport-red);
+}
+
+.cart-button::after {
+  content: "";
+  display: none;
+}
+
+.menu-toggle {
+  color: var(--sport-navy);
+  background: var(--sport-lime);
+  border-radius: 10px;
+  font-size: 0.86rem;
+  font-weight: 900;
+}
+
+.btn {
+  border-radius: 12px;
+  font-weight: 900;
+  letter-spacing: 0;
+}
+
+.btn-primary,
+.checkout-main-btn,
+.filter-search-btn {
+  color: #07111f;
+  background: linear-gradient(135deg, var(--sport-lime), #86efac);
+  box-shadow: 0 14px 28px rgba(22, 163, 74, 0.22);
+}
+
+.btn-primary:hover,
+.checkout-main-btn:hover,
+.filter-search-btn:hover {
+  filter: brightness(0.98);
+  transform: translateY(-2px);
+}
+
+.btn-light {
+  color: var(--sport-navy);
+  background: #ffffff;
+  border: 1px solid #dbe3ee;
+}
+
+.toast {
+  background: var(--sport-navy);
+  border-radius: 12px;
+}
+
+.overlay.show {
+  background: rgba(7, 17, 31, 0.58);
+}
+
+.cart-drawer,
+.quick-content,
+.contact-form,
+.contact-info,
+.review-card {
+  border: 1px solid var(--sport-line);
+  box-shadow: var(--shadow);
+}
+
+.cart-header button,
+.quick-close {
+  color: var(--sport-navy);
+  background: #ecfdf5;
+}
+
+.site-footer {
+  color: #cbd5e1;
+  background: #07111f;
+}
+
+.site-footer p,
+.site-footer a {
+  color: #cbd5e1;
+}
+
+.site-footer h4 {
+  color: #ffffff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
+
+@media (max-width: 820px) {
+  .main-nav {
+    top: 72px;
+    background: #ffffff;
+    border-color: #dbe3ee;
+    box-shadow: var(--shadow);
+  }
+
+  .main-nav a {
+    border-radius: 8px;
+  }
+
+  .main-nav a:hover,
+  .main-nav a.active {
+    background: #ecfdf5;
+  }
+
+  .header-actions {
+    gap: 8px;
   }
 }

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin - Luna Fashion</title>
+  <title>Admin - Ni Sport</title>
   <link rel="stylesheet" href="../css/common.css">
   <link rel="stylesheet" href="../css/admin.css">
 </head>
@@ -11,8 +11,8 @@
   <main class="admin-page" id="adminApp">
     <aside class="admin-sidebar">
       <a href="#adminDashboard" class="logo admin-sidebar-logo">
-        <span class="logo-main">Luna<span>Fashion</span></span>
-        <small>Admin dashboard</small>
+        <span class="logo-main">Ni<span>Sport</span></span>
+        <small>Admin</small>
       </a>
       <nav>
         <a href="#adminDashboard">Dashboard</a>
@@ -22,8 +22,8 @@
         <a href="#adminLogout" id="adminLogoutLink">Dang xuat</a>
       </nav>
       <div class="admin-account">
-        <strong>Admin mac dinh</strong>
-        <span>admin@lunafashion.com</span>
+        <strong>Admin demo</strong>
+        <span>admin@nisport.com</span>
         <span>123456</span>
       </div>
     </aside>
@@ -32,12 +32,12 @@
       <div class="admin-topbar">
         <div>
           <h1>Dashboard</h1>
-          <p>Control panel</p>
+          <p>Quan tri cua hang Ni Sport</p>
         </div>
         <div class="admin-top-actions">
           <span class="admin-top-route">Home / Dashboard</span>
-          <span class="admin-avatar-mini"><img src="../assets/logoadmin.jpg" alt="Luna Admin"></span>
-          <strong>Hi, Luna Admin</strong>
+          <span class="admin-avatar-mini">NS</span>
+          <strong>Hi, Ni Sport Admin</strong>
         </div>
       </div>
 
@@ -49,10 +49,11 @@
         <div class="admin-panel-title">
           <div>
             <h2>Quan ly san pham</h2>
-            <p>Danh sach va trang thai san pham</p>
+            <p>Ao bong da, quan bong da, bo do, do tap va phu kien.</p>
           </div>
-          <button type="button" onclick="openAdminProductForm()">+ Them san pham</button>
+          <button type="button" onclick="openAdminProductForm()">Them san pham</button>
         </div>
+
         <div class="admin-product-manager">
           <div class="admin-list-toolbar">
             <div class="admin-list-title-row">
@@ -68,12 +69,12 @@
                 </label>
                 <label>Danh muc
                   <select id="adminFilterCategory">
-                    <option value="all">Danh muc</option>
-                    <option value="1">Áo</option>
-                    <option value="2">Quần</option>
-                    <option value="5">Hoodie</option>
-                    <option value="6">Áo khoác</option>
-                    <option value="7">Phụ kiện</option>
+                    <option value="all">Tat ca danh muc</option>
+                    <option value="1">Ao bong da</option>
+                    <option value="2">Quan bong da</option>
+                    <option value="3">Bo do bong da</option>
+                    <option value="4">Do tap bong da</option>
+                    <option value="5">Phu kien</option>
                   </select>
                 </label>
                 <label>Khoang gia
@@ -87,9 +88,10 @@
                 <label>Nhan
                   <select id="adminFilterTag">
                     <option value="all">Tat ca nhan</option>
-                    <option value="Sale">Sale</option>
-                    <option value="New">New</option>
-                    <option value="Hot">Hot</option>
+                    <option value="SALE">Sale</option>
+                    <option value="NEW">New</option>
+                    <option value="HOT">Hot</option>
+                    <option value="BASIC">Basic</option>
                   </select>
                 </label>
                 <button class="admin-filter-btn" id="adminApplyProductFilters" type="button">Loc</button>
@@ -116,13 +118,13 @@
                 <p>Bieu mau</p>
                 <h3>Thong tin san pham</h3>
               </div>
-              <button type="button" onclick="closeAdminProductForm()">x</button>
+              <button type="button" onclick="closeAdminProductForm()">Dong</button>
             </div>
             <input type="hidden" name="productId">
             <label class="admin-form-wide">Ten san pham<input type="text" name="productName"></label>
-            <label>Gia nhap<input type="number" name="productOldPrice"></label>
+            <label>Gia cu<input type="number" name="productOldPrice"></label>
             <label>Gia ban<input type="number" name="productPrice"></label>
-            <label>Ma san pham<input type="text" name="productTag"></label>
+            <label>Nhan san pham<input type="text" name="productTag" placeholder="HOT, NEW, SALE, BASIC"></label>
             <label>Gioi tinh
               <select name="productGender">
                 <option value="MALE">Nam</option>
@@ -132,15 +134,15 @@
             </label>
             <label>Danh muc
               <select name="productCategoryId">
-                <option value="1">Áo</option>
-                <option value="2">Quần</option>
-                <option value="5">Hoodie</option>
-                <option value="6">Áo khoác</option>
-                <option value="7">Phụ kiện</option>
+                <option value="1">Ao bong da</option>
+                <option value="2">Quan bong da</option>
+                <option value="3">Bo do bong da</option>
+                <option value="4">Do tap bong da</option>
+                <option value="5">Phu kien</option>
               </select>
             </label>
             <label class="admin-form-wide">Mo ta<textarea name="productDescription" rows="4"></textarea></label>
-            <label class="admin-form-wide">Anh san pham<input type="text" name="productImage" placeholder="/assets/products/product-1.jpg"></label>
+            <label class="admin-form-wide">Anh san pham<input type="text" name="productImage" placeholder="../assets/products/product-1.jpg"></label>
             <div class="admin-form-actions">
               <button class="admin-save-btn" type="submit">Luu san pham</button>
               <button class="admin-cancel-btn" type="button" onclick="closeAdminProductForm()">Huy</button>
@@ -156,11 +158,13 @@
           <div class="admin-account-head">
             <div>
               <h3>Quan ly khach hang</h3>
-              <p>Danh sach tai khoan khach hang</p>
+              <p>Danh sach tai khoan khach hang demo</p>
             </div>
           </div>
           <div class="admin-account-toolbar">
-            <div class="admin-account-search"><input type="search" id="adminCustomerSearch" placeholder="Tim theo email hoac so dien thoai"></div>
+            <div class="admin-account-search">
+              <input type="search" id="adminCustomerSearch" placeholder="Tim theo email hoac so dien thoai">
+            </div>
             <div class="admin-account-actions">
               <button type="button" id="adminSearchCustomers" class="admin-search-btn">Tim</button>
               <button type="button" id="adminClearCustomerSearch" class="admin-refresh-btn">Xoa loc</button>
@@ -169,7 +173,16 @@
           <div class="admin-table-wrap admin-customer-table-wrap">
             <table class="admin-table admin-customer-table">
               <thead>
-                <tr><th>ID</th><th>Ten tai khoan</th><th>Email</th><th>So dien thoai</th><th>Dia chi</th><th>Ngay tao</th><th>Trang thai</th><th>Tac vu</th></tr>
+                <tr>
+                  <th>ID</th>
+                  <th>Ten tai khoan</th>
+                  <th>Email</th>
+                  <th>So dien thoai</th>
+                  <th>Dia chi</th>
+                  <th>Ngay tao</th>
+                  <th>Trang thai</th>
+                  <th>Tac vu</th>
+                </tr>
               </thead>
               <tbody id="adminCustomerTable"></tbody>
             </table>

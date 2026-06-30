@@ -4,3 +4,22 @@
   max-height: 90vh;
   overflow-y: auto;
 }
+
+/* Ni Sport register polish */
+.auth-register,
+.auth-page {
+  background:
+    radial-gradient(circle at 78% 20%, rgba(183, 255, 42, 0.2), transparent 24%),
+    linear-gradient(135deg, #07111f 0%, #111827 56%, #0f2a1c 100%);
+}
+
+.auth-card {
+  border-radius: 18px;
+}
+
+.auth-tabs a.active,
+.auth-submit,
+.auth-alt {
+  color: #07111f;
+  background: var(--sport-lime);
+}

@@ -4,7 +4,6 @@ import {
   getCurrentUser,
   getOrders,
   getUsers,
-  initPasswordToggles,
   saveOrders,
   showToast
 } from "./common.js";
@@ -24,237 +23,90 @@ let adminProductFilters = { gender: "all", category: "all", price: "all", tag: "
 let adminCustomerKeyword = "";
 let adminOrderFilters = { status: "all", dateFrom: "", dateTo: "", keyword: "" };
 let selectedAdminOrderId = null;
-let adminRevenuePeriod = "week";
 
-const adminCustomerSeed = [
+const sampleCustomers = [
   { id: 1, name: "Nguyễn Mến", email: "nguyenmen@gmail.com", phone: "0903665225", address: "Tân Phú, TP.HCM", createdAt: "02/06/2026", status: "Hoạt động" },
   { id: 2, name: "Trần Phương Anh", email: "anhtran@gmail.com", phone: "0912345678", address: "Quận 3, TP.HCM", createdAt: "01/06/2026", status: "Hoạt động" },
   { id: 3, name: "Lê Minh Quân", email: "lequan@gmail.com", phone: "0933123456", address: "Bình Thạnh, TP.HCM", createdAt: "31/05/2026", status: "Hoạt động" },
-  { id: 4, name: "Hoàng Gia Bảo", email: "baohg@gmail.com", phone: "0909090909", address: "Gò Vấp, TP.HCM", createdAt: "30/05/2026", status: "Tạm khóa" },
-  { id: 5, name: "Phạm Thảo Vy", email: "thaovy@gmail.com", phone: "0911222333", address: "Thủ Đức, TP.HCM", createdAt: "29/05/2026", status: "Hoạt động" },
-  { id: 6, name: "Đặng Khánh Linh", email: "linhdk@gmail.com", phone: "0988776655", address: "Tân Bình, TP.HCM", createdAt: "28/05/2026", status: "Đã khóa" }
+  { id: 4, name: "Hoàng Gia Bảo", email: "baohg@gmail.com", phone: "0909090909", address: "Gò Vấp, TP.HCM", createdAt: "30/05/2026", status: "Tạm khóa" }
 ];
 
-const adminSampleOrders = [
-  {
-    id: "sample-order-001",
-    customerId: "sample-customer-001",
-    customerName: "Nguyễn Mến",
-    email: "nguyenmen@gmail.com",
-    phone: "0903665225",
-    address: "Tân Phú, TP.HCM",
-    createdAt: "2026-06-09T16:53:00",
-    paidAt: "2026-06-09T17:05:00",
-    status: "COMPLETED",
-    subtotal: 1036000,
-    shipping: 0,
-    total: 1036000,
-    items: [
-      { id: 17, name: "Áo sơ mi nam trắng", price: 329000, quantity: 1, image: "/assets/products/product-17.jpg", color: "White", size: "M" },
-      { id: 43, name: "Thắt lưng da basic", price: 199000, quantity: 1, image: "/assets/products/product-43.jpg", color: "Brown", size: "FREE_SIZE" },
-      { id: 3, name: "Quần tây nam công sở", price: 459000, quantity: 1, image: "/assets/products/product-3.jpg", color: "Black", size: "L" }
-    ]
-  },
-  {
-    id: "sample-order-002",
-    customerId: "sample-customer-002",
-    customerName: "Trần Phương Anh",
-    email: "anhtran@gmail.com",
-    phone: "0912345678",
-    address: "Quận 3, TP.HCM",
-    createdAt: "2026-06-08T10:22:00",
-    paidAt: "2026-06-08T10:35:00",
-    status: "PENDING",
-    subtotal: 548000,
-    shipping: 30000,
-    total: 578000,
-    items: [
-      { id: 22, name: "Áo blouse nữ công sở", price: 319000, quantity: 1, image: "/assets/products/product-22.jpg", color: "White", size: "S" },
-      { id: 26, name: "Áo thun unisex form rộng", price: 249000, quantity: 1, image: "/assets/products/product-26.jpg", color: "Beige", size: "M" }
-    ]
-  },
-  {
-    id: "sample-order-003",
-    customerId: "sample-customer-003",
-    customerName: "Lê Minh Quân",
-    email: "lequan@gmail.com",
-    phone: "0933123456",
-    address: "Bình Thạnh, TP.HCM",
-    createdAt: "2026-06-07T19:15:00",
-    paidAt: "2026-06-07T19:25:00",
-    status: "COMPLETED",
-    subtotal: 788000,
-    shipping: 0,
-    total: 788000,
-    items: [
-      { id: 24, name: "Áo thun nữ pastel", price: 199000, quantity: 1, image: "/assets/products/product-24.jpg", color: "White", size: "M" },
-      { id: 45, name: "Túi đeo chéo mini", price: 249000, quantity: 1, image: "/assets/products/product-45.jpg", color: "Black", size: "FREE_SIZE" }
-    ]
-  },
-  {
-    id: "sample-order-004",
-    customerId: "sample-customer-004",
-    customerName: "Hoàng Gia Bảo",
-    email: "baohg@gmail.com",
-    phone: "0909090909",
-    address: "Gò Vấp, TP.HCM",
-    createdAt: "2026-06-06T14:40:00",
-    paidAt: "2026-06-06T14:55:00",
-    status: "CANCELLED",
-    subtotal: 459000,
-    shipping: 30000,
-    total: 489000,
-    items: [
-      { id: 31, name: "Hoodie unisex basic", price: 449000, quantity: 1, image: "/assets/products/product-31.jpg", color: "Beige", size: "S" }
-    ]
-  },
-  {
-    id: "sample-order-005",
-    customerId: "sample-customer-005",
-    customerName: "Phạm Thảo Vy",
-    email: "thaovy@gmail.com",
-    phone: "0911222333",
-    address: "Thủ Đức, TP.HCM",
-    createdAt: "2026-06-05T09:18:00",
-    paidAt: "2026-06-05T09:30:00",
-    status: "COMPLETED",
-    subtotal: 647000,
-    shipping: 0,
-    total: 647000,
-    items: [
-      { id: 16, name: "Áo thun nam cổ tròn", price: 199000, quantity: 1, image: "/assets/products/product-16.jpg", color: "White", size: "M" },
-      { id: 12, name: "Quần culottes nữ thanh lịch", price: 399000, quantity: 1, image: "/assets/products/product-12.jpg", color: "Beige", size: "M" },
-      { id: 42, name: "Mũ lưỡi trai unisex", price: 149000, quantity: 1, image: "/assets/products/product-42.jpg", color: "Black", size: "FREE_SIZE" }
-    ]
-  },
-  {
-    id: "sample-order-006",
-    customerId: "sample-customer-006",
-    customerName: "Đặng Khánh Linh",
-    email: "linhdk@gmail.com",
-    phone: "0988776655",
-    address: "Tân Bình, TP.HCM",
-    createdAt: "2026-06-04T20:05:00",
-    paidAt: "2026-06-04T20:12:00",
-    status: "COMPLETED",
-    subtotal: 708000,
-    shipping: 0,
-    total: 708000,
-    items: [
-      { id: 8, name: "Quần jeans nữ ống rộng", price: 429000, quantity: 1, image: "/assets/products/product-8.jpg", color: "Black", size: "M" },
-      { id: 39, name: "Áo cardigan unisex", price: 429000, quantity: 1, image: "/assets/products/product-39.jpg", color: "White", size: "S" }
-    ]
-  },
-  {
-    id: "sample-order-007",
-    customerId: "sample-customer-007",
-    customerName: "Vũ Tài",
-    email: "vutai1406@gmail.com",
-    phone: "0903265721",
-    address: "Tân Phú, TP.HCM",
-    createdAt: "2026-06-03T11:45:00",
-    paidAt: "2026-06-03T11:52:00",
-    status: "PENDING",
-    subtotal: 408000,
-    shipping: 30000,
-    total: 438000,
-    items: [
-      { id: 18, name: "Áo polo nam basic", price: 259000, quantity: 1, image: "/assets/products/product-18.jpg", color: "White", size: "L" },
-      { id: 41, name: "Túi tote canvas basic", price: 169000, quantity: 1, image: "/assets/products/product-41.jpg", color: "Beige", size: "FREE_SIZE" }
-    ]
-  },
-  {
-    id: "sample-order-008",
-    customerId: "sample-customer-008",
-    customerName: "Mai Ngọc Hân",
-    email: "hanmai@gmail.com",
-    phone: "0977123456",
-    address: "Quận 7, TP.HCM",
-    createdAt: "2026-06-02T08:26:00",
-    paidAt: "2026-06-02T08:40:00",
-    status: "COMPLETED",
-    subtotal: 559000,
-    shipping: 0,
-    total: 559000,
-    items: [
-      { id: 40, name: "Set đồ unisex basic", price: 559000, quantity: 1, image: "/assets/products/product-40.jpg", color: "Beige", size: "L" }
-    ]
-  },
-  {
-    id: "sample-order-009",
-    customerId: "sample-customer-009",
-    customerName: "Bùi Thanh Tâm",
-    email: "tambui@gmail.com",
-    phone: "0966332211",
-    address: "Phú Nhuận, TP.HCM",
-    createdAt: "2026-06-01T13:12:00",
-    paidAt: "2026-06-01T13:20:00",
-    status: "CANCELLED",
-    subtotal: 498000,
-    shipping: 30000,
-    total: 528000,
-    items: [
-      { id: 30, name: "Áo khoác bomber unisex", price: 589000, quantity: 1, image: "/assets/products/product-30.jpg", color: "Black", size: "M" },
-      { id: 46, name: "Khăn bandana họa tiết", price: 129000, quantity: 1, image: "/assets/products/product-46.jpg", color: "Brown", size: "FREE_SIZE" }
-    ]
-  },
-  {
-    id: "sample-order-010",
-    customerId: "sample-customer-010",
-    customerName: "Ngô Yến Nhi",
-    email: "nhingo@gmail.com",
-    phone: "0944556677",
-    address: "Quận 10, TP.HCM",
-    createdAt: "2026-05-31T18:08:00",
-    paidAt: "2026-05-31T18:18:00",
-    status: "COMPLETED",
-    subtotal: 747000,
-    shipping: 0,
-    total: 747000,
-    items: [
-      { id: 45, name: "Túi đeo chéo mini", price: 249000, quantity: 1, image: "/assets/products/product-45.jpg", color: "Black", size: "FREE_SIZE" },
-      { id: 15, name: "Quần ống suông nữ Hàn Quốc", price: 409000, quantity: 1, image: "/assets/products/product-15.jpg", color: "Beige", size: "M" },
-      { id: 49, name: "Ví da mini", price: 199000, quantity: 1, image: "/assets/products/product-49.jpg", color: "Brown", size: "FREE_SIZE" }
-    ]
-  }
+let sampleOrders = [
+  createSampleOrder("sample-order-001", "Nguyễn Mến", "0903665225", "Tân Phú, TP.HCM", "COMPLETED", 1, 17, 43),
+  createSampleOrder("sample-order-002", "Trần Phương Anh", "0912345678", "Quận 3, TP.HCM", "PENDING", 4, 26),
+  createSampleOrder("sample-order-003", "Lê Minh Quân", "0933123456", "Bình Thạnh, TP.HCM", "SHIPPING", 29, 48),
+  createSampleOrder("sample-order-004", "Hoàng Gia Bảo", "0909090909", "Gò Vấp, TP.HCM", "CANCELLED", 31),
+  createSampleOrder("sample-order-005", "Phạm Thảo Vy", "0911222333", "Thủ Đức, TP.HCM", "CONFIRMED", 6, 12, 42)
 ];
+
+function createSampleOrder(id, customerName, phone, address, status, ...productIds) {
+  const items = productIds.map((productId) => {
+    const product = defaultProducts.find((item) => item.id === productId) || defaultProducts[0];
+    return {
+      id: product.id,
+      productId: product.id,
+      name: product.name,
+      productName: product.name,
+      price: product.price,
+      quantity: 1,
+      image: product.image,
+      thumbnailUrl: product.thumbnailUrl,
+      color: "Black",
+      size: product.categoryName === "Phụ kiện" ? "FREE_SIZE" : "M"
+    };
+  });
+  const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const shipping = subtotal >= 500000 ? 0 : 30000;
+  const dayOffset = Number(id.slice(-1)) || 1;
+  return {
+    id,
+    customerId: id,
+    customerName,
+    email: `${id}@nisport.local`,
+    phone,
+    address,
+    receiverName: customerName,
+    receiverPhone: phone,
+    createdAt: new Date(2026, 5, 10 - dayOffset, 10 + dayOffset, 20).toISOString(),
+    status,
+    subtotal,
+    shipping,
+    total: subtotal + shipping,
+    totalAmount: subtotal + shipping,
+    items
+  };
+}
 
 function requireAdminAccess() {
   const adminApp = document.getElementById("adminApp");
   const currentUser = getCurrentUser();
   if (!adminApp) return false;
-
   if (!currentUser || currentUser.role !== "admin") {
     adminApp.innerHTML = `
       <section class="admin-denied">
         <h1>Không có quyền truy cập</h1>
-        <p>Chỉ tài khoản admin mới có thể vào trang quản trị.</p>
-        <p><strong>Email:</strong> admin@lunafashion.com<br><strong>Mật khẩu:</strong> 123456</p>
+        <p>Chỉ tài khoản admin mới có thể vào trang quản trị Ni Sport.</p>
+        <p><strong>Email:</strong> admin@nisport.com<br><strong>Mật khẩu:</strong> 123456</p>
         <a class="btn btn-primary" href="login.html">Đăng nhập admin</a>
       </section>
     `;
     return false;
   }
-
   return true;
 }
 
 function renderAdminSidebar() {
   const sidebar = document.querySelector(".admin-sidebar");
   if (!sidebar) return;
-
   sidebar.innerHTML = `
-    <a href="#adminDashboard" class="logo admin-sidebar-logo">
-      <span class="logo-main">Luna</span>
-      <small>Fashion</small>
-    </a>
+    <a href="#adminDashboard" class="logo admin-sidebar-logo"><span class="logo-main">Ni<span>Sport</span></span><small>Admin</small></a>
     <nav>
       <span class="admin-nav-label">Tổng quan</span>
       <a href="#adminDashboard">Dashboard</a>
       <span class="admin-nav-label">Quản lý</span>
-      <a href="#adminProducts">Quản lí sản phẩm</a>
-      <a href="#adminOrders">Quản lí đơn hàng</a>
-      <a href="#adminCustomers">Quản lí khách hàng</a>
+      <a href="#adminProducts">Quản lý sản phẩm</a>
+      <a href="#adminOrders">Quản lý đơn hàng</a>
+      <a href="#adminCustomers">Quản lý khách hàng</a>
       <span class="admin-nav-label">Cài đặt</span>
       <a href="#adminLogout" id="adminLogoutLink">Đăng xuất</a>
     </nav>
@@ -264,418 +116,125 @@ function renderAdminSidebar() {
 function showAdminSection(sectionId = "adminDashboard") {
   const targetId = sectionId.replace("#", "");
   const targetPanel = document.getElementById(targetId) || document.getElementById("adminDashboard");
-  const sectionTitles = {
-    adminDashboard: ["Dashboard", ""],
-    adminProducts: ["Quản lý sản phẩm", "Danh sách và trạng thái sản phẩm"],
-    adminOrders: ["Quản lý đơn hàng", ""],
-    adminCustomers: ["Quản lý khách hàng", ""]
+  const titles = {
+    adminDashboard: ["Dashboard", "Tổng quan hoạt động cửa hàng"],
+    adminProducts: ["Quản lý sản phẩm", "Áo bóng đá, quần bóng đá, đồ tập và phụ kiện"],
+    adminOrders: ["Quản lý đơn hàng", "Theo dõi và cập nhật trạng thái đơn hàng"],
+    adminCustomers: ["Quản lý khách hàng", "Thông tin tài khoản khách hàng"]
   };
-  const [title, subtitle] = sectionTitles[targetPanel.id] || sectionTitles.adminDashboard;
-
+  const [title, subtitle] = titles[targetPanel.id] || titles.adminDashboard;
   document.querySelector(".admin-topbar h1").textContent = title;
   document.querySelector(".admin-topbar p").textContent = subtitle;
-  document.querySelector(".admin-topbar p").hidden = !subtitle;
-  document.querySelectorAll(".admin-panel").forEach((panel) => {
-    panel.classList.toggle("active", panel === targetPanel);
-  });
+  document.querySelectorAll(".admin-panel").forEach((panel) => panel.classList.toggle("active", panel === targetPanel));
   document.querySelectorAll(".admin-sidebar nav a[href^='#admin']").forEach((link) => {
     link.classList.toggle("active", link.getAttribute("href") === `#${targetPanel.id}`);
   });
 }
 
-function initAdminSections() {
-  document.querySelectorAll(".admin-sidebar a[href^='#admin']").forEach((link) => {
-    link.addEventListener("click", (event) => {
-      event.preventDefault();
-      const sectionId = link.getAttribute("href");
-      if (sectionId === "#adminLogout") {
-        clearCurrentUser();
-        window.location.href = "login.html";
-        return;
-      }
-      showAdminSection(sectionId);
-      history.replaceState(null, "", sectionId);
-    });
-  });
-
-  showAdminSection(window.location.hash || "adminDashboard");
+function getCustomerOrders() {
+  return [...getOrders(), ...sampleOrders].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 }
 
-function renderAdminStats() {
-  const statsTarget = document.getElementById("adminStats");
-  if (!statsTarget) return;
-
-  const users = getUsers().filter((user) => user.role !== "admin");
-  const orders = getCustomerOrders();
-  const revenue = orders.reduce((sum, order) => sum + (order.total || 0), 0);
-
-  statsTarget.innerHTML = `
-    <article class="admin-stat-card stat-pink"><span>Tổng doanh thu</span><strong>${formatMoney(revenue)}</strong><small>+ 18.6% so với tháng trước</small></article>
-    <article class="admin-stat-card stat-purple"><span>Đơn hàng</span><strong>${orders.length}</strong><small>+ 12.5% so với tháng trước</small></article>
-    <article class="admin-stat-card stat-orange"><span>Khách hàng</span><strong>${users.length}</strong><small>+ 8.7% so với tháng trước</small></article>
-    <article class="admin-stat-card stat-teal"><span>Sản phẩm</span><strong>${products.length}</strong><small>+ 5.3% so với tháng trước</small></article>
-  `;
-}
-
-function getOrderPaymentDate(order) {
-  return new Date(order.paidAt || order.paymentDate || order.paidDate || order.createdAt);
-}
-
-function getChartScaleMax(maxRevenue) {
-  if (maxRevenue <= 0) return 1000000;
-
-  const magnitude = 10 ** Math.floor(Math.log10(maxRevenue));
-  const normalized = maxRevenue / magnitude;
-  const niceStep = normalized <= 1 ? 1 : normalized <= 2 ? 2 : normalized <= 5 ? 5 : 10;
-  return niceStep * magnitude;
-}
-
-function formatChartMoney(value) {
-  if (value >= 1000000000) return `${value / 1000000000}B`;
-  if (value >= 1000000) return `${value / 1000000}M`;
-  if (value >= 1000) return `${value / 1000}K`;
-  return String(value);
-}
-
-function getAdminImageSrc(image) {
-  const imagePath = String(image || "").trim();
-  if (!imagePath) return "../assets/product-1.jpg";
-  if (/^(https?:|data:|blob:)/.test(imagePath)) return imagePath;
-
-  const assetIndex = imagePath.replace(/\\/g, "/").lastIndexOf("assets/");
-  if (assetIndex !== -1) return `../${imagePath.replace(/\\/g, "/").slice(assetIndex)}`;
-
-  return imagePath;
-}
-
-function getWeekStart(date) {
-  const start = new Date(date);
-  const day = start.getDay();
-  const diff = day === 0 ? -6 : 1 - day;
-  start.setDate(start.getDate() + diff);
-  start.setHours(0, 0, 0, 0);
-  return start;
-}
-
-function formatChartDate(date) {
-  return `${String(date.getDate()).padStart(2, "0")}/${String(date.getMonth() + 1).padStart(2, "0")}/${date.getFullYear()}`;
-}
-
-function getRevenueChart(period = adminRevenuePeriod) {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = now.getMonth();
-  let chartItems = [];
-
-  if (period === "year") {
-    chartItems = Array.from({ length: 12 }, (_, index) => ({
-      label: `T${index + 1}`,
-      revenue: 0,
-      tooltipDate: `Tháng ${index + 1}/${year}`
-    }));
-  } else if (period === "month") {
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
-    chartItems = Array.from({ length: daysInMonth }, (_, index) => {
-      const date = new Date(year, month, index + 1);
-      return {
-        label: String(index + 1).padStart(2, "0"),
-        revenue: 0,
-        tooltipDate: formatChartDate(date)
-      };
-    });
-  } else {
-    const weekStart = getWeekStart(now);
-    const weekLabels = ["T2", "T3", "T4", "T5", "T6", "T7", "CN"];
-    chartItems = Array.from({ length: 7 }, (_, index) => {
-      const date = new Date(weekStart);
-      date.setDate(weekStart.getDate() + index);
-      return {
-        label: weekLabels[index],
-        revenue: 0,
-        tooltipDate: formatChartDate(date)
-      };
-    });
-  }
-
-  getCustomerOrders()
-    .filter((order) => normalizeOrderStatus(order.status) !== "CANCELLED")
-    .forEach((order) => {
-      const paymentDate = getOrderPaymentDate(order);
-      if (Number.isNaN(paymentDate.getTime())) return;
-
-      let itemIndex = -1;
-      if (period === "year") {
-        if (paymentDate.getFullYear() !== year) return;
-        itemIndex = paymentDate.getMonth();
-      } else if (period === "month") {
-        if (paymentDate.getFullYear() !== year || paymentDate.getMonth() !== month) return;
-        itemIndex = paymentDate.getDate() - 1;
-      } else {
-        const weekStart = getWeekStart(now);
-        const weekEnd = new Date(weekStart);
-        weekEnd.setDate(weekStart.getDate() + 7);
-        if (paymentDate < weekStart || paymentDate >= weekEnd) return;
-        itemIndex = Math.floor((paymentDate - weekStart) / 86400000);
-      }
-
-      if (chartItems[itemIndex]) chartItems[itemIndex].revenue += Number(order.total || 0);
-    });
-
-  const maxRevenue = Math.max(...chartItems.map((item) => item.revenue));
-  const scaleMax = getChartScaleMax(maxRevenue);
-  const selectedPoint = chartItems.reduce((best, item) => item.revenue > best.revenue ? item : best, chartItems[0]);
-  const activePoint = selectedPoint.revenue > 0
-    ? selectedPoint
-    : chartItems[Math.min(period === "year" ? now.getMonth() : period === "month" ? now.getDate() - 1 : (now.getDay() + 5) % 7, chartItems.length - 1)];
-  const points = chartItems.map((item, index) => ({
-    ...item,
-    x: ((index + 0.5) / chartItems.length) * 720,
-    y: 220 - (item.revenue / scaleMax) * 180
-  }));
-  const active = points.find((point) => point.label === activePoint.label) || points[0];
-  const linePath = points.map((point, index) => `${index === 0 ? "M" : "L"}${point.x.toFixed(1)},${point.y.toFixed(1)}`).join(" ");
-  const areaPath = `${linePath} L${points[points.length - 1].x.toFixed(1)},240 L${points[0].x.toFixed(1)},240 Z`;
-  const getTooltipPosition = (point) => ({
-    x: Math.min(Math.max(point.x - 128, 0), 464),
-    y: Math.max(point.y - 100, 12)
-  });
-  const visibleXAxisPoints = period === "month"
-    ? points.filter((_, index) => index === 0 || index === points.length - 1 || [4, 9, 14, 19, 24].includes(index))
-    : points;
-
-  return {
-    active,
-    areaPath,
-    getTooltipPosition,
-    linePath,
-    points,
-    xAxisItems: visibleXAxisPoints.map((point) => ({
-      label: point.label,
-      left: (point.x / 720) * 100
-    })),
-    yAxisLabels: [scaleMax, scaleMax * 0.75, scaleMax * 0.5, scaleMax * 0.25, 0].map(formatChartMoney),
-    tooltipDate: active.tooltipDate
-  };
-}
-
-function getTopSellingProducts(limit = 5) {
-  const soldByProduct = new Map();
-
-  getCustomerOrders()
-    .filter((order) => normalizeOrderStatus(order.status) !== "CANCELLED")
-    .forEach((order) => {
-      (order.items || []).forEach((item) => {
-        const productId = Number(item.id);
-        const current = soldByProduct.get(productId) || {
-          id: productId,
-          image: item.image,
-          name: item.name,
-          price: Number(item.price || 0),
-          sold: 0
-        };
-
-        current.sold += Number(item.quantity || 0);
-        soldByProduct.set(productId, current);
-      });
-    });
-
-  const soldProducts = [...soldByProduct.values()]
-    .sort((first, second) => second.sold - first.sold)
-    .slice(0, limit);
-
-  if (soldProducts.length > 0) return soldProducts;
-
-  return products.slice(0, limit).map((product, index) => ({
-    id: product.id,
-    image: product.image,
-    name: product.name,
-    price: product.price,
-    sold: Math.max(320 - index * 35, 0)
-  }));
+function getOrderTotal(order) {
+  return order.totalAmount || order.total || 0;
 }
 
 function renderAdminDashboard() {
-  const dashboardShell = document.querySelector("#adminDashboard .admin-dashboard-shell");
-  if (!dashboardShell) return;
+  const shell = document.querySelector(".admin-dashboard-shell");
+  if (!shell) return;
+  const users = getUsers().filter((user) => user.role !== "admin");
+  const orders = getCustomerOrders();
+  const completedOrders = orders.filter((order) => normalizeOrderStatus(order.status) === "COMPLETED");
+  const revenue = completedOrders.reduce((sum, order) => sum + getOrderTotal(order), 0);
+  const pending = orders.filter((order) => normalizeOrderStatus(order.status) === "PENDING").length;
+  const cancelled = orders.filter((order) => normalizeOrderStatus(order.status) === "CANCELLED").length;
+  const topProducts = getTopProducts(completedOrders).slice(0, 5);
 
-  const recentOrders = getCustomerOrders().slice(0, 3);
-  const revenueChart = getRevenueChart();
-  const topSellingProducts = getTopSellingProducts();
-  const revenuePeriodOptions = [
-    ["week", "Tuần này"],
-    ["month", "Tháng này"],
-    ["year", "Năm nay"]
-  ];
-  dashboardShell.innerHTML = `
-    <div class="admin-stats" id="adminStats"></div>
-    <div class="admin-dashboard-grid admin-dashboard-grid-clean">
-      <article class="admin-chart-card admin-chart-card-main">
-        <div class="admin-card-head">
-          <div><h3>Doanh thu</h3></div>
-          <div class="admin-chart-controls">
-            <select id="dashboardSalesFilter">
-              ${revenuePeriodOptions.map(([value, label]) => `<option value="${value}" ${adminRevenuePeriod === value ? "selected" : ""}>${label}</option>`).join("")}
-            </select>
-          </div>
-        </div>
-        <div class="admin-wave-chart">
-          <div class="admin-wave-yaxis">${revenueChart.yAxisLabels.map((label) => `<span>${label}</span>`).join("")}</div>
-          <div class="admin-wave-plot">
-            <svg viewBox="0 0 720 260" preserveAspectRatio="none" role="img" aria-label="Biểu đồ doanh thu theo ngày">
-              <defs><linearGradient id="salesWaveFill" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#ff6aa2" stop-opacity="0.28"/><stop offset="100%" stop-color="#ff6aa2" stop-opacity="0.03"/></linearGradient></defs>
-              <path class="wave-area" d="${revenueChart.areaPath}"></path>
-              <path class="wave-line" d="${revenueChart.linePath}"></path>
-              <g class="wave-points">
-                ${revenueChart.points.map((point) => {
-                  const tooltip = revenueChart.getTooltipPosition(point);
-                  return `
-                    <g class="wave-point">
-                      <circle class="wave-hit" cx="${point.x.toFixed(1)}" cy="${point.y.toFixed(1)}" r="16"></circle>
-                      <circle class="wave-dot" cx="${point.x.toFixed(1)}" cy="${point.y.toFixed(1)}" r="4"></circle>
-                      <g class="wave-tooltip">
-                        <rect x="${tooltip.x.toFixed(1)}" y="${tooltip.y.toFixed(1)}" width="256" height="84" rx="8"></rect>
-                        <text x="${(tooltip.x + 22).toFixed(1)}" y="${(tooltip.y + 32).toFixed(1)}">${point.tooltipDate}</text>
-                        <text x="${(tooltip.x + 22).toFixed(1)}" y="${(tooltip.y + 62).toFixed(1)}">Doanh thu: ${formatMoney(point.revenue)}</text>
-                      </g>
-                    </g>
-                  `;
-                }).join("")}
-              </g>
-            </svg>
-            <div class="admin-wave-xaxis">${revenueChart.xAxisItems.map((item) => `<span style="left: ${item.left.toFixed(4)}%;">${item.label}</span>`).join("")}</div>
-          </div>
-        </div>
-      </article>
-      <article class="admin-category-card admin-order-ratio-card">
-        <div class="admin-card-head"><div><h3>Tỉ lệ đơn hàng</h3></div></div>
-        <div class="admin-pie-chart" aria-label="Tỉ lệ đơn hàng"><div class="admin-pie-center"><strong>${getCustomerOrders().length}</strong><span>Tổng đơn</span></div></div>
-        <ul class="admin-pie-legend">
-          <li><i></i>Hoàn thành <strong>69%</strong></li>
-          <li><i></i>Chờ xác nhận <strong>20%</strong></li>
-          <li><i></i>Đã hủy <strong>10%</strong></li>
-          <li><i></i>Hoàn trả <strong>5%</strong></li>
-        </ul>
-      </article>
+  shell.innerHTML = `
+    <div class="admin-dashboard-header">
+      <div><span class="admin-dashboard-kicker">Ni Sport Admin</span><h2>Dashboard cửa hàng</h2></div>
+      <div class="admin-dashboard-date">${new Date().toLocaleDateString("vi-VN")}</div>
     </div>
-    <div class="admin-dashboard-bottom-grid">
-      <article class="admin-chart-card admin-recent-orders-card">
-        <div class="admin-card-head"><div><h3>Đơn hàng mới nhất</h3><p>Theo dõi nhanh các đơn vừa được đặt</p></div><a href="#adminOrders" onclick="showAdminSection('adminOrders')">Xem tất cả</a></div>
+    <div class="admin-stats">
+      <article class="admin-stat-card stat-green"><span>Doanh thu hoàn thành</span><strong>${formatMoney(revenue)}</strong><small>Chỉ tính đơn COMPLETED</small></article>
+      <article class="admin-stat-card stat-sky"><span>Đơn hàng</span><strong>${orders.length}</strong><small>${pending} đơn chờ xử lý</small></article>
+      <article class="admin-stat-card stat-orange"><span>Khách hàng</span><strong>${users.length + sampleCustomers.length}</strong><small>Dữ liệu local demo</small></article>
+      <article class="admin-stat-card stat-indigo"><span>Sản phẩm</span><strong>${products.length}</strong><small>50 sản phẩm bóng đá mẫu</small></article>
+    </div>
+    <div class="admin-dashboard-grid admin-dashboard-grid-clean">
+      <section class="admin-chart-card admin-chart-card-main">
+        <div class="admin-card-head"><div><h3>Đơn hàng mới nhất</h3><p>Theo dõi nhanh các đơn vừa đặt</p></div><a href="#adminOrders" onclick="showAdminSection('adminOrders')">Xem tất cả</a></div>
         <div class="admin-dashboard-orders">
           <div><span>Mã đơn</span><span>Khách hàng</span><span>Ngày đặt</span><span>Tổng tiền</span><span>Trạng thái</span></div>
-          ${recentOrders.length ? recentOrders.map((order) => {
-            const createdAt = new Date(order.createdAt);
-            return `<div><strong>${formatOrderCode(order, getCustomerOrders())}</strong><span>${order.customerName || "Khách hàng"}</span><span>${createdAt.toLocaleDateString("vi-VN")} ${createdAt.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })}</span><b>${formatMoney(order.total || 0)}</b><em class="order-status-pill ${getOrderStatusClass(order.status)}">${formatOrderStatusText(order.status)}</em></div>`;
-          }).join("") : `<div class="admin-dashboard-order-empty"><span>Chưa có đơn hàng mới.</span></div>`}
+          ${orders.slice(0, 6).map((order) => renderDashboardOrderRow(order, orders)).join("")}
         </div>
-      </article>
-      <article class="admin-category-card admin-top-products-card">
-        <div class="admin-card-head"><div><h3>Top sản phẩm bán chạy</h3></div></div>
-        <div class="admin-top-products-list">
-          ${topSellingProducts.map((product, index) => `
-            <article class="admin-top-product-item">
-              <span class="admin-top-product-rank">${index + 1}</span>
-              <img src="${getAdminImageSrc(product.image)}" alt="${product.name}">
-              <div>
-                <strong>${product.name}</strong>
-                <small>Đã bán: ${product.sold}</small>
-              </div>
-              <b>${formatMoney(product.price)}</b>
-            </article>
-          `).join("")}
-        </div>
-      </article>
+      </section>
+      <section class="admin-category-card">
+        <h3>Top sản phẩm bán chạy</h3>
+        <ul class="admin-pie-legend">
+          ${topProducts.map((product) => `<li><i></i>${product.name}<strong>${product.sold}</strong></li>`).join("") || "<li>Chưa có dữ liệu</li>"}
+        </ul>
+        <p class="admin-card-head">Đơn đã hủy: ${cancelled}</p>
+      </section>
     </div>
   `;
-
-  renderAdminStats();
-  document.getElementById("dashboardSalesFilter")?.addEventListener("change", (event) => {
-    adminRevenuePeriod = event.target.value;
-    renderAdminDashboard();
-  });
 }
 
-function getFilteredAdminProducts() {
-  refreshProductsFromAdminState();
-  const keyword = adminProductFilters.keyword.trim().toLowerCase();
+function renderDashboardOrderRow(order, orders) {
+  const createdAt = new Date(order.createdAt);
+  return `<div><strong>${formatOrderCode(order, orders)}</strong><span>${order.customerName || "Khách hàng"}</span><span>${createdAt.toLocaleDateString("vi-VN")}</span><b>${formatMoney(getOrderTotal(order))}</b><em class="order-status-pill ${getOrderStatusClass(order.status)}">${formatOrderStatusText(order.status)}</em></div>`;
+}
 
+function getTopProducts(orders) {
+  const map = new Map();
+  orders.flatMap((order) => order.items || []).forEach((item) => {
+    const id = item.productId || item.id;
+    const current = map.get(id) || { id, name: item.name || item.productName, sold: 0, revenue: 0 };
+    current.sold += item.quantity || 1;
+    current.revenue += (item.price || 0) * (item.quantity || 1);
+    map.set(id, current);
+  });
+  return [...map.values()].sort((a, b) => b.sold - a.sold);
+}
+
+function filterProducts() {
+  const keyword = adminProductFilters.keyword.trim().toLowerCase();
   return products.filter((product) => {
-    const matchesGender = adminProductFilters.gender === "all" || product.gender === adminProductFilters.gender;
-    const matchesCategory = adminProductFilters.category === "all" || Number(product.categoryId) === Number(adminProductFilters.category);
-    const matchesPrice =
+    const matchGender = adminProductFilters.gender === "all" || product.gender === adminProductFilters.gender;
+    const matchCategory = adminProductFilters.category === "all" || String(product.categoryId) === String(adminProductFilters.category);
+    const matchTag = adminProductFilters.tag === "all" || product.tag === adminProductFilters.tag;
+    const matchKeyword = !keyword || product.name.toLowerCase().includes(keyword) || product.categoryName.toLowerCase().includes(keyword);
+    const matchPrice =
       adminProductFilters.price === "all" ||
       (adminProductFilters.price === "under250" && product.price < 250000) ||
       (adminProductFilters.price === "250to400" && product.price >= 250000 && product.price <= 400000) ||
       (adminProductFilters.price === "over400" && product.price > 400000);
-    const matchesTag = adminProductFilters.tag === "all" || product.tag === adminProductFilters.tag;
-    const matchesKeyword = !keyword || [product.name, product.gender, product.category, product.tag, product.description, product.price]
-      .some((value) => String(value || "").toLowerCase().includes(keyword));
-    return matchesGender && matchesCategory && matchesPrice && matchesTag && matchesKeyword;
+    return matchGender && matchCategory && matchTag && matchKeyword && matchPrice;
   });
 }
 
-function renderAdminProductLayout() {
-  const productPanel = document.getElementById("adminProducts");
-  if (!productPanel || productPanel.dataset.enhanced === "true") return;
-
-  productPanel.dataset.enhanced = "true";
-  const tableHead = productPanel.querySelector(".admin-table thead tr");
-  if (tableHead) {
-    tableHead.innerHTML = `
-      <th><input type="checkbox"></th>
-      <th>Sản phẩm</th>
-      <th>Danh mục</th>
-      <th>Giá bán</th>
-      <th>Kho</th>
-      <th>Trạng thái</th>
-      <th>Lượt bán</th>
-      <th>Ngày tạo</th>
-      <th>Thao tác</th>
-    `;
-  }
-  productPanel.insertAdjacentHTML("afterbegin", `
-    <div class="admin-product-summary">
-      <article><span>Tổng sản phẩm</span><strong>568</strong><small class="up">+ 12.5% so với tháng trước</small></article>
-      <article><span>Đang bán</span><strong>486</strong><small class="up">+ 8.2% so với tháng trước</small></article>
-      <article><span>Hết hàng</span><strong>32</strong><small class="down">- 4.3% so với tháng trước</small></article>
-      <article><span>Ngừng kinh doanh</span><strong>50</strong><small class="down">- 1.7% so với tháng trước</small></article>
-    </div>
-  `);
-}
-
 function renderAdminProducts() {
-  const productTable = document.getElementById("adminProductTable");
-  if (!productTable) return;
+  const table = document.getElementById("adminProductTable");
+  const head = document.querySelector("#adminProducts .admin-table thead tr");
+  if (!table || !head) return;
 
-  const filteredProducts = getFilteredAdminProducts();
-  productTable.innerHTML = filteredProducts.length ? filteredProducts.map((product, index) => {
-    const stock = index % 6 === 5 ? 0 : 120 - (index * 7 % 90);
-    const sold = 320 - (index * 20 % 250);
-    const statusText = stock === 0 ? "Hết hàng" : index % 9 === 8 ? "Ngừng kinh doanh" : "Đang bán";
-    const statusClass = stock === 0 ? "out" : index % 9 === 8 ? "stop" : "selling";
-    return `
-      <tr>
-        <td><input type="checkbox" aria-label="Chọn ${product.name}"></td>
-        <td>
-          <div class="admin-product-cell">
-            <img src="${product.image}" alt="${product.name}">
-            <div><strong>${product.name}</strong><small>SP${String(index + 1).padStart(3, "0")}</small></div>
-          </div>
-        </td>
-        <td>${genderLabels[product.gender] || product.gender || ""}</td>
-        <td>${product.category}</td>
-        <td><strong class="admin-product-price">${formatMoney(product.price)}</strong>${product.oldPrice ? `<small class="admin-product-old-price">${formatMoney(product.oldPrice)}</small>` : ""}</td>
-        <td>${stock}</td>
-        <td><span class="admin-product-status ${statusClass}">${statusText}</span></td>
-        <td>${sold}</td>
-        <td>${String(18 - (index % 5)).padStart(2, "0")}/05/2024</td>
-        <td class="admin-product-actions">
-          <button type="button" onclick="editAdminProduct(${product.id})">Sửa</button>
-          <button type="button">Copy</button>
-          <button type="button" onclick="hideAdminProduct(${product.id})">Xóa</button>
-        </td>
-      </tr>
-    `;
-  }).join("") : `<tr><td colspan="10">Không tìm thấy sản phẩm phù hợp.</td></tr>`;
+  head.innerHTML = `
+    <th>ID</th><th>Sản phẩm</th><th>Giới tính</th><th>Danh mục</th><th>Giá bán</th><th>Tồn kho</th><th>Trạng thái</th><th>Thao tác</th>
+  `;
+
+  const list = filterProducts();
+  table.innerHTML = list.map((product) => `
+    <tr>
+      <td>#${product.id}</td>
+      <td><div class="admin-product-cell"><img src="${product.image}" alt="${product.name}" onerror="this.src='../assets/product-${Math.min(product.id, 28)}.jpg'"><div><strong>${product.name}</strong><small>${product.slug}</small></div></div></td>
+      <td>${genderLabels[product.gender] || product.gender}</td>
+      <td>${product.categoryName}</td>
+      <td><strong class="admin-product-price">${formatMoney(product.price)}</strong>${product.oldPrice ? `<span class="admin-product-old-price">${formatMoney(product.oldPrice)}</span>` : ""}</td>
+      <td>${product.totalStock || 0}</td>
+      <td><span class="admin-product-status ${product.status === "SELLING" ? "selling" : "out"}">${product.status === "SELLING" ? "Đang bán" : "Tạm dừng"}</span></td>
+      <td class="admin-product-actions"><button type="button" onclick="editAdminProduct(${product.id})">Sửa</button><button type="button" onclick="hideAdminProduct(${product.id})">Xóa</button></td>
+    </tr>
+  `).join("") || `<tr><td colspan="8">Không tìm thấy sản phẩm phù hợp.</td></tr>`;
 }
 
 function applyAdminProductFilters() {
@@ -690,62 +249,52 @@ function applyAdminProductFilters() {
 }
 
 function resetAdminProductFilters() {
-  adminProductFilters = { gender: "all", category: "all", price: "all", tag: "all", keyword: "" };
   ["adminFilterGender", "adminFilterCategory", "adminFilterPrice", "adminFilterTag"].forEach((id) => {
     const input = document.getElementById(id);
     if (input) input.value = "all";
   });
   const search = document.getElementById("adminProductSearch");
   if (search) search.value = "";
+  adminProductFilters = { gender: "all", category: "all", price: "all", tag: "all", keyword: "" };
   renderAdminProducts();
 }
 
-function resetAdminProductForm() {
-  const form = document.getElementById("adminProductForm");
-  if (!form) return;
-  form.reset();
-  form.productId.value = "";
+function getProductCategoryName(categoryId) {
+  return productCategories.find((category) => Number(category.id) === Number(categoryId))?.name || "Áo bóng đá";
 }
 
-function openAdminProductForm() {
+function openAdminProductForm(productId = null) {
   const modal = document.getElementById("adminProductModal");
   const form = document.getElementById("adminProductForm");
-  if (!form) return;
-  resetAdminProductForm();
-  if (modal) modal.hidden = false;
-  form.classList.add("show");
-  form.productName.focus();
+  if (!modal || !form) return;
+  form.reset();
+  form.productId.value = "";
+  if (productId) editAdminProduct(productId);
+  else modal.hidden = false;
 }
 
 function closeAdminProductForm() {
   const modal = document.getElementById("adminProductModal");
   const form = document.getElementById("adminProductForm");
-  if (!form) return;
-  form.classList.remove("show");
+  if (form) form.reset();
   if (modal) modal.hidden = true;
-  resetAdminProductForm();
-}
-
-function getProductCategoryName(categoryId) {
-  return productCategories.find((category) => Number(category.id) === Number(categoryId))?.name || "Áo";
 }
 
 function editAdminProduct(productId) {
   const product = products.find((item) => item.id === productId);
+  const modal = document.getElementById("adminProductModal");
   const form = document.getElementById("adminProductForm");
-  if (!product || !form) return;
-
-  document.getElementById("adminProductModal").hidden = false;
-  form.classList.add("show");
+  if (!product || !modal || !form) return;
+  modal.hidden = false;
   form.productId.value = product.id;
   form.productName.value = product.name;
   form.productGender.value = product.gender || "UNISEX";
   form.productCategoryId.value = product.categoryId || 1;
   form.productPrice.value = product.price;
   form.productOldPrice.value = product.oldPrice || "";
-  form.productImage.value = product.image;
-  form.productTag.value = product.tag;
-  form.productDescription.value = product.description;
+  form.productImage.value = product.image || `../assets/products/product-${product.id}.jpg`;
+  form.productTag.value = product.tag || "NEW";
+  form.productDescription.value = product.description || "";
 }
 
 function upsertAdminProduct(product) {
@@ -764,78 +313,42 @@ function hideAdminProduct(productId) {
   saveProductAdminState(state);
   refreshProductsFromAdminState();
   renderAdminProducts();
-  renderAdminStats();
+  renderAdminDashboard();
 }
 
 function renderAdminCustomers() {
   const table = document.getElementById("adminCustomerTable");
   if (!table) return;
-
+  const users = [...sampleCustomers, ...getUsers().filter((user) => user.role !== "admin").map((user) => ({
+    id: user.id,
+    name: `${user.firstName || ""} ${user.lastName || ""}`.trim() || user.fullName || user.email,
+    email: user.email,
+    phone: user.phone || "Chưa cập nhật",
+    address: user.address || "Chưa cập nhật",
+    createdAt: user.createdAt ? new Date(user.createdAt).toLocaleDateString("vi-VN") : "",
+    status: "Hoạt động"
+  }))];
   const keyword = adminCustomerKeyword.trim().toLowerCase();
-  const users = adminCustomerSeed
-    .filter((user) => !keyword || [user.email, user.phone].some((value) => String(value || "").toLowerCase().includes(keyword)));
-
-  table.innerHTML = users.length ? users.map((user, index) => `
+  const filtered = users.filter((user) => !keyword || user.name.toLowerCase().includes(keyword) || user.email.toLowerCase().includes(keyword) || user.phone.includes(keyword));
+  table.innerHTML = filtered.map((user) => `
     <tr>
-      <td>${user.id}</td>
-      <td><strong>${user.name}</strong></td>
-      <td>${user.email}</td>
-      <td>${user.phone}</td>
-      <td>${user.address}</td>
-      <td>${user.createdAt}</td>
-      <td><span class="admin-customer-status ${user.status === "Hoạt động" ? "is-active" : user.status === "Tạm khóa" ? "is-paused" : "is-locked"}">${user.status}</span></td>
-      <td class="admin-customer-actions"><button type="button" onclick="viewAdminCustomer('${user.id}')">Xem</button></td>
+      <td>${user.id}</td><td><strong>${user.name}</strong></td><td>${user.email}</td><td>${user.phone}</td><td>${user.address}</td><td>${user.createdAt}</td>
+      <td><span class="admin-customer-status">${user.status}</span></td>
+      <td><button type="button" class="admin-customer-action" onclick="showToast('Tài khoản: ${user.name}')">Xem</button></td>
     </tr>
-  `).join("") : `<tr><td colspan="8">Chưa có khách hàng.</td></tr>`;
-}
-
-function applyAdminCustomerSearch() {
-  adminCustomerKeyword = document.getElementById("adminCustomerSearch")?.value || "";
-  renderAdminCustomers();
-}
-
-function resetAdminCustomerSearch() {
-  adminCustomerKeyword = "";
-  const search = document.getElementById("adminCustomerSearch");
-  if (search) search.value = "";
-  renderAdminCustomers();
-}
-
-function viewAdminCustomer(userId) {
-  const user = adminCustomerSeed.find((item) => String(item.id) === String(userId));
-  showToast(user ? `Tài khoản: ${user.name}` : "Không tìm thấy tài khoản.");
-}
-
-function getCustomerOrders() {
-  const adminUserIds = new Set(getUsers().filter((user) => user.role === "admin").map((user) => user.id));
-  return getOrders().filter((order) => !adminUserIds.has(order.customerId));
-}
-
-function seedAdminSampleOrders() {
-  const orders = getOrders();
-  const existingIds = new Set(orders.map((order) => String(order.id)));
-  const missingOrders = adminSampleOrders.filter((order) => !existingIds.has(String(order.id)));
-  const normalizedOrders = orders.map((order) => ({
-    ...order,
-    status: normalizeOrderStatus(order.status)
-  }));
-  const hasStatusChanges = normalizedOrders.some((order, index) => order.status !== orders[index].status);
-
-  if (hasStatusChanges || missingOrders.length) saveOrders([...normalizedOrders, ...missingOrders]);
+  `).join("") || `<tr><td colspan="8">Chưa có khách hàng.</td></tr>`;
 }
 
 function renderAdminOrderLayout() {
-  const orderPanel = document.getElementById("adminOrders");
-  const orderManager = orderPanel?.querySelector(".admin-order-manager");
-  if (!orderPanel || !orderManager || orderPanel.dataset.enhanced === "true") return;
-
-  orderPanel.dataset.enhanced = "true";
-  orderManager.innerHTML = `
+  const panel = document.getElementById("adminOrders");
+  if (!panel || panel.dataset.rendered) return;
+  panel.dataset.rendered = "true";
+  panel.innerHTML = `
     <div class="admin-order-summary-grid">
-      <article class="hot"><span>Tổng đơn hàng</span><strong id="adminOrderTotalCount">0</strong><small>+ 12.5% so với tháng trước</small></article>
-      <article class="orange"><span>Chờ xác nhận</span><strong id="adminOrderPendingCount">0</strong><small>+ 8.2% so với tháng trước</small></article>
-      <article class="green"><span>Hoàn thành</span><strong id="adminOrderDoneCount">0</strong><small>+ 9.8% so với tháng trước</small></article>
-      <article class="red"><span>Đã hủy</span><strong id="adminOrderCancelCount">0</strong><small>- 4.1% so với tháng trước</small></article>
+      <article class="hot"><span>Tổng đơn hàng</span><strong id="adminOrderTotalCount">0</strong><small>Đơn local demo</small></article>
+      <article class="orange"><span>Chờ xác nhận</span><strong id="adminOrderPendingCount">0</strong><small>Cần xử lý</small></article>
+      <article class="green"><span>Hoàn thành</span><strong id="adminOrderDoneCount">0</strong><small>Tính doanh thu</small></article>
+      <article class="red"><span>Đã hủy</span><strong id="adminOrderCancelCount">0</strong><small>Theo dõi lý do</small></article>
     </div>
     <div class="admin-order-workspace">
       <section class="admin-order-list-card">
@@ -847,120 +360,48 @@ function renderAdminOrderLayout() {
           <button type="button" data-order-filter="completed">Hoàn thành</button>
           <button type="button" data-order-filter="cancelled">Đã hủy</button>
         </div>
-        <div class="admin-order-toolbar">
-          <button class="admin-clear-filter-btn" type="button" id="adminClearOrderFilters">Bộ lọc</button>
-          <input type="search" id="adminOrderSearch" placeholder="Tìm kiếm đơn hàng, khách hàng...">
-          <button type="button" id="adminSearchOrders">Tìm</button>
-        </div>
-        <div class="admin-order-date-filter">
-          <label>Từ ngày<input type="date" id="adminOrderDateFrom"></label>
-          <label>Đến ngày<input type="date" id="adminOrderDateTo"></label>
-          <button type="button" id="adminFilterOrderDate">Lọc thời gian</button>
-        </div>
-        <div class="admin-table-wrap">
-          <table class="admin-table admin-order-table">
-            <thead><tr><th>Mã đơn</th><th>Khách hàng</th><th>Ngày đặt</th><th>Tổng tiền</th><th>Trạng thái</th><th>Thao tác</th></tr></thead>
-            <tbody id="adminOrderTable"></tbody>
-          </table>
-        </div>
+        <div class="admin-order-toolbar"><input type="search" id="adminOrderSearch" placeholder="Tìm mã đơn, khách hàng..."><button type="button" id="adminSearchOrders">Tìm</button><button type="button" id="adminClearOrderFilters">Xóa</button></div>
+        <div class="admin-table-wrap"><table class="admin-order-table"><thead><tr><th>Mã đơn</th><th>Khách hàng</th><th>Ngày đặt</th><th>Tổng tiền</th><th>Trạng thái</th><th>Thao tác</th></tr></thead><tbody id="adminOrderTable"></tbody></table></div>
       </section>
-      <aside class="admin-order-detail-panel" id="adminOrderDetailPanel"></aside>
+      <aside class="admin-order-detail-panel" id="adminOrderDetail"><div class="admin-order-empty">Chọn đơn hàng để xem chi tiết.</div></aside>
     </div>
   `;
 }
 
-function filterAdminOrders() {
+function filterOrders() {
   const keyword = adminOrderFilters.keyword.trim().toLowerCase();
-  const customerOrders = getCustomerOrders();
-  const statusMap = {
-    pending: "PENDING",
-    confirmed: "CONFIRMED",
-    shipping: "SHIPPING",
-    completed: "COMPLETED",
-    cancelled: "CANCELLED"
-  };
-
-  return customerOrders.filter((order) => {
-    const createdDate = new Date(order.createdAt);
-    const fromDate = adminOrderFilters.dateFrom ? new Date(`${adminOrderFilters.dateFrom}T00:00:00`) : null;
-    const toDate = adminOrderFilters.dateTo ? new Date(`${adminOrderFilters.dateTo}T23:59:59`) : null;
-    const normalizedStatus = normalizeOrderStatus(order.status);
-    const matchesStatus = adminOrderFilters.status === "all" || normalizedStatus === statusMap[adminOrderFilters.status];
-    const matchesDateFrom = !fromDate || createdDate >= fromDate;
-    const matchesDateTo = !toDate || createdDate <= toDate;
-    const matchesKeyword = !keyword || [order.id, formatOrderCode(order, customerOrders), order.customerName, order.email, order.status, order.total]
-      .some((value) => String(value || "").toLowerCase().includes(keyword));
-    return matchesStatus && matchesDateFrom && matchesDateTo && matchesKeyword;
-  }).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  return getCustomerOrders().filter((order) => {
+    const status = normalizeOrderStatus(order.status).toLowerCase();
+    const matchStatus = adminOrderFilters.status === "all" || status === adminOrderFilters.status;
+    const matchKeyword = !keyword || formatOrderCode(order, getCustomerOrders()).toLowerCase().includes(keyword) || (order.customerName || "").toLowerCase().includes(keyword);
+    return matchStatus && matchKeyword;
+  });
 }
 
 function renderAdminOrders() {
   renderAdminOrderLayout();
-  const orderTable = document.getElementById("adminOrderTable");
-  const detailPanel = document.getElementById("adminOrderDetailPanel");
-  if (!orderTable) return;
-
-  const customerOrders = getCustomerOrders();
-  const orders = filterAdminOrders();
-  const setText = (id, value) => {
-    const target = document.getElementById(id);
-    if (target) target.textContent = value;
-  };
-  setText("adminOrderTotalCount", customerOrders.length);
-  setText("adminOrderPendingCount", customerOrders.filter((order) => normalizeOrderStatus(order.status) === "PENDING").length);
-  setText("adminOrderDoneCount", customerOrders.filter((order) => normalizeOrderStatus(order.status) === "COMPLETED").length);
-  setText("adminOrderCancelCount", customerOrders.filter((order) => normalizeOrderStatus(order.status) === "CANCELLED").length);
-
-  if (orders.length && (!selectedAdminOrderId || !orders.some((order) => String(order.id) === String(selectedAdminOrderId)))) {
-    selectedAdminOrderId = orders[0].id;
-  }
-
-  const selectedOrder = selectedAdminOrderId ? orders.find((order) => String(order.id) === String(selectedAdminOrderId)) : null;
-  orderTable.innerHTML = orders.length ? orders.map((order) => {
+  const orders = filterOrders();
+  const allOrders = getCustomerOrders();
+  const table = document.getElementById("adminOrderTable");
+  if (!table) return;
+  document.getElementById("adminOrderTotalCount").textContent = allOrders.length;
+  document.getElementById("adminOrderPendingCount").textContent = allOrders.filter((order) => normalizeOrderStatus(order.status) === "PENDING").length;
+  document.getElementById("adminOrderDoneCount").textContent = allOrders.filter((order) => normalizeOrderStatus(order.status) === "COMPLETED").length;
+  document.getElementById("adminOrderCancelCount").textContent = allOrders.filter((order) => normalizeOrderStatus(order.status) === "CANCELLED").length;
+  table.innerHTML = orders.map((order) => {
     const createdAt = new Date(order.createdAt);
     return `
-      <tr class="${String(order.id) === String(selectedOrder?.id) ? "active" : ""}">
-        <td><strong class="admin-order-code">${formatOrderCode(order, customerOrders)}</strong></td>
+      <tr class="${selectedAdminOrderId === order.id ? "active" : ""}">
+        <td><strong class="admin-order-code">${formatOrderCode(order, allOrders)}</strong></td>
         <td><strong>${order.customerName || "Khách hàng"}</strong><small>${order.phone || order.email || ""}</small></td>
-        <td>${createdAt.toLocaleDateString("vi-VN")}<br><small>${createdAt.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })}</small></td>
-        <td><strong>${formatMoney(order.total || 0)}</strong></td>
+        <td>${createdAt.toLocaleDateString("vi-VN")}<small>${createdAt.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })}</small></td>
+        <td><b>${formatMoney(getOrderTotal(order))}</b></td>
         <td><span class="order-state ${getOrderStatusClass(order.status)}">${formatOrderStatusText(order.status)}</span></td>
-        <td class="admin-order-actions">
-          <button type="button" title="Xem chi tiết" onclick="selectAdminOrder('${order.id}')">◉</button>
-          <button type="button" title="Xác nhận" onclick="updateAdminOrderStatus('${order.id}', 'CONFIRMED')">✓</button>
-          <button type="button" title="Hủy" onclick="updateAdminOrderStatus('${order.id}', 'CANCELLED')">×</button>
-        </td>
+        <td class="admin-order-actions"><button type="button" title="Xem chi tiết" onclick="selectAdminOrder('${order.id}')">Xem</button><button type="button" title="Xác nhận" onclick="updateAdminOrderStatus('${order.id}', 'CONFIRMED')">Duyệt</button><button type="button" title="Hủy" onclick="updateAdminOrderStatus('${order.id}', 'CANCELLED')">Hủy</button></td>
       </tr>
     `;
-  }).join("") : `<tr><td colspan="6">Chưa có đơn hàng phù hợp.</td></tr>`;
-
-  if (!detailPanel) return;
-  if (!selectedOrder) {
-    detailPanel.innerHTML = "";
-    return;
-  }
-
-  const createdAt = new Date(selectedOrder.createdAt);
-  const items = selectedOrder.items || [];
-  const subtotal = selectedOrder.subtotal || items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const shipping = selectedOrder.shipping || 0;
-  const total = selectedOrder.total || subtotal + shipping;
-
-  detailPanel.innerHTML = `
-    <div class="admin-order-detail-head">
-      <div><h3>Chi tiết đơn hàng</h3><strong>${formatOrderCode(selectedOrder, customerOrders)}</strong></div>
-      <button type="button" onclick="selectAdminOrder(null)">×</button>
-    </div>
-    <span class="order-state ${getOrderStatusClass(selectedOrder.status)}">${formatOrderStatusText(selectedOrder.status)}</span>
-    <section><h4>Thông tin khách hàng</h4><p>${selectedOrder.customerName || "Khách hàng"}</p><p>${selectedOrder.phone || "Chưa cập nhật SĐT"}</p><p>${selectedOrder.email || "Chưa cập nhật email"}</p><p>${selectedOrder.address || "Chưa cập nhật địa chỉ"}</p></section>
-    <section><h4>Thông tin đơn hàng</h4><div><span>Ngày đặt</span><strong>${createdAt.toLocaleDateString("vi-VN")} ${createdAt.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })}</strong></div><div><span>Thanh toán</span><strong>COD</strong></div><div><span>Vận chuyển</span><strong>Giao hàng nhanh</strong></div></section>
-    <section class="admin-order-detail-items">
-      <h4>Sản phẩm</h4>
-      ${items.map((item) => `<article><img src="${getAdminImageSrc(item.image)}" alt="${item.name}"><div><strong>${item.name}</strong><small>${item.color || "Pastel"} - ${item.size || "M"}</small></div><span>x${item.quantity}</span><b>${formatMoney(item.price)}</b></article>`).join("") || "<p>Không có sản phẩm.</p>"}
-    </section>
-    <div class="admin-order-detail-total"><div><span>Tạm tính</span><strong>${formatMoney(subtotal)}</strong></div><div><span>Phí vận chuyển</span><strong>${shipping ? formatMoney(shipping) : "Miễn phí"}</strong></div><div class="total"><span>Tổng cộng</span><strong>${formatMoney(total)}</strong></div></div>
-    <div class="admin-order-detail-actions"><button type="button" onclick="updateAdminOrderStatus('${selectedOrder.id}', 'CONFIRMED')">Cập nhật trạng thái</button><button type="button" onclick="updateAdminOrderStatus('${selectedOrder.id}', 'CANCELLED')">Hủy đơn</button></div>
-  `;
+  }).join("") || `<tr><td colspan="6">Chưa có đơn hàng phù hợp.</td></tr>`;
+  renderAdminOrderDetail();
 }
 
 function selectAdminOrder(orderId) {
@@ -968,42 +409,64 @@ function selectAdminOrder(orderId) {
   renderAdminOrders();
 }
 
-function updateAdminOrderStatus(orderId, status) {
-  const orders = getOrders();
-  const index = orders.findIndex((order) => String(order.id) === String(orderId));
-  if (index === -1) return;
+function renderAdminOrderDetail() {
+  const detail = document.getElementById("adminOrderDetail");
+  if (!detail) return;
+  const order = getCustomerOrders().find((item) => item.id === selectedAdminOrderId);
+  if (!order) {
+    detail.innerHTML = `<div class="admin-order-empty">Chọn đơn hàng để xem chi tiết.</div>`;
+    return;
+  }
+  const items = order.items || [];
+  const subtotal = order.subtotal || items.reduce((sum, item) => sum + (item.price || 0) * (item.quantity || 1), 0);
+  const shipping = order.shipping || 0;
+  detail.innerHTML = `
+    <div class="admin-order-detail-head"><div><h3>Chi tiết đơn hàng</h3><strong>${formatOrderCode(order, getCustomerOrders())}</strong></div><button type="button" onclick="selectAdminOrder(null)">Đóng</button></div>
+    <section><h4>Thông tin khách hàng</h4><p>${order.customerName || "Khách hàng"}</p><p>${order.phone || "Chưa cập nhật SĐT"}</p><p>${order.address || "Chưa cập nhật địa chỉ"}</p></section>
+    <section class="admin-order-detail-items"><h4>Sản phẩm</h4>${items.map((item) => `<article><img src="${item.image || item.thumbnailUrl}" alt="${item.name}" onerror="this.src='../assets/product-1.jpg'"><div><strong>${item.name || item.productName}</strong><small>${item.color || "Black"} - ${item.size || "M"}</small></div><span>x${item.quantity || 1}</span><b>${formatMoney(item.price || 0)}</b></article>`).join("")}</section>
+    <div class="admin-order-detail-total"><div><span>Tạm tính</span><strong>${formatMoney(subtotal)}</strong></div><div><span>Phí vận chuyển</span><strong>${shipping ? formatMoney(shipping) : "Miễn phí"}</strong></div><div class="total"><span>Tổng cộng</span><strong>${formatMoney(getOrderTotal(order))}</strong></div></div>
+    <div class="admin-order-detail-actions"><button type="button" onclick="updateAdminOrderStatus('${order.id}', 'CONFIRMED')">Xác nhận</button><button type="button" onclick="updateAdminOrderStatus('${order.id}', 'CANCELLED')">Hủy đơn</button></div>
+  `;
+}
 
-  orders[index] = { ...orders[index], status };
-  saveOrders(orders);
+function updateAdminOrderStatus(orderId, status) {
+  const localOrders = getOrders();
+  const localIndex = localOrders.findIndex((order) => order.id === orderId);
+  if (localIndex !== -1) {
+    localOrders[localIndex] = { ...localOrders[localIndex], status };
+    saveOrders(localOrders);
+  } else {
+    sampleOrders = sampleOrders.map((order) => order.id === orderId ? { ...order, status } : order);
+  }
+  showToast(`Đã cập nhật đơn hàng thành "${formatOrderStatusText(status)}".`);
   renderAdminDashboard();
   renderAdminOrders();
-  showToast(`Đã cập nhật đơn hàng thành "${formatOrderStatusText(status)}".`);
 }
 
-function applyAdminOrderFilters() {
-  adminOrderFilters.keyword = document.getElementById("adminOrderSearch")?.value || "";
+function initAdminPage() {
+  seedAdminAccount();
+  if (!requireAdminAccess()) return;
+  renderAdminSidebar();
+  renderAdminDashboard();
+  renderAdminProducts();
+  renderAdminCustomers();
   renderAdminOrders();
-}
+  showAdminSection(window.location.hash || "adminDashboard");
 
-function applyAdminOrderDateFilter() {
-  adminOrderFilters.dateFrom = document.getElementById("adminOrderDateFrom")?.value || "";
-  adminOrderFilters.dateTo = document.getElementById("adminOrderDateTo")?.value || "";
-  renderAdminOrders();
-}
-
-function resetAdminOrderFilters() {
-  adminOrderFilters = { status: "all", dateFrom: "", dateTo: "", keyword: "" };
-  ["adminOrderDateFrom", "adminOrderDateTo", "adminOrderSearch"].forEach((id) => {
-    const input = document.getElementById(id);
-    if (input) input.value = "";
+  document.querySelectorAll(".admin-sidebar a[href^='#admin']").forEach((link) => {
+    link.addEventListener("click", (event) => {
+      event.preventDefault();
+      const sectionId = link.getAttribute("href");
+      if (sectionId === "#adminLogout") {
+        clearCurrentUser();
+        window.location.href = "login.html";
+        return;
+      }
+      showAdminSection(sectionId);
+      history.replaceState(null, "", sectionId);
+    });
   });
-  document.querySelectorAll("#adminOrders [data-order-filter]").forEach((button) => {
-    button.classList.toggle("active", button.dataset.orderFilter === "all");
-  });
-  renderAdminOrders();
-}
 
-function bindAdminEvents() {
   document.getElementById("adminApplyProductFilters")?.addEventListener("click", applyAdminProductFilters);
   document.getElementById("adminSearchProducts")?.addEventListener("click", applyAdminProductFilters);
   document.getElementById("adminClearProductFilters")?.addEventListener("click", resetAdminProductFilters);
@@ -1014,79 +477,79 @@ function bindAdminEvents() {
     }
   });
 
-  document.getElementById("adminSearchCustomers")?.addEventListener("click", applyAdminCustomerSearch);
-  document.getElementById("adminClearCustomerSearch")?.addEventListener("click", resetAdminCustomerSearch);
-  document.getElementById("adminCustomerSearch")?.addEventListener("keydown", (event) => {
-    if (event.key === "Enter") {
-      event.preventDefault();
-      applyAdminCustomerSearch();
-    }
-  });
-
-  document.querySelectorAll("#adminOrders [data-order-filter]").forEach((button) => {
-    button.addEventListener("click", () => {
-      adminOrderFilters.status = button.dataset.orderFilter || "all";
-      document.querySelectorAll("#adminOrders [data-order-filter]").forEach((item) => item.classList.toggle("active", item === button));
-      renderAdminOrders();
-    });
-  });
-  document.getElementById("adminSearchOrders")?.addEventListener("click", applyAdminOrderFilters);
-  document.getElementById("adminFilterOrderDate")?.addEventListener("click", applyAdminOrderDateFilter);
-  document.getElementById("adminClearOrderFilters")?.addEventListener("click", resetAdminOrderFilters);
-
   document.getElementById("adminProductForm")?.addEventListener("submit", (event) => {
     event.preventDefault();
     const form = event.currentTarget;
     const id = Number(form.productId.value) || Date.now();
+    const categoryId = Number(form.productCategoryId.value);
     const product = {
       id,
       name: form.productName.value.trim(),
+      slug: form.productName.value.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""),
       gender: form.productGender.value,
-      categoryId: Number(form.productCategoryId.value),
-      category: getProductCategoryName(form.productCategoryId.value),
+      categoryId,
+      categoryName: getProductCategoryName(categoryId),
+      category: getProductCategoryName(categoryId),
       price: Number(form.productPrice.value),
       oldPrice: Number(form.productOldPrice.value) || 0,
-      image: form.productImage.value.trim() || "/assets/products/product-1.jpg",
-      tag: form.productTag.value.trim() || "New",
-      description: form.productDescription.value.trim()
+      image: form.productImage.value.trim() || `../assets/products/product-${id}.jpg`,
+      thumbnailUrl: form.productImage.value.trim() || `/assets/products/product-${id}.jpg`,
+      tag: form.productTag.value.trim().toUpperCase() || "NEW",
+      tagLabel: form.productTag.value.trim().toUpperCase() || "NEW",
+      description: form.productDescription.value.trim(),
+      totalStock: 36,
+      status: "SELLING",
+      variants: []
     };
-
     if (!product.name || !product.price || !product.description) {
       showToast("Vui lòng nhập đầy đủ tên, giá và mô tả sản phẩm.");
       return;
     }
-
     upsertAdminProduct(product);
     closeAdminProductForm();
-    renderAdminStats();
+    renderAdminDashboard();
     renderAdminProducts();
     showToast("Đã lưu sản phẩm.");
   });
-}
 
-function initAdminPage() {
-  seedAdminAccount();
-  if (!requireAdminAccess()) return;
-  refreshProductsFromAdminState();
-  seedAdminSampleOrders();
-  renderAdminSidebar();
-  renderAdminDashboard();
-  renderAdminProductLayout();
-  renderAdminProducts();
-  renderAdminCustomers();
-  renderAdminOrders();
-  initAdminSections();
-  bindAdminEvents();
-  initPasswordToggles();
+  document.getElementById("adminSearchCustomers")?.addEventListener("click", () => {
+    adminCustomerKeyword = document.getElementById("adminCustomerSearch")?.value || "";
+    renderAdminCustomers();
+  });
+  document.getElementById("adminClearCustomerSearch")?.addEventListener("click", () => {
+    adminCustomerKeyword = "";
+    const input = document.getElementById("adminCustomerSearch");
+    if (input) input.value = "";
+    renderAdminCustomers();
+  });
+
+  document.querySelectorAll("[data-order-filter]").forEach((button) => {
+    button.addEventListener("click", () => {
+      adminOrderFilters.status = button.dataset.orderFilter || "all";
+      document.querySelectorAll("[data-order-filter]").forEach((item) => item.classList.toggle("active", item === button));
+      renderAdminOrders();
+    });
+  });
+  document.getElementById("adminSearchOrders")?.addEventListener("click", () => {
+    adminOrderFilters.keyword = document.getElementById("adminOrderSearch")?.value || "";
+    renderAdminOrders();
+  });
+  document.getElementById("adminClearOrderFilters")?.addEventListener("click", () => {
+    adminOrderFilters = { status: "all", dateFrom: "", dateTo: "", keyword: "" };
+    const input = document.getElementById("adminOrderSearch");
+    if (input) input.value = "";
+    document.querySelectorAll("[data-order-filter]").forEach((item, index) => item.classList.toggle("active", index === 0));
+    renderAdminOrders();
+  });
 }
 
 window.openAdminProductForm = openAdminProductForm;
 window.closeAdminProductForm = closeAdminProductForm;
 window.editAdminProduct = editAdminProduct;
 window.hideAdminProduct = hideAdminProduct;
-window.viewAdminCustomer = viewAdminCustomer;
-window.updateAdminOrderStatus = updateAdminOrderStatus;
 window.selectAdminOrder = selectAdminOrder;
+window.updateAdminOrderStatus = updateAdminOrderStatus;
 window.showAdminSection = showAdminSection;
+window.showToast = showToast;
 
 initAdminPage();

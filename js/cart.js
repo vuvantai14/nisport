@@ -9,16 +9,16 @@ import {
   showCenterNotice,
   showToast
 } from "./common.js";
-import { genderLabels, getProductById, products, refreshProductsFromAdminState } from "./products.js";
+import { genderLabels, getProductById, handleProductImageError, products, refreshProductsFromAdminState } from "./products.js";
 
-export let cart = getData("lunaCart", []);
+export let cart = getData("niSportCart", []);
 
 export function saveCart() {
-  saveData("lunaCart", cart);
+  saveData("niSportCart", cart);
 }
 
 export function getCart() {
-  cart = getData("lunaCart", []);
+  cart = getData("niSportCart", []);
   return cart;
 }
 
@@ -26,19 +26,42 @@ export function getCartKey(productId, size = "", color = "") {
   return `${productId}-${size || "default"}-${color || "default"}`;
 }
 
+function getDefaultVariant(product) {
+  return product?.variants?.[0] || null;
+}
+
 export function addToCart(productId, options = {}) {
   const product = getProductById(productId);
   if (!product) return;
 
-  const size = options.size || "";
-  const color = options.color || "";
+  const fallbackVariant = getDefaultVariant(product);
+  const size = options.size || fallbackVariant?.size || "M";
+  const color = options.color || fallbackVariant?.color || "Black";
+  const variant = product.variants?.find((item) => item.size === size && item.color === color) || fallbackVariant;
   const cartKey = getCartKey(productId, size, color);
   const existingItem = cart.find((item) => (item.cartKey || getCartKey(item.id, item.size, item.color)) === cartKey);
 
   if (existingItem) {
     existingItem.quantity += 1;
   } else {
-    cart.push({ ...product, size, color, cartKey, quantity: 1 });
+    cart.push({
+      id: product.id,
+      productId: product.id,
+      variantId: variant?.id || null,
+      name: product.name,
+      slug: product.slug,
+      categoryName: product.categoryName,
+      gender: product.gender,
+      image: product.image,
+      thumbnailUrl: product.thumbnailUrl,
+      price: variant?.price || product.price,
+      oldPrice: product.oldPrice,
+      size,
+      color,
+      sku: variant?.sku || `NI-${String(product.id).padStart(3, "0")}`,
+      cartKey,
+      quantity: 1
+    });
   }
 
   saveCart();
@@ -70,6 +93,12 @@ export function removeFromCart(cartKey) {
   showToast("Đã xóa sản phẩm khỏi giỏ hàng.");
 }
 
+function bindCartImages(scope = document) {
+  scope.querySelectorAll("[data-product-img]").forEach((image) => {
+    image.addEventListener("error", () => handleProductImageError(image, image.dataset.productId));
+  });
+}
+
 export function renderCart() {
   cart = getCart();
   const cartItems = document.getElementById("cartItems");
@@ -84,13 +113,12 @@ export function renderCart() {
 
   cartItems.innerHTML = cart.length ? cart.map((item) => {
     const key = item.cartKey || getCartKey(item.id, item.size, item.color);
-    const variantText = [item.size ? `Size ${item.size}` : "", item.color ? `Màu ${item.color}` : ""].filter(Boolean).join(" | ");
     return `
       <div class="cart-item">
-        <img src="${item.image}" alt="${item.name}">
+        <img data-product-img data-product-id="${item.id}" src="${item.image}" alt="${item.name}">
         <div>
           <h4>${item.name}</h4>
-          ${variantText ? `<small>${variantText}</small>` : ""}
+          <small>Size ${item.size || "M"} | Màu ${item.color || "Black"}</small>
           <p>${formatMoney(item.price)}</p>
           <div class="qty-row">
             <button onclick="changeQuantity('${key}', -1)">−</button>
@@ -102,6 +130,7 @@ export function renderCart() {
       </div>
     `;
   }).join("") : `<p class="empty-cart">Giỏ hàng đang trống.</p>`;
+  bindCartImages(cartItems);
 }
 
 export function renderCartPage() {
@@ -143,15 +172,14 @@ export function renderCartPage() {
     const itemTotal = item.price * item.quantity;
     return `
       <article class="cart-page-item">
-        <div class="cart-check"><input type="checkbox" checked aria-label="Chọn sản phẩm"></div>
         <div class="cart-page-product">
           <a class="cart-page-image" href="product-detail.html?id=${item.id}">
-            <img src="${item.image}" alt="${item.name}">
+            <img data-product-img data-product-id="${item.id}" src="${item.image}" alt="${item.name}">
           </a>
           <div class="cart-page-info">
             <h3><a href="product-detail.html?id=${item.id}">${item.name}</a></h3>
-            <p>SKU: LUNA-${String(item.id).padStart(4, "0")}</p>
-            <p>SIZE: ${item.size || "M"} | MÀU SẮC: ${item.color || "Pastel Pink"}</p>
+            <p>SKU: ${item.sku || `NI-${String(item.id).padStart(4, "0")}`}</p>
+            <p>Size: ${item.size || "M"} | Màu: ${item.color || "Black"}</p>
           </div>
         </div>
         <div class="cart-page-price">
@@ -165,11 +193,12 @@ export function renderCartPage() {
         </div>
         <div class="cart-page-line-total"><strong>${formatMoney(itemTotal)}</strong></div>
         <div class="cart-page-remove">
-          <button onclick="removeFromCart('${key}')" aria-label="Xóa ${item.name}">⌫<span>Xóa</span></button>
+          <button onclick="removeFromCart('${key}')" aria-label="Xóa ${item.name}"><span>Xóa</span></button>
         </div>
       </article>
     `;
   }).join("");
+  bindCartImages(cartPageItems);
 }
 
 export function createOrderFromCart() {
@@ -180,7 +209,7 @@ export function createOrderFromCart() {
 
   const currentUser = getCurrentUser();
   if (!currentUser) {
-    showToast("Vui lòng đăng nhập trước khi thanh toán.");
+    showToast("Vui lòng đăng nhập trước khi đặt hàng.");
     setTimeout(() => {
       window.location.href = "login.html";
     }, 900);
@@ -188,19 +217,22 @@ export function createOrderFromCart() {
   }
 
   if (currentUser.role === "admin") {
-    showCenterNotice("Tài khoản admin chỉ dùng để quản trị, không thể đặt đơn hàng.", "error");
+    showCenterNotice("Tài khoản admin chỉ dùng để quản trị, không đặt đơn hàng.", "error");
     return;
   }
 
   const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const shipping = subtotal >= 500000 ? 0 : 30000;
+  const customerName = currentUser.fullName || `${currentUser.lastName || ""} ${currentUser.firstName || ""}`.trim();
   const order = {
     id: Date.now(),
     customerId: currentUser.id,
-    customerName: `${currentUser.lastName || ""} ${currentUser.firstName || ""}`.trim(),
+    customerName,
     email: currentUser.email,
     phone: currentUser.phone || "",
     address: currentUser.address || "",
+    paymentMethod: "COD",
+    note: "",
     items: cart,
     subtotal,
     shipping,
@@ -216,21 +248,21 @@ export function createOrderFromCart() {
   saveCart();
   renderCart();
   renderCartPage();
-  showCenterNotice("Đặt hàng thành công. Đơn hàng đã được gửi tới admin.", "success");
+  showCenterNotice("Đặt hàng thành công. Đơn hàng COD đã được tạo.", "success");
 }
 
 export function openQuickView(productId) {
   refreshProductsFromAdminState();
-  const product = products.find((item) => Number(item.id) === Number(productId));
+  const product = products.find((item) => Nữmber(item.id) === Nữmber(productId));
   const quickViewBody = document.getElementById("quickViewBody");
   const quickModal = document.getElementById("quickModal");
   if (!product || !quickViewBody || !quickModal) return;
 
   quickViewBody.innerHTML = `
     <div class="quick-view">
-      <img src="${product.image}" alt="${product.name}">
+      <img data-product-img data-product-id="${product.id}" src="${product.image}" alt="${product.name}">
       <div>
-        <span class="product-category">${genderLabels[product.gender]} / ${product.category}</span>
+        <span class="product-category">${genderLabels[product.gender]} / ${product.categoryName}</span>
         <h3>${product.name}</h3>
         <div class="price-row">
           <span class="price">${formatMoney(product.price)}</span>
@@ -243,6 +275,7 @@ export function openQuickView(productId) {
       </div>
     </div>
   `;
+  bindCartImages(quickViewBody);
   quickModal.classList.add("show");
 }
 
@@ -267,7 +300,7 @@ export function initCartControls() {
   if (cartOpenBtn && cartOpenBtn.dataset.cartReady !== "true") {
     cartOpenBtn.dataset.cartReady = "true";
     cartOpenBtn.addEventListener("click", () => {
-    window.location.href = "cart.html";
+      window.location.href = "cart.html";
     });
   }
   if (cartCloseBtn && cartCloseBtn.dataset.cartReady !== "true") {
@@ -288,7 +321,7 @@ export function initCartControls() {
   if (checkoutBtn && checkoutBtn.dataset.cartReady !== "true") {
     checkoutBtn.dataset.cartReady = "true";
     checkoutBtn.addEventListener("click", () => {
-      showToast(cart.length ? "Chức năng thanh toán đang được phát triển." : "Giỏ hàng đang trống.");
+      showToast(cart.length ? "Vui lòng kiểm tra giỏ hàng trước khi đặt." : "Giỏ hàng đang trống.");
     });
   }
   if (checkoutMainBtn && checkoutMainBtn.dataset.cartReady !== "true") {

@@ -3,130 +3,18 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Giỏ hàng - Luna Fashion</title>
+  <title>Gio hang - Ni Sport</title>
   <link rel="stylesheet" href="../css/common.css">
   <link rel="stylesheet" href="../css/cart.css">
 </head>
 <body>
-  <div class="top-bar">
-    <div class="container top-bar-inner">
-      <span>Miễn phí vận chuyển cho đơn từ 500K</span>
-      <span>Ưu đãi đến 30% cho thành viên mới</span>
-      <span>Hotline: 0123 456 789</span>
-    </div>
-  </div>
-
-  <header class="site-header">
-    <div class="container header-wrapper">
-      <a href="index.html" class="logo" aria-label="Luna Fashion">
-        <span class="logo-main">Luna<span>Fashion</span></span>
-        <small>Style for every day</small>
-      </a>
-      <button class="menu-toggle" id="menuToggle" aria-label="Mở menu">☰</button>
-      <nav class="main-nav" id="mainNav">
-        <a href="index.html">Trang chủ</a>
-        <a href="products.html">Sản phẩm</a>
-        <a href="brand.html">Thương hiệu</a>
-        <a href="collection.html">Bộ sưu tập</a>
-        <a href="sale.html">Khuyến mãi</a>
-        <a href="contact.html">Liên hệ</a>
-      </nav>
-      <div class="header-actions">
-        <div class="search-box">
-          <input type="text" id="searchInput" placeholder="Tìm kiếm sản phẩm..." />
-          <span>⌕</span>
-        </div>
-        <a class="login-link" href="login.html" aria-label="Đăng nhập"><span>👤</span><small>Đăng nhập</small></a>
-        <a class="cart-button" href="cart.html" aria-label="Mở giỏ hàng">🛍<span id="cartCount">0</span></a>
-      </div>
-    </div>
-  </header>
-
-  <main class="cart-page">
-    <div class="container">
-      <div class="cart-breadcrumb">Trang chủ / Giỏ hàng</div>
-      <div class="cart-page-title">
-        <h1>Giỏ hàng của bạn <span id="cartPageCount">(0 sản phẩm)</span></h1>
-        <p id="cartPageNotice">Bạn đang có 0 sản phẩm trong giỏ hàng.</p>
-      </div>
-
-      <div class="cart-page-layout">
-        <section class="cart-page-table">
-          <div class="cart-page-head">
-            <div><input type="checkbox" checked aria-label="Chọn tất cả"></div>
-            <div>Sản phẩm</div>
-            <div>Giá</div>
-            <div>Số lượng</div>
-            <div>Tạm tính</div>
-            <div>Xóa</div>
-          </div>
-          <div id="cartPageItems"></div>
-        </section>
-
-        <aside class="cart-summary">
-          <section class="cart-summary-card">
-            <h2>Tóm tắt đơn hàng</h2>
-            <div class="summary-line">
-              <span>Tạm tính</span>
-              <strong id="cartPageSubtotal">0đ</strong>
-            </div>
-            <div class="summary-line">
-              <span>Phí vận chuyển</span>
-              <strong id="cartPageShipping">0đ</strong>
-            </div>
-            <div class="summary-line discount">
-              <span>Giảm giá</span>
-              <strong>-0đ</strong>
-            </div>
-            <div class="coupon-form">
-              <input type="text" placeholder="Nhập mã giảm giá" />
-              <button type="button">Áp dụng</button>
-            </div>
-            <div class="summary-line total">
-              <span>Tổng cộng</span>
-              <strong id="cartPageTotal">0đ</strong>
-            </div>
-            <small>(Đã bao gồm VAT)</small>
-            <button class="checkout-main-btn" type="button">Tiến hành thanh toán</button>
-            <div class="cart-secure-note">Thanh toán 100% bảo mật</div>
-            <div class="cart-payment-list"><span>VISA</span><span>MC</span><span>Momo</span><span>ZaloPay</span><span>Apple Pay</span></div>
-          </section>
-        </aside>
-      </div>
-
-      <div class="cart-page-actions">
-        <a class="continue-shopping" href="products.html">← Tiếp tục mua sắm</a>
-        <button class="cart-clear-btn" type="button">Xóa tất cả</button>
-      </div>
-
-      <section class="cart-service-strip">
-        <article><span>🚚</span><div><strong>Miễn phí vận chuyển</strong><small>Cho đơn hàng từ 500K</small></div></article>
-        <article><span>🛡</span><div><strong>Thanh toán an toàn</strong><small>Bảo mật thông tin 100%</small></div></article>
-        <article><span>🔁</span><div><strong>Đổi trả dễ dàng</strong><small>Trong vòng 7 ngày</small></div></article>
-        <article><span>🎧</span><div><strong>Hỗ trợ 24/7</strong><small>Hotline: 0123 456 789</small></div></article>
-      </section>
-    </div>
-  </main>
-
-  <footer class="site-footer">
-    <div class="container footer-wrapper">
-      <div>
-        <a href="index.html" class="logo footer-logo"><span class="logo-main">Luna<span>Fashion</span></span><small>Style for every day</small></a>
-        <p>Thoi trang nam nu hien dai, de ung dung moi ngay.</p>
-      </div>
-      <div><h4>Thông tin</h4><a href="products.html">Sản phẩm</a><a href="sale.html">Khuyến mãi</a><a href="contact.html">Liên hệ</a></div>
-      <div><h4>Chính sách</h4><a href="#">Chính sách mua hàng</a><a href="#">Chính sách đổi trả</a><a href="#">Chính sách vận chuyển</a></div>
-      <div><h4>Theo dõi shop</h4><p>Facebook · Instagram · TikTok</p><p>Hotline: 0909 123 456</p></div>
-    </div>
-  </footer>
-
+  <div class="top-bar"><div class="container top-bar-inner"><span>Freeship don tu 500K</span><span>Ni Sport - San sang ra san</span><span>Hotline: 0909 123 456</span></div></div>
+  <header class="site-header"><div class="container header-wrapper"><a href="index.html" class="logo"><span class="logo-main">Ni<span>Sport</span></span><small>San sang ra san</small></a><button class="menu-toggle" id="menuToggle" aria-label="Mo menu">Menu</button><nav class="main-nav" id="mainNav"><a href="index.html">Trang chu</a><a href="products.html">San pham</a><a href="collection.html">Danh muc</a><a href="orders.html">Don hang cua toi</a><a href="contact.html">Lien he</a></nav><div class="header-actions"><div class="search-box"><input type="text" id="searchInput" placeholder="Tim ao, quan, phu kien..." /><span>Tim</span></div><a class="login-link" href="login.html" aria-label="Tai khoan"><span class="account-mark">TK</span><small>Tai khoan</small></a><button class="cart-button" id="cartOpenBtn" aria-label="Gio hang"><span class="cart-mark">Gio</span><span id="cartCount">0</span></button></div></div></header>
+  <main class="cart-page"><div class="container"><div class="cart-page-title"><h1>Gio hang</h1><p>Kiem tra san pham, size, mau va tong tien truoc khi dat hang COD.</p></div><div class="cart-page-layout"><section><div class="cart-page-table"><div class="cart-page-head"><div></div><div>Don gia</div><div>So luong</div><div>Tam tinh</div><div></div></div><div id="cartPageItems"></div></div><div class="cart-page-actions"><a class="continue-shopping" href="products.html">Tiep tuc mua hang</a><button class="cart-clear-btn" type="button">Xoa gio hang</button></div></section><aside class="cart-summary"><section><h2>Thong tin giao hang</h2><p>Thanh toan COD khi nhan hang. Du lieu form hien la UI tinh, se ket noi API o giai doan sau.</p><div class="coupon-form"><input type="text" placeholder="Ma uu dai"><button type="button">Ap dung</button></div><div class="summary-line"><span>San pham</span><strong id="cartPageCount">0</strong></div><div class="summary-line"><span>Tam tinh</span><strong id="cartPageSubtotal">0d</strong></div><div class="summary-line"><span>Phi van chuyen</span><strong id="cartPageShipping">0d</strong></div><div class="summary-line total"><span>Tong cong</span><strong id="cartPageTotal">0d</strong></div><button class="checkout-main-btn" type="button">Dat hang COD</button><p class="cart-secure-note" id="cartPageNotice">Kiem tra size va mau truoc khi dat hang.</p></section></aside></div></div></main>
+  <footer class="site-footer"><div class="container footer-wrapper"><div><a href="index.html" class="logo footer-logo"><span class="logo-main">Ni<span>Sport</span></span><small>San sang ra san</small></a><p>Trang phuc bong da va phu kien cho moi tran dau.</p></div><div><h4>Thong tin</h4><a href="products.html">San pham</a><a href="collection.html">Danh muc</a><a href="contact.html">Lien he</a></div><div><h4>Chinh sach</h4><a href="#">Mua hang</a><a href="#">Doi size</a><a href="#">Van chuyen</a></div><div><h4>Theo doi shop</h4><p>Facebook / Instagram / TikTok</p><p>Hotline: 0909 123 456</p></div></div></footer>
   <div class="overlay" id="overlay"></div>
-  <aside class="cart-drawer" id="cartDrawer" aria-label="Giỏ hàng">
-    <div class="cart-header"><h3>Giỏ hàng của bạn</h3><button id="cartCloseBtn" aria-label="Đóng giỏ hàng">×</button></div>
-    <div class="cart-items" id="cartItems"></div>
-    <div class="cart-footer"><div class="cart-total"><span>Tổng tiền:</span><strong id="cartTotal">0đ</strong></div><button class="btn btn-primary checkout-btn" id="checkoutBtn">Thanh toán</button></div>
-  </aside>
-  <div class="quick-modal" id="quickModal" role="dialog" aria-modal="true"><div class="quick-content"><button class="quick-close" id="quickCloseBtn" aria-label="Đóng xem nhanh">×</button><div id="quickViewBody"></div></div></div>
+  <aside class="cart-drawer" id="cartDrawer"><div class="cart-header"><h3>Gio hang cua ban</h3><button id="cartCloseBtn">Dong</button></div><div class="cart-items" id="cartItems"></div><div class="cart-footer"><div class="cart-total"><span>Tong tien:</span><strong id="cartTotal">0d</strong></div><button class="btn btn-primary checkout-btn" id="checkoutBtn">Thanh toan</button></div></aside>
+  <div class="quick-modal" id="quickModal"><div class="quick-content"><button class="quick-close" id="quickCloseBtn">Dong</button><div id="quickViewBody"></div></div></div>
   <div class="toast" id="toast"></div>
   <script type="module" src="../js/cart.js"></script>
 </body>

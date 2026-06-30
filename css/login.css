@@ -301,3 +301,59 @@
     background: rgba(255, 255, 255, 0.8);
   }
 }
+
+/* Ni Sport auth polish */
+.auth-body,
+.auth-page {
+  background:
+    radial-gradient(circle at 78% 20%, rgba(183, 255, 42, 0.2), transparent 24%),
+    linear-gradient(135deg, #07111f 0%, #111827 56%, #0f2a1c 100%);
+}
+
+.auth-page::before {
+  opacity: 0.12;
+}
+
+.auth-card {
+  border-color: rgba(255, 255, 255, 0.22);
+  border-radius: 18px;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.32);
+}
+
+.auth-logo {
+  background: linear-gradient(135deg, #f8fafc, #ecfdf5);
+  border-color: #dbe3ee;
+}
+
+.auth-tabs {
+  background: #f1f5f9;
+  border-color: #dbe3ee;
+}
+
+.auth-tabs a.active {
+  color: #07111f;
+  background: var(--sport-lime);
+  box-shadow: none;
+}
+
+.auth-row label {
+  color: #334155;
+}
+
+.auth-row input,
+.password-field {
+  border-color: #cbd5e1;
+  border-radius: 10px;
+}
+
+.auth-submit,
+.auth-alt {
+  color: #07111f;
+  background: var(--sport-lime);
+  border-radius: 12px;
+}
+
+.auth-submit:hover,
+.auth-alt:hover {
+  background: #86efac;
+}

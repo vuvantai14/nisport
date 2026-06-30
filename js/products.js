@@ -1,56 +1,11 @@
-import { formatMoney, initCommonLayout, normalizeText, saveData, getData } from "./common.js";
+import { formatMoney, getData, initCommonLayout, normalizeText, saveData } from "./common.js";
 
-export const productSeed = [
-  ["Quần jeans nam basic", "MALE", 2, "Quần", 399000, 499000, "Quần jeans nam basic dễ mặc, phù hợp đi học, đi làm và dạo phố hằng ngày.", "New"],
-  ["Quần kaki nam slimfit", "MALE", 2, "Quần", 429000, 529000, "Quần kaki nam slimfit gọn dáng, hợp phong cách công sở và smart casual.", "Sale"],
-  ["Quần tây nam công sở", "MALE", 2, "Quần", 459000, 559000, "Quần tây nam công sở lịch sự, chất vải đứng form và dễ phối áo sơ mi.", "Hot"],
-  ["Quần short nam casual", "MALE", 2, "Quần", 289000, 359000, "Quần short nam casual thoải mái cho ngày cuối tuần, du lịch hoặc dạo phố.", "New"],
-  ["Quần jogger nam thể thao", "MALE", 2, "Quần", 349000, 429000, "Quần jogger nam thể thao co giãn nhẹ, phù hợp vận động và mặc hằng ngày.", "Sale"],
-  ["Quần cargo nam streetwear", "MALE", 2, "Quần", 479000, 590000, "Quần cargo nam streetwear nhiều túi, tạo điểm nhấn năng động cho outfit.", "Hot"],
-  ["Quần jeans nam ống suông", "MALE", 2, "Quần", 449000, 540000, "Quần jeans nam ống suông dễ phối áo thun, hoodie hoặc áo khoác.", "New"],
-  ["Quần jeans nữ ống rộng", "FEMALE", 2, "Quần", 429000, 529000, "Quần jeans nữ ống rộng tôn dáng, phù hợp phong cách trẻ trung.", "Sale"],
-  ["Quần baggy nữ lưng cao", "FEMALE", 2, "Quần", 389000, 469000, "Quần baggy nữ lưng cao thoải mái, dễ phối với croptop hoặc áo sơ mi.", "New"],
-  ["Quần tây nữ công sở", "FEMALE", 2, "Quần", 419000, 510000, "Quần tây nữ công sở thanh lịch, phù hợp đi làm và gặp khách hàng.", "Hot"],
-  ["Quần short nữ basic", "FEMALE", 2, "Quần", 269000, 329000, "Quần short nữ basic nhẹ mát, dễ phối cho outfit mùa hè.", "New"],
-  ["Quần culottes nữ thanh lịch", "FEMALE", 2, "Quần", 399000, 489000, "Quần culottes nữ thanh lịch, tạo cảm giác mềm mại khi di chuyển.", "Sale"],
-  ["Quần jeans nữ ống loe", "FEMALE", 2, "Quần", 439000, 539000, "Quần jeans nữ ống loe tạo dáng cổ điển, phù hợp giày cao gót hoặc sneaker.", "Hot"],
-  ["Quần linen nữ mùa hè", "FEMALE", 2, "Quần", 369000, 450000, "Quần linen nữ mùa hè thoáng mát, hợp đi chơi và du lịch.", "New"],
-  ["Quần ống suông nữ Hàn Quốc", "FEMALE", 2, "Quần", 409000, 499000, "Quần ống suông nữ Hàn Quốc phom mềm, dễ phối áo kiểu và cardigan.", "Sale"],
-  ["Áo thun nam cổ tròn", "MALE", 1, "Áo", 199000, 249000, "Áo thun nam cổ tròn chất cotton mềm, phù hợp mặc hằng ngày.", "New"],
-  ["Áo sơ mi nam trắng", "MALE", 1, "Áo", 329000, 420000, "Áo sơ mi nam trắng tối giản, dễ phối công sở hoặc casual.", "Sale"],
-  ["Áo polo nam basic", "MALE", 1, "Áo", 259000, 329000, "Áo polo nam basic thoáng mát, hợp quần jeans, kaki hoặc short.", "New"],
-  ["Áo sơ mi nam caro", "MALE", 1, "Áo", 349000, 430000, "Áo sơ mi nam caro trẻ trung, có thể mặc riêng hoặc khoác ngoài áo thun.", "Sale"],
-  ["Áo thun nam graphic", "MALE", 1, "Áo", 239000, 299000, "Áo thun nam graphic nổi bật, phù hợp phong cách dạo phố năng động.", "Hot"],
-  ["Áo kiểu nữ tay bồng", "FEMALE", 1, "Áo", 299000, 369000, "Áo kiểu nữ tay bồng nữ tính, dễ phối quần jeans hoặc chân váy.", "New"],
-  ["Áo blouse nữ công sở", "FEMALE", 1, "Áo", 319000, 390000, "Áo blouse nữ công sở thanh lịch, phù hợp đi làm và gặp khách hàng.", "Sale"],
-  ["Áo croptop nữ basic", "FEMALE", 1, "Áo", 219000, 269000, "Áo croptop nữ basic trẻ trung, hợp phối quần lưng cao.", "New"],
-  ["Áo thun nữ pastel", "FEMALE", 1, "Áo", 199000, 249000, "Áo thun nữ pastel nhẹ nhàng, dễ phối trong outfit hằng ngày.", "Sale"],
-  ["Áo len mỏng nữ Hàn Quốc", "FEMALE", 1, "Áo", 349000, 430000, "Áo len mỏng nữ Hàn Quốc mềm mại, phù hợp thời tiết se lạnh.", "Hot"],
-  ["Áo thun unisex form rộng", "UNISEX", 1, "Áo", 249000, 319000, "Áo thun unisex form rộng dễ mặc cho cả nam và nữ.", "New"],
-  ["Áo thun unisex basic", "UNISEX", 1, "Áo", 219000, 279000, "Áo thun unisex basic tối giản, phù hợp nhiều phong cách.", "Sale"],
-  ["Áo sơ mi unisex oversize", "UNISEX", 1, "Áo", 359000, 449000, "Áo sơ mi unisex oversize phom rộng, dễ phối layer.", "Hot"],
-  ["Áo khoác denim unisex", "UNISEX", 6, "Áo khoác", 559000, 690000, "Áo khoác denim unisex cá tính, hợp phối streetwear.", "Hot"],
-  ["Áo khoác bomber unisex", "UNISEX", 6, "Áo khoác", 589000, 720000, "Áo khoác bomber unisex năng động, phù hợp đi học và dạo phố.", "Sale"],
-  ["Hoodie unisex basic", "UNISEX", 5, "Hoodie", 449000, 560000, "Hoodie unisex basic phom thoải mái, phù hợp thời tiết se lạnh.", "New"],
-  ["Hoodie unisex form rộng", "UNISEX", 5, "Hoodie", 489000, 590000, "Hoodie unisex form rộng trẻ trung, dễ phối quần jeans hoặc jogger.", "Sale"],
-  ["Hoodie zip unisex", "UNISEX", 5, "Hoodie", 529000, 650000, "Hoodie zip unisex tiện dụng, có thể mặc khoác ngoài áo thun.", "Hot"],
-  ["Sweater unisex tối giản", "UNISEX", 5, "Hoodie", 419000, 510000, "Sweater unisex tối giản với màu dễ mặc, phù hợp outfit hằng ngày.", "New"],
-  ["Sweater unisex vintage", "UNISEX", 5, "Hoodie", 459000, 560000, "Sweater unisex vintage tạo cảm giác retro, hợp phối layer.", "Sale"],
-  ["Quần jogger unisex", "UNISEX", 2, "Quần", 379000, 459000, "Quần jogger unisex thoải mái, phù hợp vận động nhẹ và mặc thường ngày.", "New"],
-  ["Quần short unisex thể thao", "UNISEX", 2, "Quần", 299000, 360000, "Quần short unisex thể thao nhẹ, thoáng và dễ phối áo thun.", "Sale"],
-  ["Áo khoác gió unisex", "UNISEX", 6, "Áo khoác", 499000, 620000, "Áo khoác gió unisex nhẹ, tiện lợi khi đi chơi hoặc du lịch.", "Hot"],
-  ["Áo cardigan unisex", "UNISEX", 6, "Áo khoác", 429000, 520000, "Áo cardigan unisex mềm nhẹ, dễ khoác ngoài áo basic.", "New"],
-  ["Set đồ unisex basic", "UNISEX", 1, "Áo", 559000, 690000, "Set đồ unisex basic đồng bộ, phù hợp phong cách tối giản.", "Sale"],
-  ["Túi tote canvas basic", "UNISEX", 7, "Phụ kiện", 169000, 220000, "Túi tote canvas basic rộng rãi, phù hợp đi học, đi làm và đi chơi.", "New"],
-  ["Mũ lưỡi trai unisex", "UNISEX", 7, "Phụ kiện", 149000, 0, "Mũ lưỡi trai unisex dễ phối cùng nhiều outfit nam nữ.", "New"],
-  ["Thắt lưng da basic", "UNISEX", 7, "Phụ kiện", 199000, 250000, "Thắt lưng da basic tối giản, phù hợp quần jeans, kaki hoặc quần tây.", "Sale"],
-  ["Vớ cổ cao basic", "UNISEX", 7, "Phụ kiện", 89000, 120000, "Vớ cổ cao basic mềm, dễ phối sneaker và outfit thường ngày.", "New"],
-  ["Túi đeo chéo mini", "UNISEX", 7, "Phụ kiện", 249000, 320000, "Túi đeo chéo mini nhỏ gọn, tiện đựng vật dụng cá nhân.", "Hot"],
-  ["Khăn bandana họa tiết", "UNISEX", 7, "Phụ kiện", 129000, 0, "Khăn bandana họa tiết dùng buộc cổ, buộc tóc hoặc trang trí túi.", "New"],
-  ["Kính thời trang basic", "UNISEX", 7, "Phụ kiện", 189000, 240000, "Kính thời trang basic tạo điểm nhấn hiện đại cho outfit.", "Sale"],
-  ["Mũ bucket unisex", "UNISEX", 7, "Phụ kiện", 159000, 210000, "Mũ bucket unisex trẻ trung, phù hợp đi chơi và du lịch.", "New"],
-  ["Ví da mini", "UNISEX", 7, "Phụ kiện", 199000, 250000, "Ví da mini gọn nhẹ, phù hợp sử dụng hằng ngày hoặc làm quà tặng.", "Sale"],
-  ["Dây chuyền basic", "UNISEX", 7, "Phụ kiện", 119000, 0, "Dây chuyền basic tối giản, dễ phối cùng áo thun hoặc sơ mi.", "New"]
+export const productCategories = [
+  { id: 1, name: "Áo bóng đá", slug: "ao-bong-da" },
+  { id: 2, name: "Quần bóng đá", slug: "quan-bong-da" },
+  { id: 3, name: "Bộ đồ bóng đá", slug: "bo-do-bong-da" },
+  { id: 4, name: "Đồ tập bóng đá", slug: "do-tap-bong-da" },
+  { id: 5, name: "Phụ kiện", slug: "phu-kien" }
 ];
 
 export const genderLabels = {
@@ -59,70 +14,142 @@ export const genderLabels = {
   UNISEX: "Unisex"
 };
 
-export const productCategories = [
-  { id: 1, name: "Áo" },
-  { id: 2, name: "Quần" },
-  { id: 5, name: "Hoodie" },
-  { id: 6, name: "Áo khoác" },
-  { id: 7, name: "Phụ kiện" }
+export const productSeed = [
+  ["Áo bóng đá sân nhà nam 2026", "ao-bong-da-san-nha-nam-2026", "MALE", 1, 329000, 399000, "Áo thi đấu nam chất thun lạnh co giãn, thoáng khí cho các trận sân 5 và sân 7.", "HOT"],
+  ["Áo bóng đá sân khách nam 2026", "ao-bong-da-san-khach-nam-2026", "MALE", 1, 319000, 389000, "Áo bóng đá nam form thể thao, nhanh khô và dễ phối cùng quần thi đấu.", "NEW"],
+  ["Áo thủ môn nam phản quang", "ao-thu-mon-nam-phan-quang", "MALE", 1, 369000, 449000, "Áo thủ môn tay dài có đệm nhẹ, màu nổi bật giúp dễ quan sát trên sân.", "SALE"],
+  ["Áo bóng đá nữ sân nhà 2026", "ao-bong-da-nu-san-nha-2026", "FEMALE", 1, 319000, 389000, "Áo bóng đá nữ form gọn, chất liệu mềm nhẹ và thoát mồ hôi tốt.", "NEW"],
+  ["Áo bóng đá nữ cổ tim", "ao-bong-da-nu-co-tim", "FEMALE", 1, 309000, 379000, "Áo bóng đá nữ cổ tim thể thao, phù hợp tập luyện và thi đấu phong trào.", "BASIC"],
+  ["Áo bóng đá trẻ em xanh sân cỏ", "ao-bong-da-tre-em-xanh-san-co", "UNISEX", 1, 259000, 319000, "Áo bóng đá trẻ em chất vải mát, dễ giặt và bền màu.", "NEW"],
+  ["Áo bóng đá unisex form rộng", "ao-bong-da-unisex-form-rong", "UNISEX", 1, 299000, 369000, "Áo bóng đá unisex dáng rộng, hợp mặc cổ vũ hoặc đá phủi cuối tuần.", "HOT"],
+  ["Áo polo thể thao Ni Sport", "ao-polo-the-thao-ni-sport", "UNISEX", 1, 289000, 349000, "Áo polo thể thao lịch sự, phù hợp di chuyển trước và sau trận đấu.", "BASIC"],
+  ["Áo tập compression tay dài", "ao-tap-compression-tay-dai", "UNISEX", 4, 279000, 339000, "Áo bó cơ hỗ trợ vận động, giữ ấm nhẹ khi tập buổi tối.", "SALE"],
+  ["Áo bib tập luyện đội bóng", "ao-bib-tap-luyen-doi-bong", "UNISEX", 4, 99000, 129000, "Áo bib lưới nhẹ dùng chia đội khi tập luyện bóng đá.", "BASIC"],
+  ["Quần bóng đá nam basic", "quan-bong-da-nam-basic", "MALE", 2, 189000, 239000, "Quần bóng đá nam nhẹ, lưng thun chắc và thoải mái khi bứt tốc.", "HOT"],
+  ["Quần bóng đá nam túi khóa", "quan-bong-da-nam-tui-khoa", "MALE", 2, 219000, 269000, "Quần bóng đá có túi khóa nhỏ, tiện mang chìa khóa khi tập.", "NEW"],
+  ["Quần bóng đá nữ dáng gọn", "quan-bong-da-nu-dang-gon", "FEMALE", 2, 189000, 239000, "Quần bóng đá nữ dáng gọn, chất liệu mềm và không bí khi vận động.", "NEW"],
+  ["Quần short tập gym bóng đá", "quan-short-tap-gym-bong-da", "UNISEX", 4, 229000, 289000, "Quần short tập thể lực cho cầu thủ, co giãn tốt khi chạy nước rút.", "SALE"],
+  ["Quần jogger thể thao Ni Sport", "quan-jogger-the-thao-ni-sport", "UNISEX", 4, 349000, 429000, "Quần jogger thể thao mặc khởi động, di chuyển hoặc tập nhẹ.", "BASIC"],
+  ["Bộ đồ bóng đá nam đỏ đen", "bo-do-bong-da-nam-do-den", "MALE", 3, 489000, 589000, "Set áo và quần thi đấu nam màu đỏ đen, nổi bật và dễ in tên số.", "HOT"],
+  ["Bộ đồ bóng đá nam xanh navy", "bo-do-bong-da-nam-xanh-navy", "MALE", 3, 479000, 579000, "Bộ đồ bóng đá nam xanh navy chất thun lạnh, phù hợp đội bóng phủi.", "NEW"],
+  ["Bộ đồ bóng đá nữ trắng xanh", "bo-do-bong-da-nu-trang-xanh", "FEMALE", 3, 459000, 559000, "Set bóng đá nữ phối trắng xanh, form thể thao và dễ vận động.", "NEW"],
+  ["Bộ đồ bóng đá nữ hồng đen", "bo-do-bong-da-nu-hong-den", "FEMALE", 3, 459000, 559000, "Bộ đồ bóng đá nữ phối hồng đen, chất vải nhẹ và lên dáng gọn.", "SALE"],
+  ["Bộ đồ bóng đá unisex tối giản", "bo-do-bong-da-unisex-toi-gian", "UNISEX", 3, 469000, 569000, "Set unisex tối giản cho nhóm bạn hoặc đội bóng muốn đồng bộ nhanh.", "BASIC"],
+  ["Bộ đồ bóng đá trẻ em vàng xanh", "bo-do-bong-da-tre-em-vang-xanh", "UNISEX", 3, 399000, 479000, "Bộ đồ bóng đá trẻ em màu vàng xanh, nhẹ và dễ giặt sau buổi tập.", "NEW"],
+  ["Bộ đồ thủ môn nam cam đen", "bo-do-thu-mon-nam-cam-den", "MALE", 3, 529000, 629000, "Set thủ môn nam tay dài có đệm nhẹ, màu cam đen dễ nhận diện.", "HOT"],
+  ["Bộ đồ thủ môn unisex xanh lá", "bo-do-thu-mon-unisex-xanh-la", "UNISEX", 3, 519000, 619000, "Bộ thủ môn unisex thoáng khí, hỗ trợ bảo vệ khi đổ người.", "SALE"],
+  ["Set training unisex xám đen", "set-training-unisex-xam-den", "UNISEX", 4, 499000, 599000, "Set training áo và quần dùng tập thể lực, chạy bộ hoặc khởi động.", "BASIC"],
+  ["Áo khoác gió bóng đá unisex", "ao-khoac-gio-bong-da-unisex", "UNISEX", 4, 549000, 649000, "Áo khoác gió nhẹ chống mưa nhỏ, phù hợp di chuyển đến sân.", "HOT"],
+  ["Áo khoác training nam", "ao-khoac-training-nam", "MALE", 4, 529000, 629000, "Áo khoác training nam form thể thao, dễ mặc cùng quần jogger.", "NEW"],
+  ["Áo khoác training nữ", "ao-khoac-training-nu", "FEMALE", 4, 519000, 619000, "Áo khoác training nữ nhẹ, gọn và phù hợp tập buổi sáng.", "NEW"],
+  ["Quần dài training unisex", "quan-dai-training-unisex", "UNISEX", 4, 389000, 469000, "Quần dài training co giãn, hỗ trợ vận động khi tập chiến thuật.", "SALE"],
+  ["Áo giữ nhiệt bóng đá", "ao-giu-nhiet-bong-da", "UNISEX", 4, 249000, 309000, "Áo giữ nhiệt mặc trong áo thi đấu, phù hợp đá ban đêm.", "BASIC"],
+  ["Tất bóng đá chống trượt", "tat-bong-da-chong-truot", "UNISEX", 5, 99000, 139000, "Tất bóng đá đế chống trượt, tăng độ bám trong giày.", "HOT"],
+  ["Tất bóng đá cổ cao", "tat-bong-da-co-cao", "UNISEX", 5, 89000, 119000, "Tất cổ cao co giãn tốt, ôm chân và bền sau nhiều lần giặt.", "BASIC"],
+  ["Bọc ống đồng thi đấu", "boc-ong-dong-thi-dau", "UNISEX", 5, 129000, 169000, "Bọc ống đồng nhẹ, bảo vệ cẳng chân khi va chạm.", "NEW"],
+  ["Găng tay thủ môn basic", "gang-tay-thu-mon-basic", "UNISEX", 5, 249000, 319000, "Găng tay thủ môn bám bóng tốt, phù hợp tập luyện và thi đấu phong trào.", "SALE"],
+  ["Găng tay thủ môn pro grip", "gang-tay-thu-mon-pro-grip", "UNISEX", 5, 399000, 499000, "Găng thủ môn grip tốt, cổ tay chắc và bề mặt bắt bóng ổn định.", "HOT"],
+  ["Băng đội trưởng", "bang-doi-truong", "UNISEX", 5, 69000, 99000, "Băng đội trưởng co giãn, màu nổi bật và dễ điều chỉnh.", "BASIC"],
+  ["Băng cổ chân thể thao", "bang-co-chan-the-thao", "UNISEX", 5, 79000, 109000, "Băng cổ chân hỗ trợ khớp khi chạy, đổi hướng và tiếp đất.", "NEW"],
+  ["Túi đựng giày bóng đá", "tui-dung-giay-bong-da", "UNISEX", 5, 159000, 199000, "Túi đựng giày chống bám bẩn, có quai xách tiện mang ra sân.", "SALE"],
+  ["Túi trống thể thao Ni Sport", "tui-trong-the-thao-ni-sport", "UNISEX", 5, 349000, 429000, "Túi trống đựng đồ đá bóng, giày và phụ kiện sau trận.", "HOT"],
+  ["Bình nước thể thao 750ml", "binh-nuoc-the-thao-750ml", "UNISEX", 5, 129000, 169000, "Bình nước dung tích 750ml, nắp bật tiện dùng khi tập luyện.", "BASIC"],
+  ["Khăn thể thao nhanh khô", "khan-the-thao-nhanh-kho", "UNISEX", 5, 99000, 129000, "Khăn thể thao thấm hút tốt, nhanh khô sau buổi tập.", "NEW"],
+  ["Nón lưỡi trai thể thao", "non-luoi-trai-the-thao", "UNISEX", 5, 159000, 199000, "Nón lưỡi trai che nắng khi tập ngoài trời hoặc cổ vũ trên sân.", "BASIC"],
+  ["Dây kháng lực tập chân", "day-khang-luc-tap-chan", "UNISEX", 4, 149000, 199000, "Dây kháng lực hỗ trợ bài tập chân, mông và thăng bằng.", "NEW"],
+  ["Thang dây tập tốc độ", "thang-day-tap-toc-do", "UNISEX", 4, 219000, 279000, "Thang dây tập bước nhỏ, cải thiện tốc độ và khả năng đổi hướng.", "SALE"],
+  ["Cọc tiêu tập luyện bộ 10", "coc-tieu-tap-luyen-bo-10", "UNISEX", 4, 179000, 229000, "Bộ cọc tiêu dùng tập rê bóng, di chuyển và chia khu vực sân.", "HOT"],
+  ["Bóng đá tập luyện size 5", "bong-da-tap-luyen-size-5", "UNISEX", 5, 299000, 369000, "Bóng đá size 5 dùng tập luyện hằng tuần, độ nảy ổn định.", "NEW"],
+  ["Bóng futsal size 4", "bong-futsal-size-4", "UNISEX", 5, 279000, 349000, "Bóng futsal size 4 độ nảy thấp, phù hợp sân trong nhà.", "SALE"],
+  ["Bơm bóng mini", "bom-bong-mini", "UNISEX", 5, 89000, 119000, "Bơm bóng mini nhỏ gọn, dễ mang theo trong túi thể thao.", "BASIC"],
+  ["Kim bơm bóng bộ 5", "kim-bom-bong-bo-5", "UNISEX", 5, 39000, 59000, "Bộ kim bơm bóng dự phòng cho đội bóng và sân tập.", "BASIC"],
+  ["Áo cổ vũ Ni Sport", "ao-co-vu-ni-sport", "UNISEX", 1, 229000, 289000, "Áo cổ vũ nhẹ, thoáng và phù hợp xem bóng đá cùng bạn bè.", "NEW"],
+  ["Combo thi đấu đội bóng 5 người", "combo-thi-dau-doi-bong-5-nguoi", "UNISEX", 3, 1990000, 2390000, "Combo 5 bộ đồ bóng đá đồng đội, phù hợp nhóm đá sân 5.", "HOT"]
 ];
+
+function getCategoryName(categoryId) {
+  return productCategories.find((category) => Nữmber(category.id) === Nữmber(categoryId))?.name || "Sản phẩm";
+}
+
+export function getProductImagePath(productId) {
+  return `/assets/products/product-${productId}.jpg`;
+}
+
+export function getDisplayImagePath(productId) {
+  return `../assets/products/product-${productId}.jpg`;
+}
+
+export function handleProductImageError(image, productId = 1) {
+  const fallback = `../assets/product-${Math.min(Nữmber(productId) || 1, 28)}.jpg`;
+  if (!image || image.dataset.fallbackApplied === "true") return;
+  image.dataset.fallbackApplied = "true";
+  image.src = fallback;
+}
 
 function getVariantStock(productId, sizeIndex, colorIndex) {
   return 10 + ((productId * 7 + sizeIndex * 5 + colorIndex * 3) % 41);
 }
 
 function buildProductVariants(product) {
-  const isAccessory = product.categoryId === 7;
+  const isAccessory = product.categoryId === 5;
   const sizes = isAccessory ? ["FREE_SIZE"] : ["S", "M", "L", "XL"];
-  const colors = isAccessory ? ["Black", "White", "Beige", "Brown"] : ["Black", "White", "Beige"];
+  const colors = isAccessory ? ["Black", "White", "Beige", "Brown"] : ["Black", "White", "Blue"];
 
   return sizes.flatMap((size, sizeIndex) => colors.map((color, colorIndex) => ({
-    id: `${product.id}-${size}-${color}`,
+    id: Nữmber(`${product.id}${sizeIndex + 1}${colorIndex + 1}`),
     productId: product.id,
     product_id: product.id,
     size,
     color,
     stock: getVariantStock(product.id, sizeIndex, colorIndex),
-    sku: `LUNA-${String(product.id).padStart(3, "0")}-${size}-${color.toUpperCase()}`,
+    sku: `NI-${String(product.id).padStart(3, "0")}-${size}-${color.toUpperCase()}`,
     price: product.price
   })));
 }
 
-export let products = productSeed.map(([name, gender, categoryId, category, price, oldPrice, description, tag], index) => ({
-  id: index + 1,
-  name,
-  gender,
-  categoryId,
-  category,
-  price,
-  oldPrice,
-  image: `/assets/products/product-${index + 1}.jpg`,
-  image_url: `/assets/products/product-${index + 1}.jpg`,
-  images: [{
-    image_url: `/assets/products/product-${index + 1}.jpg`,
-    is_thumbnail: true,
-    sort_order: 1
-  }],
-  description,
-  tag
-})).map((product) => ({
-  ...product,
-  variants: buildProductVariants(product)
-}));
+export let products = productSeed.map(([name, slug, gender, categoryId, price, oldPrice, description, tag], index) => {
+  const id = index + 1;
+  const categoryName = getCategoryName(categoryId);
+  return {
+    id,
+    name,
+    slug,
+    gender,
+    categoryId,
+    categoryName,
+    category: categoryName,
+    price,
+    oldPrice,
+    image: getDisplayImagePath(id),
+    thumbnailUrl: getProductImagePath(id),
+    image_url: getProductImagePath(id),
+    totalStock: 0,
+    status: "SELLING",
+    description,
+    tag,
+    tagLabel: tag
+  };
+}).map((product) => {
+  const variants = buildProductVariants(product);
+  return {
+    ...product,
+    totalStock: variants.reduce((sum, variant) => sum + variant.stock, 0),
+    variants
+  };
+});
 
 export const productImages = products.map((product) => ({
   id: product.id,
   productId: product.id,
   product_id: product.id,
-  image_url: product.image_url,
+  image_url: product.thumbnailUrl,
   is_thumbnail: true,
   sort_order: 1
 }));
 
 export const productVariants = products.flatMap((product) => product.variants);
-
-export const defaultProducts = products.map((product) => ({ ...product }));
-export const PRODUCT_ADMIN_STATE_VERSION = "product-50-assets-v1";
+export const defaultProducts = products.map((product) => ({ ...product, variants: [...product.variants] }));
+export const PRODUCT_ADMIN_STATE_VERSION = "ni-sport-static-v1";
 
 const params = new URLSearchParams(window.location.search);
 let currentGender = params.get("gender") || "ALL";
@@ -132,20 +159,12 @@ let appliedSidebarFilters = { categoryId: currentCategoryId, priceValue: "all", 
 const productsPerPage = window.location.pathname.endsWith("products.html") ? 8 : 10;
 
 export function getProductAdminState() {
-  const savedState = getData("lunaProductAdminState", {});
-
+  const savedState = getData("niSportProductAdminState", {});
   if (savedState.version !== PRODUCT_ADMIN_STATE_VERSION) {
-    const customOnly = (savedState.customProducts || [])
-      .filter((product) => product.id > defaultProducts.length && product.gender && product.categoryId);
-    const freshState = {
-      version: PRODUCT_ADMIN_STATE_VERSION,
-      customProducts: customOnly,
-      hiddenProductIds: []
-    };
+    const freshState = { version: PRODUCT_ADMIN_STATE_VERSION, customProducts: [], hiddenProductIds: [] };
     saveProductAdminState(freshState);
     return freshState;
   }
-
   return {
     version: PRODUCT_ADMIN_STATE_VERSION,
     customProducts: savedState.customProducts || [],
@@ -154,7 +173,7 @@ export function getProductAdminState() {
 }
 
 export function saveProductAdminState(state) {
-  saveData("lunaProductAdminState", state);
+  saveData("niSportProductAdminState", state);
 }
 
 export function refreshProductsFromAdminState() {
@@ -165,22 +184,20 @@ export function refreshProductsFromAdminState() {
     .filter((product) => !hiddenIds.has(product.id))
     .map((product) => customById.get(product.id) || product);
   const customOnly = state.customProducts.filter((product) => !defaultProducts.some((item) => item.id === product.id));
-
   products = [...mergedDefaults, ...customOnly].filter((product) => !hiddenIds.has(product.id));
 }
 
 export function getProductById(productId) {
   refreshProductsFromAdminState();
-  return products.find((item) => Number(item.id) === Number(productId));
+  return products.find((item) => Nữmber(item.id) === Nữmber(productId));
 }
 
 export function getProductColors(product) {
-  return [...new Set((product.variants || []).map((variant) => variant.color))];
+  return [...new Set((product?.variants || []).map((variant) => variant.color))];
 }
 
 export function getProductSizes(product) {
-  if (!product) return ["S", "M", "L", "XL"];
-  return [...new Set((product.variants || []).map((variant) => variant.size))];
+  return [...new Set((product?.variants || []).map((variant) => variant.size))];
 }
 
 function getCheckedValues(name) {
@@ -190,9 +207,12 @@ function getCheckedValues(name) {
 function getSidebarFilters() {
   const categoryId = document.querySelector('input[name="sidebarCategory"]:checked')?.value || "all";
   const priceValue = document.querySelector('input[name="priceFilter"]:checked')?.value || "all";
-  const colors = getCheckedValues("colorFilter");
-  const sizes = getCheckedValues("sizeFilter");
-  return { categoryId, priceValue, colors, sizes };
+  return {
+    categoryId,
+    priceValue,
+    colors: getCheckedValues("colorFilter"),
+    sizes: getCheckedValues("sizeFilter")
+  };
 }
 
 function syncFilterControls() {
@@ -206,30 +226,13 @@ function syncFilterControls() {
 
 function resetSidebarFilters() {
   document.querySelector('input[name="priceFilter"][value="all"]')?.click();
-  document.querySelectorAll('input[name="colorFilter"]').forEach((input) => {
+  document.querySelectorAll('input[name="colorFilter"], input[name="sizeFilter"]').forEach((input) => {
     input.checked = false;
   });
 }
 
-function interleaveProductsByGender(productList) {
-  const genderOrder = ["MALE", "FEMALE", "UNISEX"];
-  const groups = genderOrder.map((gender) => productList.filter((product) => product.gender === gender));
-  const mixedProducts = [];
-  let index = 0;
-
-  while (groups.some((group) => index < group.length)) {
-    groups.forEach((group) => {
-      if (group[index]) mixedProducts.push(group[index]);
-    });
-    index += 1;
-  }
-
-  return mixedProducts;
-}
-
 function getProductPagination(productGrid) {
   if (!productGrid) return null;
-
   let pagination = document.getElementById("productPagination");
   if (!pagination) {
     pagination = document.createElement("div");
@@ -268,6 +271,31 @@ export function goToProductPage(page) {
   document.getElementById("products")?.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
+function createProductCard(product) {
+  const card = document.createElement("article");
+  card.className = "product-card";
+  card.innerHTML = `
+    <a class="product-image" href="product-detail.html?id=${product.id}">
+      <span class="product-tag">${product.tagLabel || product.tag}</span>
+      <img src="${product.image}" alt="${product.name}">
+    </a>
+    <div class="product-info">
+      <span class="product-category">${genderLabels[product.gender]} / ${product.categoryName}</span>
+      <h3><a href="product-detail.html?id=${product.id}">${product.name}</a></h3>
+      <div class="price-row">
+        <span class="price">${formatMoney(product.price)}</span>
+        ${product.oldPrice ? `<span class="old-price">${formatMoney(product.oldPrice)}</span>` : ""}
+      </div>
+      <div class="product-actions">
+        <button class="action-btn add-btn" onclick="addToCart(${product.id})">Thêm vào giỏ</button>
+        <button class="action-btn quick-btn" onclick="openQuickView(${product.id})">Xem nhanh</button>
+      </div>
+    </div>
+  `;
+  card.querySelector("img")?.addEventListener("error", (event) => handleProductImageError(event.currentTarget, product.id));
+  return card;
+}
+
 export function renderProducts() {
   refreshProductsFromAdminState();
   const productGrid = document.getElementById("productGrid");
@@ -278,23 +306,21 @@ export function renderProducts() {
   const keyword = normalizeText(searchInput.value.trim());
   const filteredProducts = products.filter((product) => {
     const matchGender = currentGender === "ALL" || product.gender === currentGender;
-    const matchCategory = appliedSidebarFilters.categoryId === "all" || Number(product.categoryId) === Number(appliedSidebarFilters.categoryId);
-    const matchSearch = normalizeText(product.name).includes(keyword);
+    const matchCategory = appliedSidebarFilters.categoryId === "all" || Nữmber(product.categoryId) === Nữmber(appliedSidebarFilters.categoryId);
+    const matchSearch = !keyword || normalizeText(`${product.name} ${product.categoryName} ${product.description}`).includes(keyword);
     const matchPrice = appliedSidebarFilters.priceValue === "all"
       || (() => {
-        const [min, max] = appliedSidebarFilters.priceValue.split("-").map(Number);
+        const [min, max] = appliedSidebarFilters.priceValue.split("-").map(Nữmber);
         return product.price >= min && product.price <= max;
       })();
     const matchColor = appliedSidebarFilters.colors.length === 0
       || appliedSidebarFilters.colors.some((color) => getProductColors(product).includes(color));
-    const matchSize = (appliedSidebarFilters.sizes || []).length === 0
+    const matchSize = appliedSidebarFilters.sizes.length === 0
       || appliedSidebarFilters.sizes.some((size) => getProductSizes(product).includes(size));
-
-    return matchGender && matchCategory && matchSearch && matchPrice && matchColor && matchSize;
+    return matchGender && matchCategory && matchSearch && matchPrice && matchColor && matchSize && product.status !== "HIDDEN";
   });
 
   productGrid.innerHTML = "";
-
   if (filteredProducts.length === 0) {
     emptyMessage.style.display = "block";
     renderProductPagination(0);
@@ -302,44 +328,17 @@ export function renderProducts() {
   }
 
   emptyMessage.style.display = "none";
-
-  const displayProducts = currentGender === "ALL"
-    ? interleaveProductsByGender(filteredProducts)
-    : filteredProducts;
-  const totalPages = Math.ceil(displayProducts.length / productsPerPage);
+  const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
   if (currentPage > totalPages) currentPage = totalPages;
-
   const startIndex = (currentPage - 1) * productsPerPage;
-  displayProducts.slice(startIndex, startIndex + productsPerPage).forEach((product) => {
-    const card = document.createElement("article");
-    card.className = "product-card";
-    card.innerHTML = `
-      <a class="product-image" href="product-detail.html?id=${product.id}">
-        <span class="product-tag">${product.tag}</span>
-        <img src="${product.image}" alt="${product.name}">
-      </a>
-      <div class="product-info">
-        <span class="product-category">${genderLabels[product.gender]} / ${product.category}</span>
-        <h3><a href="product-detail.html?id=${product.id}">${product.name}</a></h3>
-        <div class="price-row">
-          <span class="price">${formatMoney(product.price)}</span>
-          ${product.oldPrice ? `<span class="old-price">${formatMoney(product.oldPrice)}</span>` : ""}
-        </div>
-        <div class="product-actions">
-          <button class="action-btn add-btn" onclick="addToCart(${product.id})">🛒 Thêm vào giỏ</button>
-          <button class="action-btn quick-btn" onclick="openQuickView(${product.id})">Xem nhanh</button>
-        </div>
-      </div>
-    `;
-    productGrid.appendChild(card);
+  filteredProducts.slice(startIndex, startIndex + productsPerPage).forEach((product) => {
+    productGrid.appendChild(createProductCard(product));
   });
-
   renderProductPagination(totalPages);
 }
 
 export function initProductFilters() {
   syncFilterControls();
-
   document.querySelectorAll(".filter-btn").forEach((button) => {
     button.classList.toggle("active", button.dataset.gender === currentGender);
     button.addEventListener("click", () => {

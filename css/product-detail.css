@@ -663,3 +663,119 @@
     font-size: 1rem;
   }
 }
+
+/* Ni Sport product detail polish */
+.detail-page,
+.detail-fashion-page {
+  background: var(--sport-bg);
+}
+
+.detail-route,
+.detail-info-row,
+.side-box,
+.side-link-box,
+.fashion-buybox,
+.detail-specs {
+  border-color: var(--sport-line);
+  border-radius: 14px;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.06);
+}
+
+.fashion-detail-grid {
+  grid-template-columns: 170px minmax(360px, 1.1fr) minmax(330px, 0.9fr);
+  gap: 20px;
+}
+
+.fashion-main-image {
+  min-height: 520px;
+  background: linear-gradient(180deg, #ffffff, #eef4f8);
+  border: 1px solid var(--sport-line);
+  border-radius: 14px;
+}
+
+.fashion-main-image img {
+  width: min(520px, 100%);
+  max-height: 480px;
+  object-fit: contain;
+}
+
+.fashion-buybox {
+  padding: 22px;
+}
+
+.fashion-buybox h1 {
+  color: var(--sport-navy);
+  font-size: 1.35rem;
+  font-weight: 900;
+}
+
+.fashion-price strong {
+  color: #dc2626;
+  font-size: 1.5rem;
+  font-weight: 900;
+}
+
+.fashion-price em {
+  background: var(--sport-lime);
+  color: #07111f;
+}
+
+.variant-block h2 {
+  color: var(--sport-navy);
+  font-size: 0.86rem;
+}
+
+.color-options button,
+.size-options button {
+  border-color: #dbe3ee;
+  border-radius: 9px;
+}
+
+.color-options button.active,
+.size-options button.active {
+  border-color: var(--sport-navy);
+  box-shadow: 0 0 0 3px rgba(183, 255, 42, 0.5);
+}
+
+.fashion-cart-btn,
+.detail-cart-btn {
+  color: #07111f;
+  background: linear-gradient(135deg, var(--sport-lime), #86efac);
+  border-radius: 12px;
+  box-shadow: 0 16px 28px rgba(22, 163, 74, 0.2);
+}
+
+.store-check-btn {
+  border-color: var(--sport-line);
+  border-radius: 12px;
+}
+
+.detail-specs h2,
+.detail-info-row h2 {
+  color: var(--sport-navy);
+}
+
+@media (max-width: 1024px) {
+  .fashion-detail-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(330px, 0.86fr);
+  }
+
+  .detail-side-panel {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 760px) {
+  .fashion-detail-grid,
+  .detail-info-row {
+    grid-template-columns: 1fr;
+  }
+
+  .fashion-main-image {
+    min-height: 390px;
+  }
+
+  .fashion-buybox {
+    padding: 18px;
+  }
+}

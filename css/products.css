@@ -329,3 +329,181 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Ni Sport product/catalog polish */
+.products-section {
+  background: var(--sport-bg);
+}
+
+.product-filter-sidebar {
+  border-color: var(--sport-line);
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+}
+
+.filter-sidebar-head,
+.filter-group {
+  border-color: #e2e8f0;
+}
+
+.filter-sidebar-head h3,
+.filter-group h4 {
+  color: var(--sport-navy);
+}
+
+.filter-group label {
+  color: #334155;
+  min-height: 30px;
+}
+
+.filter-btn {
+  color: #0f172a;
+  background: #ffffff;
+  border-color: #dbe3ee;
+}
+
+.filter-btn:hover,
+.filter-btn.active {
+  color: #07111f;
+  background: var(--sport-lime);
+  border-color: var(--sport-lime);
+}
+
+.product-grid {
+  align-items: stretch;
+  gap: 18px;
+}
+
+.product-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  border-color: var(--sport-line);
+  border-radius: 14px;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.07);
+}
+
+.product-card:hover {
+  border-color: #86efac;
+  box-shadow: 0 22px 44px rgba(15, 23, 42, 0.13);
+  transform: translateY(-5px);
+}
+
+.product-image {
+  aspect-ratio: 4 / 5;
+  background: linear-gradient(180deg, #f8fafc, #eef4f8);
+}
+
+.product-image img {
+  object-fit: cover;
+  object-position: center top;
+}
+
+.product-tag {
+  top: 12px;
+  left: 12px;
+  color: #07111f;
+  background: var(--sport-lime);
+  border-radius: 7px;
+  font-size: 0.7rem;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.product-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 15px;
+}
+
+.product-category {
+  color: var(--sport-green);
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
+.product-info h3 {
+  min-height: 42px;
+  color: var(--sport-navy);
+  font-size: 0.95rem;
+  line-height: 1.42;
+}
+
+.price {
+  color: #dc2626;
+  font-size: 1rem;
+  font-weight: 900;
+}
+
+.old-price {
+  color: #94a3b8;
+}
+
+.product-actions {
+  margin-top: auto;
+}
+
+.action-btn {
+  min-height: 38px;
+  border-radius: 10px;
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.add-btn {
+  color: #07111f;
+  background: var(--sport-lime);
+}
+
+.quick-btn {
+  color: var(--sport-navy);
+  background: #eef2f7;
+}
+
+.action-btn:hover {
+  filter: brightness(0.98);
+  transform: translateY(-2px);
+}
+
+.product-pagination button {
+  color: var(--sport-navy);
+  background: #ffffff;
+  border-color: #dbe3ee;
+}
+
+.product-pagination button:hover:not(:disabled),
+.product-pagination button.active {
+  color: #07111f;
+  background: var(--sport-lime);
+  border-color: var(--sport-lime);
+}
+
+@media (max-width: 980px) {
+  .product-grid,
+  .products-layout .product-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 720px) {
+  .products-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .product-filter-sidebar {
+    position: static;
+  }
+
+  .product-grid,
+  .products-layout .product-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 430px) {
+  .product-grid,
+  .products-layout .product-grid {
+    grid-template-columns: 1fr;
+  }
+}

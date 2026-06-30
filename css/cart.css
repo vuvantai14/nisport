@@ -493,3 +493,134 @@
     min-height: 42px;
   }
 }
+
+/* Ni Sport cart and checkout polish */
+.cart-page {
+  background:
+    radial-gradient(circle at 86% 8%, rgba(183, 255, 42, 0.18), transparent 26%),
+    linear-gradient(180deg, #f8fafc 0%, #eef4f8 100%);
+}
+
+.cart-page-title h1 {
+  color: var(--sport-navy);
+  font-size: clamp(1.45rem, 3vw, 2rem);
+}
+
+.cart-page-layout {
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 360px);
+}
+
+.cart-page-table,
+.cart-summary {
+  border-color: var(--sport-line);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+}
+
+.cart-page-head {
+  color: #334155;
+  background: #f8fafc;
+  border-bottom-color: var(--sport-line);
+}
+
+.cart-page-item {
+  border-bottom-color: #e2e8f0;
+}
+
+.cart-page-image {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+
+.cart-page-info h3,
+.cart-summary h2 {
+  color: var(--sport-navy);
+}
+
+.cart-page-info::after {
+  content: "";
+  display: none;
+}
+
+.cart-page-price strong,
+.cart-page-line-total strong,
+.summary-line.total strong,
+.summary-line.discount strong {
+  color: #dc2626;
+}
+
+.cart-page-qty {
+  border-color: #dbe3ee;
+  border-radius: 10px;
+}
+
+.cart-page-qty button:hover {
+  background: #ecfdf5;
+}
+
+.cart-page-remove button {
+  color: #dc2626;
+  border-color: #fecaca;
+  border-radius: 10px;
+}
+
+.cart-page-remove button::before {
+  content: "Xóa";
+  font-size: 0.76rem;
+  font-weight: 900;
+}
+
+.coupon-form input,
+.form-group input,
+.form-group textarea {
+  border-color: #dbe3ee;
+  border-radius: 10px;
+}
+
+.coupon-form button {
+  color: #07111f;
+  background: var(--sport-lime);
+  border-radius: 10px;
+}
+
+.cart-service-strip {
+  background: #ffffff;
+  border-color: var(--sport-line);
+  box-shadow: var(--shadow);
+}
+
+.cart-service-strip span {
+  color: #07111f;
+  background: var(--sport-lime);
+}
+
+@media (max-width: 860px) {
+  .cart-page-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .cart-page-head {
+    display: none;
+  }
+
+  .cart-page-item {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .cart-page-product {
+    align-items: flex-start;
+  }
+
+  .cart-page-price,
+  .cart-page-line-total,
+  .cart-page-remove {
+    text-align: left;
+  }
+
+  .cart-page-qty {
+    width: 122px;
+  }
+}

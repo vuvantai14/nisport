@@ -3,55 +3,50 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Đăng ký - Luna Fashion</title>
+  <title>Dang ky - Ni Sport</title>
   <link rel="stylesheet" href="../css/common.css">
   <link rel="stylesheet" href="../css/login.css">
   <link rel="stylesheet" href="../css/register.css">
 </head>
 <body class="auth-body">
   <main class="auth-page auth-register">
-    <a class="auth-close" href="index.html" aria-label="Về trang chủ">×</a>
+    <a class="auth-close" href="index.html" aria-label="Ve trang chu">x</a>
     <section class="auth-card register-card">
       <a href="index.html" class="auth-logo">
-        <span class="logo-main">Luna<span>Fashion</span></span>
-        <small>Style for every day</small>
+        <span class="logo-main">Ni<span>Sport</span></span>
+        <small>San sang ra san</small>
       </a>
-
       <div class="auth-tabs">
-        <a href="login.html">Đăng nhập</a>
-        <a class="active" href="register.html">Đăng ký</a>
+        <a href="login.html">Dang nhap</a>
+        <a class="active" href="register.html">Dang ky</a>
       </div>
-
+      <p class="auth-note">Tao tai khoan demo de luu gio hang va theo doi don hang tren frontend tinh.</p>
       <form class="auth-form" id="registerForm" novalidate>
         <div class="auth-row">
-          <label for="lastName">Họ</label>
-          <input type="text" id="lastName" placeholder="Nhập họ của bạn" />
+          <label for="lastName">Ho</label>
+          <input type="text" id="lastName" placeholder="Nhap ho cua ban" />
         </div>
-
         <div class="auth-row">
-          <label for="firstName">Tên</label>
-          <input type="text" id="firstName" placeholder="Nhập tên của bạn" />
+          <label for="firstName">Ten</label>
+          <input type="text" id="firstName" placeholder="Nhap ten cua ban" />
         </div>
-
         <div class="auth-row">
           <label for="registerEmail">Email</label>
-          <input type="email" id="registerEmail" placeholder="Nhập email" />
+          <input type="email" id="registerEmail" placeholder="example@gmail.com" />
         </div>
-
         <div class="auth-row">
-          <label for="registerPassword">Mật khẩu</label>
+          <label for="registerPassword">Mat khau</label>
           <div class="password-field">
-            <input type="password" id="registerPassword" placeholder="Nhập mật khẩu" />
-            <button type="button" aria-label="Hiện mật khẩu">◇</button>
+            <input type="password" id="registerPassword" placeholder="Toi thieu 6 ky tu" />
+            <button type="button" aria-label="Hien mat khau">Hien</button>
           </div>
         </div>
-
-        <p class="auth-policy">Bằng cách tạo tài khoản tại Luna Fashion, bạn đồng ý với <a href="#">Chính sách bảo mật</a> và <a href="#">Điều khoản - Điều kiện</a>.</p>
-        <button class="auth-submit" type="submit">Tạo tài khoản</button>
+        <p class="auth-policy">Bang cach tao tai khoan Ni Sport, ban dong y voi chinh sach mua hang, doi size va bao mat thong tin.</p>
+        <button class="auth-submit" type="submit">Tao tai khoan</button>
         <p class="auth-message" id="registerMessage"></p>
         <a class="auth-alt" href="login.html">
-          <span>Đã có tài khoản?</span>
-          <strong>Đăng nhập</strong>
+          <span>Da co tai khoan?</span>
+          <strong>Dang nhap</strong>
         </a>
       </form>
     </section>

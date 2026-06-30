@@ -93,7 +93,7 @@ function accountMarkup(currentUser, mode = "page") {
       ${mode === "modal" ? `<button class="user-info-close" type="button" aria-label="Đóng">×</button>` : ""}
       <aside class="user-account-sidebar">
         <div class="user-sidebar-profile">
-          <div class="user-info-avatar">👤</div>
+          <div class="user-info-avatar">NS</div>
           <strong>${currentUser.lastName || ""} ${currentUser.firstName || ""}</strong>
           <span>${currentUser.phone || "Chưa cập nhật SĐT"}</span>
         </div>
@@ -123,7 +123,7 @@ function accountMarkup(currentUser, mode = "page") {
 
         <div class="user-profile-panel">
           <div class="user-profile-photo">
-            <div class="user-info-avatar">👤</div>
+            <div class="user-info-avatar">NS</div>
             <button type="button">Thay đổi ảnh</button>
           </div>
           <dl>

@@ -445,3 +445,149 @@
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+/* Ni Sport homepage polish */
+.hero {
+  width: min(1480px, calc(100% - 40px));
+  min-height: 520px;
+  background: var(--sport-navy);
+  border-radius: 0 0 18px 18px;
+  box-shadow: 0 28px 70px rgba(7, 17, 31, 0.18);
+}
+
+.hero::before {
+  background:
+    linear-gradient(90deg, rgba(7, 17, 31, 0.88) 0%, rgba(7, 17, 31, 0.68) 42%, rgba(7, 17, 31, 0.18) 74%, rgba(7, 17, 31, 0.05) 100%),
+    radial-gradient(circle at 18% 30%, rgba(183, 255, 42, 0.18), transparent 30%);
+}
+
+.hero-content {
+  max-width: 620px;
+  padding: 64px 0;
+  color: #ffffff;
+  text-shadow: none;
+}
+
+.script-title {
+  width: fit-content;
+  margin-bottom: 14px;
+  padding: 7px 12px;
+  color: var(--sport-lime);
+  background: rgba(183, 255, 42, 0.1);
+  border: 1px solid rgba(183, 255, 42, 0.25);
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 0.86rem;
+  font-style: normal;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.hero h1 {
+  color: #ffffff;
+  font-size: clamp(2.25rem, 5vw, 4.6rem);
+  letter-spacing: 0;
+}
+
+.hero-content p:not(.script-title) {
+  color: #dbe7f4;
+  font-size: 1.05rem;
+  line-height: 1.75;
+}
+
+.hero-arrow {
+  color: var(--sport-navy);
+  background: rgba(255, 255, 255, 0.92);
+}
+
+.hero-dots button {
+  background: rgba(255, 255, 255, 0.45);
+}
+
+.hero-dots button.active {
+  background: var(--sport-lime);
+}
+
+.trust-grid,
+.promo-grid article,
+.review-card {
+  border-color: var(--sport-line);
+  box-shadow: var(--shadow);
+}
+
+.trust-grid span {
+  color: var(--sport-navy);
+  background: var(--sport-lime);
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.category-grid {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.category-card {
+  min-height: 148px;
+  padding: 16px 10px;
+  background: #ffffff;
+  border: 1px solid var(--sport-line);
+  border-radius: 14px;
+  transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+}
+
+.category-card:hover {
+  border-color: #86efac;
+  box-shadow: var(--shadow);
+  transform: translateY(-4px);
+}
+
+.category-image {
+  width: 76px;
+  height: 76px;
+  background: #f8fafc;
+  border-color: #dbe3ee;
+}
+
+.promo-grid article {
+  background:
+    radial-gradient(circle at 92% 20%, rgba(183, 255, 42, 0.28), transparent 25%),
+    linear-gradient(135deg, #07111f, #0f172a);
+}
+
+.promo-grid h3,
+.promo-grid p,
+.promo-grid span {
+  color: #ffffff;
+}
+
+.promo-grid a {
+  color: var(--sport-navy);
+  background: var(--sport-lime);
+}
+
+.stars {
+  color: #f59e0b;
+  letter-spacing: 1px;
+}
+
+@media (max-width: 980px) {
+  .category-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 560px) {
+  .hero {
+    width: calc(100% - 20px);
+    min-height: 470px;
+  }
+
+  .hero-content {
+    padding: 50px 0 72px;
+    text-align: left;
+  }
+
+  .category-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

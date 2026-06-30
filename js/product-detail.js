@@ -1,68 +1,82 @@
 import { formatMoney, initCommonLayout, showToast } from "./common.js";
 import { addToCart, initCartControls } from "./cart.js";
-import { genderLabels, getProductById, products, refreshProductsFromAdminState } from "./products.js";
+import {
+  genderLabels,
+  getProductById,
+  getProductColors,
+  getProductSizes,
+  handleProductImageError,
+  products,
+  refreshProductsFromAdminState
+} from "./products.js";
 
 const detailSpecsMap = {
-  "Áo": [
-    ["Chat lieu", "Cotton, linen, kate hoac vai tong hop tuy mau"],
-    ["Phom dang", "Regular, slimfit hoac oversize"],
-    ["Mau sac", "Den, trang, be, navy, pastel"],
-    ["Size", "S, M, L, XL, XXL"],
-    ["Bao quan", "Giat may che do nhe, phoi noi thoang mat"]
+  "Áo bóng đá": [
+    ["Chất liệu", "Thun lạnh thể thao, thoáng khí"],
+    ["Phom dáng", "Regular fit, dễ vận động"],
+    ["Tính năng", "Nhanh khô, nhẹ, hạn chế bám mồ hôi"],
+    ["Phù hợp", "Thi đấu, tập luyện, cổ vũ"],
+    ["Bảo quản", "Giặt mặt trái, không sấy nhiệt cao"]
   ],
-  "Quần": [
-    ["Chat lieu", "Kaki, denim, thun hoac vai tuyet mua"],
-    ["Phom dang", "Slimfit, straight hoac jogger"],
-    ["Mau sac", "Den, be, navy, xanh denim"],
-    ["Size", "S, M, L, XL, XXL"],
-    ["Bao quan", "Giat rieng mau dam trong lan dau"]
+  "Quần bóng đá": [
+    ["Chất liệu", "Poly thể thao nhẹ"],
+    ["Phom dáng", "Lưng thun, dây rút chắc"],
+    ["Tính năng", "Co giãn, thoát mồ hôi"],
+    ["Phù hợp", "Sân 5, sân 7, tập luyện"],
+    ["Bảo quản", "Giặt máy chế độ nhẹ"]
   ],
-  "Hoodie": [
-    ["Chat lieu", "Ni cotton hoac thun day dan"],
-    ["Phom dang", "Regular hoac oversize"],
-    ["Mau sac", "Den, be, xam, navy"],
-    ["Size", "S, M, L, XL, XXL"],
-    ["Bao quan", "Phan loai mau truoc khi giat"]
+  "Bộ đồ bóng đá": [
+    ["Bao gồm", "Áo thi đấu và quần đồng bộ"],
+    ["Chất liệu", "Thun lạnh thể thao"],
+    ["Tính năng", "Dễ in tên số, nhanh khô"],
+    ["Phù hợp", "Đội bóng, nhóm bạn, giải phong trào"],
+    ["Bảo quản", "Không dùng chất tẩy mạnh"]
   ],
-  "Áo khoác": [
-    ["Chat lieu", "Kaki, ni, len mong hoac polyester"],
-    ["Phom dang", "Bomber, cardigan hoac jacket"],
-    ["Mau sac", "Den, be, navy, pastel"],
-    ["Size", "S, M, L, XL, XXL"],
-    ["Bao quan", "Treo moc sau khi mac, tranh nang gat"]
+  "Đồ tập bóng đá": [
+    ["Chất liệu", "Vải thể thao co giãn"],
+    ["Phom dáng", "Gọn, linh hoạt khi vận động"],
+    ["Tính năng", "Hỗ trợ chạy, khởi động, tập thể lực"],
+    ["Phù hợp", "Training, gym, di chuyển đến sân"],
+    ["Bảo quản", "Phơi nơi thoáng mát"]
   ],
   "Phụ kiện": [
-    ["Chat lieu", "Da tong hop, vai hoac kim loai tuy mau"],
-    ["Kieu dang", "Basic, de phoi nam nu"],
-    ["Mau sac", "Den, be, kem, hong"],
-    ["Bao quan", "Tranh nuoc va anh nang gat"]
+    ["Ứng dụng", "Hỗ trợ thi đấu và tập luyện"],
+    ["Kích thước", "Tùy mẫu sản phẩm"],
+    ["Tính năng", "Gọn nhẹ, dễ mang ra sân"],
+    ["Phù hợp", "Cầu thủ phong trào, đội bóng, cổ động viên"],
+    ["Bảo quản", "Giữ khô ráo sau khi sử dụng"]
   ]
 };
 
+function bindProductImage(image, productId) {
+  image?.addEventListener("error", () => handleProductImageError(image, productId));
+}
+
 export function renderRelatedProducts(product, relatedGrid) {
   const relatedProducts = products
-    .filter((item) => item.category === product.category && item.id !== product.id)
+    .filter((item) => item.categoryId === product.categoryId && item.id !== product.id)
     .slice(0, 4);
 
   relatedGrid.innerHTML = relatedProducts.map((item) => `
     <article class="product-card">
       <a class="product-image" href="product-detail.html?id=${item.id}">
-        <span class="product-tag">${item.tag}</span>
-        <img src="${item.image}" alt="${item.name}">
+        <span class="product-tag">${item.tagLabel || item.tag}</span>
+        <img data-product-img data-product-id="${item.id}" src="${item.image}" alt="${item.name}">
       </a>
       <div class="product-info">
-        <span class="product-category">${genderLabels[item.gender]} / ${item.category}</span>
+        <span class="product-category">${genderLabels[item.gender]} / ${item.categoryName}</span>
         <h3><a href="product-detail.html?id=${item.id}">${item.name}</a></h3>
         <div class="price-row">
           <span class="price">${formatMoney(item.price)}</span>
           ${item.oldPrice ? `<span class="old-price">${formatMoney(item.oldPrice)}</span>` : ""}
         </div>
         <div class="product-actions">
-          <button class="action-btn add-btn" onclick="addToCart(${item.id})">🛒 Thêm vào giỏ</button>
+          <button class="action-btn add-btn" onclick="addToCart(${item.id})">Thêm vào giỏ</button>
         </div>
       </div>
     </article>
   `).join("");
+  relatedGrid.querySelectorAll("[data-product-img]").forEach((image) => bindProductImage(image, image.dataset.productId));
 }
 
 export function renderProductDetail() {
@@ -71,9 +85,9 @@ export function renderProductDetail() {
 
   refreshProductsFromAdminState();
   const params = new URLSearchParams(window.location.search);
-  const id = Number(params.get("id")) || 1;
+  const id = Nữmber(params.get("id")) || 1;
   const product = getProductById(id) || products[0];
-  const specs = detailSpecsMap[product.category] || detailSpecsMap["Áo"];
+  const specs = detailSpecsMap[product.categoryName] || detailSpecsMap["Áo bóng đá"];
   const detailCategory = document.getElementById("detailCategory");
   const detailImage = document.getElementById("detailImage");
   const detailPrice = document.getElementById("detailPrice");
@@ -90,17 +104,14 @@ export function renderProductDetail() {
     ? Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100)
     : 0;
 
-  document.title = `${product.name} - Luna Fashion`;
+  document.title = `${product.name} - Ni Sport`;
   detailTitle.textContent = product.name;
-  if (detailCategory) detailCategory.textContent = `${genderLabels[product.gender]} / ${product.category}`;
+  if (detailCategory) detailCategory.textContent = `${genderLabels[product.gender]} / ${product.categoryName}`;
   if (detailRouteName) detailRouteName.textContent = product.name;
   if (detailImage) {
     detailImage.src = product.image;
     detailImage.alt = product.name;
-    detailImage.onerror = () => {
-      detailImage.onerror = null;
-      detailImage.src = `../assets/product-${product.id}.jpg`;
-    };
+    bindProductImage(detailImage, product.id);
   }
   if (detailPrice) detailPrice.textContent = formatMoney(product.price);
   if (detailOldPrice) {
@@ -113,54 +124,42 @@ export function renderProductDetail() {
   }
   if (discountBadge) discountBadge.textContent = discount ? `Tiết kiệm ${discount}%` : "Hàng mới";
 
-  document.querySelectorAll(".vertical-thumbs button").forEach((button, index) => {
-    const image = index === 0 ? product.image : button.dataset.image;
-    button.dataset.image = image;
-    const thumbImage = button.querySelector("img");
-    if (index === 0 && thumbImage) thumbImage.src = product.image;
-
-    button.addEventListener("click", () => {
-      document.querySelectorAll(".vertical-thumbs button").forEach((item) => item.classList.remove("active"));
-      button.classList.add("active");
-      if (detailImage) detailImage.src = button.dataset.image;
+  const colors = getProductColors(product);
+  if (colorOptions) {
+    colorOptions.innerHTML = colors.map((color, index) => `
+      <button class="${index === 0 ? "active" : ""}" type="button" data-color="${color}">
+        <img data-product-img data-product-id="${product.id}" src="${product.image}" alt="${color}">
+      </button>
+    `).join("");
+    colorOptions.querySelectorAll("button").forEach((button) => {
+      button.addEventListener("click", () => {
+        colorOptions.querySelectorAll("button").forEach((item) => item.classList.remove("active"));
+        button.classList.add("active");
+      });
     });
-  });
+    colorOptions.querySelectorAll("[data-product-img]").forEach((image) => bindProductImage(image, product.id));
+  }
 
-  colorOptions?.querySelectorAll("button").forEach((button) => {
-    button.dataset.image = product.image;
-    const image = button.querySelector("img");
-    if (image) {
-      image.src = product.image;
-      image.alt = button.dataset.color || product.name;
-      image.onerror = () => {
-        image.onerror = null;
-        image.src = "../assets/product-1.jpg";
-      };
-    }
-  });
-
-  colorOptions?.querySelectorAll("button").forEach((button) => {
-    button.addEventListener("click", () => {
-      colorOptions.querySelectorAll("button").forEach((item) => item.classList.remove("active"));
-      button.classList.add("active");
+  const sizes = getProductSizes(product);
+  if (sizeOptions) {
+    sizeOptions.innerHTML = sizes.map((size, index) => `
+      <button class="${index === 0 ? "active" : ""}" type="button" data-size="${size}">${size}</button>
+    `).join("");
+    sizeOptions.querySelectorAll("button").forEach((button) => {
+      button.addEventListener("click", () => {
+        sizeOptions.querySelectorAll("button").forEach((item) => item.classList.remove("active"));
+        button.classList.add("active");
+      });
     });
-  });
-
-  sizeOptions?.querySelectorAll("button:not(:disabled)").forEach((button) => {
-    button.addEventListener("click", () => {
-      sizeOptions.querySelectorAll("button").forEach((item) => item.classList.remove("active"));
-      button.classList.add("active");
-    });
-  });
+  }
 
   detailAddBtn?.addEventListener("click", () => {
     const selectedSize = sizeOptions?.querySelector("button.active")?.dataset.size;
-    const selectedColor = colorOptions?.querySelector("button.active")?.dataset.color || "Pastel Pink";
+    const selectedColor = colorOptions?.querySelector("button.active")?.dataset.color || "Black";
     if (!selectedSize) {
       showToast("Vui lòng chọn size trước khi thêm vào giỏ.");
       return;
     }
-
     addToCart(product.id, { size: selectedSize, color: selectedColor });
     window.location.href = "cart.html";
   });
