@@ -1,3 +1,4 @@
+import { apiRequest, resolveAssetUrl } from "./api.js";
 import { formatMoney, initCommonLayout, showToast } from "./common.js";
 import { addToCart, initCartControls } from "./cart.js";
 import {
@@ -11,40 +12,40 @@ import {
 } from "./products.js";
 
 const detailSpecsMap = {
-  "Áo bóng đá": [
-    ["Chất liệu", "Thun lạnh thể thao, thoáng khí"],
-    ["Phom dáng", "Regular fit, dễ vận động"],
-    ["Tính năng", "Nhanh khô, nhẹ, hạn chế bám mồ hôi"],
-    ["Phù hợp", "Thi đấu, tập luyện, cổ vũ"],
-    ["Bảo quản", "Giặt mặt trái, không sấy nhiệt cao"]
+  "Ao bong da": [
+    ["Chat lieu", "Vai the thao thoang khi"],
+    ["Form", "Regular fit, de van dong"],
+    ["Tinh nang", "Nhanh kho, nhe, han che bam mo hoi"],
+    ["Phu hop", "Thi dau, tap luyen, co vu"],
+    ["Bao quan", "Giat mat trai, khong say nhiet cao"]
   ],
-  "Quần bóng đá": [
-    ["Chất liệu", "Poly thể thao nhẹ"],
-    ["Phom dáng", "Lưng thun, dây rút chắc"],
-    ["Tính năng", "Co giãn, thoát mồ hôi"],
-    ["Phù hợp", "Sân 5, sân 7, tập luyện"],
-    ["Bảo quản", "Giặt máy chế độ nhẹ"]
+  "Quan bong da": [
+    ["Chat lieu", "Poly the thao nhe"],
+    ["Form", "Lung thun, day rut chac"],
+    ["Tinh nang", "Co gian, thoat mo hoi"],
+    ["Phu hop", "San 5, san 7, tap luyen"],
+    ["Bao quan", "Giat may che do nhe"]
   ],
-  "Bộ đồ bóng đá": [
-    ["Bao gồm", "Áo thi đấu và quần đồng bộ"],
-    ["Chất liệu", "Thun lạnh thể thao"],
-    ["Tính năng", "Dễ in tên số, nhanh khô"],
-    ["Phù hợp", "Đội bóng, nhóm bạn, giải phong trào"],
-    ["Bảo quản", "Không dùng chất tẩy mạnh"]
+  "Bo do bong da": [
+    ["Bao gom", "Ao thi dau va quan dong bo"],
+    ["Chat lieu", "Vai the thao nhanh kho"],
+    ["Tinh nang", "De in ten so"],
+    ["Phu hop", "Doi bong, nhom ban, giai phong trao"],
+    ["Bao quan", "Khong dung chat tay manh"]
   ],
-  "Đồ tập bóng đá": [
-    ["Chất liệu", "Vải thể thao co giãn"],
-    ["Phom dáng", "Gọn, linh hoạt khi vận động"],
-    ["Tính năng", "Hỗ trợ chạy, khởi động, tập thể lực"],
-    ["Phù hợp", "Training, gym, di chuyển đến sân"],
-    ["Bảo quản", "Phơi nơi thoáng mát"]
+  "Do tap bong da": [
+    ["Chat lieu", "Vai co gian linh hoat"],
+    ["Form", "Gon, ho tro van dong"],
+    ["Tinh nang", "Ho tro training, gym, khoi dong"],
+    ["Phu hop", "Tap the luc va di chuyen den san"],
+    ["Bao quan", "Phoi noi thoang mat"]
   ],
-  "Phụ kiện": [
-    ["Ứng dụng", "Hỗ trợ thi đấu và tập luyện"],
-    ["Kích thước", "Tùy mẫu sản phẩm"],
-    ["Tính năng", "Gọn nhẹ, dễ mang ra sân"],
-    ["Phù hợp", "Cầu thủ phong trào, đội bóng, cổ động viên"],
-    ["Bảo quản", "Giữ khô ráo sau khi sử dụng"]
+  "Phu kien": [
+    ["Ung dung", "Ho tro thi dau va tap luyen"],
+    ["Kich thuoc", "Tuy mau san pham"],
+    ["Tinh nang", "Gon nhe, de mang ra san"],
+    ["Phu hop", "Cau thu phong trao va doi bong"],
+    ["Bao quan", "Giu kho sau khi su dung"]
   ]
 };
 
@@ -52,26 +53,71 @@ function bindProductImage(image, productId) {
   image?.addEventListener("error", () => handleProductImageError(image, productId));
 }
 
-export function renderRelatedProducts(product, relatedGrid) {
-  const relatedProducts = products
-    .filter((item) => item.categoryId === product.categoryId && item.id !== product.id)
-    .slice(0, 4);
+function normalizeDetailProduct(product) {
+  if (!product) return null;
+  const categoryName = product.categoryName || product.category?.name || "Ao bong da";
+  const thumbnail = product.thumbnailUrl || product.images?.find((item) => item.isThumbnail)?.imageUrl || product.images?.[0]?.imageUrl || `/assets/products/product-${product.id}.jpg`;
+  return {
+    ...product,
+    categoryId: product.categoryId || product.category?.id || 1,
+    categoryName,
+    category: product.category || null,
+    oldPrice: product.oldPrice || 0,
+    tag: product.tag || "NEW",
+    status: product.status || "SELLING",
+    totalStock: product.totalStock ?? (product.variants || []).reduce((sum, item) => sum + Number(item.stock || 0), 0),
+    thumbnailUrl: thumbnail,
+    image: resolveAssetUrl(thumbnail, `../assets/products/product-${product.id}.jpg`),
+    images: product.images || [{ id: product.id, imageUrl: thumbnail, isThumbnail: true, sortOrder: 1 }],
+    variants: product.variants || []
+  };
+}
 
+async function loadProductDetail() {
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get("id");
+  const slug = params.get("slug");
+
+  try {
+    const endpoint = slug ? `/products/slug/${encodeURIComponent(slug)}` : `/products/${Number(id) || 1}`;
+    return normalizeDetailProduct(await apiRequest(endpoint, { auth: false }));
+  } catch {
+    refreshProductsFromAdminState();
+    return normalizeDetailProduct(getProductById(id) || products[0]);
+  }
+}
+
+async function loadRelatedProducts(product) {
+  try {
+    const related = await apiRequest(`/products/${product.id}/related`, { auth: false });
+    return (related || []).map((item) => ({
+      ...item,
+      image: resolveAssetUrl(item.thumbnailUrl, `../assets/products/product-${item.id}.jpg`)
+    }));
+  } catch {
+    return products
+      .filter((item) => item.categoryId === product.categoryId && item.id !== product.id)
+      .slice(0, 4);
+  }
+}
+
+export async function renderRelatedProducts(product, relatedGrid) {
+  const relatedProducts = await loadRelatedProducts(product);
   relatedGrid.innerHTML = relatedProducts.map((item) => `
     <article class="product-card">
       <a class="product-image" href="product-detail.html?id=${item.id}">
-        <span class="product-tag">${item.tagLabel || item.tag}</span>
+        <span class="product-tag">${item.tagLabel || item.tag || "NEW"}</span>
         <img data-product-img data-product-id="${item.id}" src="${item.image}" alt="${item.name}">
       </a>
       <div class="product-info">
-        <span class="product-category">${genderLabels[item.gender]} / ${item.categoryName}</span>
+        <span class="product-category">${genderLabels[item.gender] || item.gender || "Unisex"} / ${item.categoryName}</span>
         <h3><a href="product-detail.html?id=${item.id}">${item.name}</a></h3>
         <div class="price-row">
           <span class="price">${formatMoney(item.price)}</span>
           ${item.oldPrice ? `<span class="old-price">${formatMoney(item.oldPrice)}</span>` : ""}
         </div>
         <div class="product-actions">
-          <button class="action-btn add-btn" onclick="addToCart(${item.id})">Thêm vào giỏ</button>
+          <a class="action-btn add-btn" href="product-detail.html?id=${item.id}">Xem chi tiet</a>
         </div>
       </div>
     </article>
@@ -79,20 +125,52 @@ export function renderRelatedProducts(product, relatedGrid) {
   relatedGrid.querySelectorAll("[data-product-img]").forEach((image) => bindProductImage(image, image.dataset.productId));
 }
 
-export function renderProductDetail() {
+function renderGallery(product, detailImage) {
+  const thumbs = document.querySelector(".vertical-thumbs");
+  const images = [...product.images]
+    .sort((a, b) => Number(a.sortOrder || 0) - Number(b.sortOrder || 0))
+    .map((image) => resolveAssetUrl(image.imageUrl || image.image_url, product.image));
+
+  if (detailImage) {
+    detailImage.src = images[0] || product.image;
+    detailImage.alt = product.name;
+    bindProductImage(detailImage, product.id);
+  }
+  if (!thumbs) return;
+
+  thumbs.innerHTML = images.map((image, index) => `
+    <button class="${index === 0 ? "active" : ""}" type="button" data-image="${image}">
+      <img src="${image}" alt="${product.name}">
+    </button>
+  `).join("");
+
+  thumbs.querySelectorAll("button").forEach((button) => {
+    button.addEventListener("click", () => {
+      thumbs.querySelectorAll("button").forEach((item) => item.classList.remove("active"));
+      button.classList.add("active");
+      if (detailImage) detailImage.src = button.dataset.image;
+    });
+  });
+  thumbs.querySelectorAll("img").forEach((image) => bindProductImage(image, product.id));
+}
+
+export async function renderProductDetail() {
   const detailTitle = document.getElementById("detailTitle");
   if (!detailTitle) return;
 
-  refreshProductsFromAdminState();
-  const params = new URLSearchParams(window.location.search);
-  const id = Nữmber(params.get("id")) || 1;
-  const product = getProductById(id) || products[0];
-  const specs = detailSpecsMap[product.categoryName] || detailSpecsMap["Áo bóng đá"];
+  detailTitle.textContent = "Dang tai san pham...";
+  const product = await loadProductDetail();
+  if (!product) {
+    detailTitle.textContent = "Khong tim thay san pham";
+    return;
+  }
+
   const detailCategory = document.getElementById("detailCategory");
   const detailImage = document.getElementById("detailImage");
   const detailPrice = document.getElementById("detailPrice");
   const detailOldPrice = document.getElementById("detailOldPrice");
   const detailDescription = document.getElementById("detailDescription");
+  const detailLongDescription = document.getElementById("detailLongDescription");
   const detailSpecs = document.getElementById("detailSpecs");
   const detailRouteName = document.getElementById("detailRouteName");
   const discountBadge = document.getElementById("detailDiscount");
@@ -100,36 +178,29 @@ export function renderProductDetail() {
   const sizeOptions = document.getElementById("sizeOptions");
   const detailAddBtn = document.getElementById("detailAddBtn");
   const relatedGrid = document.getElementById("relatedGrid");
-  const discount = product.oldPrice
-    ? Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100)
-    : 0;
+  const discount = product.oldPrice ? Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100) : 0;
+  const specs = detailSpecsMap[product.categoryName] || detailSpecsMap["Ao bong da"];
 
   document.title = `${product.name} - Ni Sport`;
   detailTitle.textContent = product.name;
-  if (detailCategory) detailCategory.textContent = `${genderLabels[product.gender]} / ${product.categoryName}`;
+  if (detailCategory) detailCategory.textContent = `${genderLabels[product.gender] || product.gender || "Unisex"} / ${product.categoryName}`;
   if (detailRouteName) detailRouteName.textContent = product.name;
-  if (detailImage) {
-    detailImage.src = product.image;
-    detailImage.alt = product.name;
-    bindProductImage(detailImage, product.id);
-  }
   if (detailPrice) detailPrice.textContent = formatMoney(product.price);
   if (detailOldPrice) {
     detailOldPrice.textContent = product.oldPrice ? formatMoney(product.oldPrice) : "";
     detailOldPrice.style.display = product.oldPrice ? "inline" : "none";
   }
-  if (detailDescription) detailDescription.textContent = product.description;
-  if (detailSpecs) {
-    detailSpecs.innerHTML = specs.map(([label, value]) => `<li><span>${label}</span><strong>${value}</strong></li>`).join("");
-  }
-  if (discountBadge) discountBadge.textContent = discount ? `Tiết kiệm ${discount}%` : "Hàng mới";
+  if (detailDescription) detailDescription.textContent = product.description || "San pham Ni Sport cho tap luyen va thi dau.";
+  if (detailLongDescription) detailLongDescription.textContent = product.description || "Thiet ke the thao, de phoi do va phu hop san co.";
+  if (detailSpecs) detailSpecs.innerHTML = specs.map(([label, value]) => `<li><span>${label}</span><strong>${value}</strong></li>`).join("");
+  if (discountBadge) discountBadge.textContent = discount ? `Tiet kiem ${discount}%` : `${product.totalStock || 0} ton kho`;
+
+  renderGallery(product, detailImage);
 
   const colors = getProductColors(product);
   if (colorOptions) {
-    colorOptions.innerHTML = colors.map((color, index) => `
-      <button class="${index === 0 ? "active" : ""}" type="button" data-color="${color}">
-        <img data-product-img data-product-id="${product.id}" src="${product.image}" alt="${color}">
-      </button>
+    colorOptions.innerHTML = (colors.length ? colors : ["Black"]).map((color, index) => `
+      <button class="${index === 0 ? "active" : ""}" type="button" data-color="${color}">${color}</button>
     `).join("");
     colorOptions.querySelectorAll("button").forEach((button) => {
       button.addEventListener("click", () => {
@@ -137,12 +208,11 @@ export function renderProductDetail() {
         button.classList.add("active");
       });
     });
-    colorOptions.querySelectorAll("[data-product-img]").forEach((image) => bindProductImage(image, product.id));
   }
 
   const sizes = getProductSizes(product);
   if (sizeOptions) {
-    sizeOptions.innerHTML = sizes.map((size, index) => `
+    sizeOptions.innerHTML = (sizes.length ? sizes : ["M"]).map((size, index) => `
       <button class="${index === 0 ? "active" : ""}" type="button" data-size="${size}">${size}</button>
     `).join("");
     sizeOptions.querySelectorAll("button").forEach((button) => {
@@ -153,18 +223,38 @@ export function renderProductDetail() {
     });
   }
 
-  detailAddBtn?.addEventListener("click", () => {
-    const selectedSize = sizeOptions?.querySelector("button.active")?.dataset.size;
-    const selectedColor = colorOptions?.querySelector("button.active")?.dataset.color || "Black";
-    if (!selectedSize) {
-      showToast("Vui lòng chọn size trước khi thêm vào giỏ.");
-      return;
-    }
-    addToCart(product.id, { size: selectedSize, color: selectedColor });
-    window.location.href = "cart.html";
-  });
+  let quantityInput = document.getElementById("detailQuantity");
+  if (!quantityInput && detailAddBtn) {
+    const quantityBlock = document.createElement("div");
+    quantityBlock.className = "variant-block detail-quantity-block";
+    quantityBlock.innerHTML = `
+      <h2>So luong</h2>
+      <input id="detailQuantity" type="number" min="1" value="1" inputmode="numeric">
+    `;
+    detailAddBtn.insertAdjacentElement("beforebegin", quantityBlock);
+    quantityInput = quantityBlock.querySelector("#detailQuantity");
+  }
 
-  if (relatedGrid) renderRelatedProducts(product, relatedGrid);
+  if (detailAddBtn) {
+    detailAddBtn.onclick = () => {
+      const selectedSize = sizeOptions?.querySelector("button.active")?.dataset.size;
+      const selectedColor = colorOptions?.querySelector("button.active")?.dataset.color;
+      const selectedVariant = product.variants.find((variant) => {
+        const matchSize = !selectedSize || variant.size === selectedSize;
+        const matchColor = !selectedColor || variant.color === selectedColor;
+        return matchSize && matchColor;
+      });
+      const quantity = Math.max(1, Number(quantityInput?.value || 1));
+
+      if (!selectedVariant) {
+        showToast("Vui long chon size va mau con hang.");
+        return;
+      }
+      addToCart(product.id, { variantId: selectedVariant.id, quantity });
+    };
+  }
+
+  if (relatedGrid) await renderRelatedProducts(product, relatedGrid);
 }
 
 export function initProductDetailPage() {

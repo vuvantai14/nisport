@@ -1,5 +1,7 @@
+import { clearStoredAuth, getCurrentUserFromApi, getStoredUser, removeToken, setStoredUser } from "./api.js";
+
 export const APP_NAME = "Ni Sport";
-export const APP_SLOGAN = "Sẵn sàng ra sân";
+export const APP_SLOGAN = "San sang ra san";
 export const ADMIN_EMAIL = "admin@nisport.com";
 
 export function getData(key, fallback = null) {
@@ -16,7 +18,7 @@ export function saveData(key, value) {
 }
 
 export function formatMoney(number) {
-  return Nữmber(number || 0).toLocaleString("vi-VN") + "đ";
+  return Number(number || 0).toLocaleString("vi-VN") + "d";
 }
 
 export const formatCurrency = formatMoney;
@@ -26,7 +28,7 @@ export function normalizeText(value = "") {
     .toLowerCase()
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
-    .replace(/đ/g, "d");
+    .replace(/d/g, "d");
 }
 
 export function getUsers() {
@@ -46,14 +48,15 @@ export function saveOrders(orders) {
 }
 
 export function getCurrentUser() {
-  return getData("niSportCurrentUser", null);
+  return getStoredUser() || getData("niSportCurrentUser", null);
 }
 
 export function setCurrentUser(user) {
-  saveData("niSportCurrentUser", user);
+  setStoredUser(user);
 }
 
 export function clearCurrentUser() {
+  clearStoredAuth();
   localStorage.removeItem("niSportCurrentUser");
 }
 
@@ -104,9 +107,11 @@ function renderBranding() {
   document.querySelectorAll(".logo small, .footer-logo small, .auth-logo small").forEach((tagline) => {
     tagline.textContent = APP_SLOGAN;
   });
-  document.querySelectorAll('[aria-label="Ni Sport"]').forEach((element) => {
-    element.setAttribute("aria-label", APP_NAME);
-  });
+}
+
+function displayName(user) {
+  if (!user) return "Tai khoan";
+  return user.fullName || user.firstName || user.email || "Tai khoan";
 }
 
 export function updateLoginLinks() {
@@ -115,25 +120,29 @@ export function updateLoginLinks() {
 
   document.querySelectorAll(".login-link").forEach((link) => {
     if (!currentUser) {
-      link.innerHTML = `<span class="account-mark">TK</span><small>Tài khoản</small>`;
+      link.innerHTML = `<span class="account-mark">TK</span><small>Tai khoan</small>`;
       link.href = "login.html";
-      link.setAttribute("aria-label", "Tài khoản");
+      link.setAttribute("aria-label", "Tai khoan");
       return;
     }
 
-    link.innerHTML = `<span class="account-mark">TK</span><small>${currentUser.firstName || currentUser.fullName || "Tài khoản"}</small>`;
+    const label = displayName(currentUser).split(" ").slice(-1)[0] || "Tai khoan";
+    link.innerHTML = `<span class="account-mark">TK</span><small>${label}</small>`;
     link.href = "#account-menu";
-    link.setAttribute("aria-label", `Tài khoản ${currentUser.firstName || currentUser.fullName || ""}`);
+    link.setAttribute("aria-label", `Tai khoan ${displayName(currentUser)}`);
 
     const actions = link.closest(".header-actions");
     if (actions) {
       const menu = document.createElement("div");
       menu.className = "account-dropdown";
       menu.innerHTML = `
-        <a href="account.html">Thông tin cá nhân</a>
-        <a href="orders.html">Đơn hàng của tôi</a>
+        <a href="account.html">Thong tin ca nhan</a>
+        <a href="orders.html">Don hang cua toi</a>
+        ${String(currentUser.role).toUpperCase() === "ADMIN" ? `<a href="admin.html">Quan tri admin</a>` : ""}
+        <button type="button" data-logout-button>Dang xuat</button>
       `;
       actions.appendChild(menu);
+      menu.querySelector("[data-logout-button]")?.addEventListener("click", () => logout("login.html"));
     }
 
     if (link.dataset.accountReady !== "true") {
@@ -150,16 +159,17 @@ export function updateLoginLinks() {
 export function normalizeCurrentUserRole() {
   const currentUser = getCurrentUser();
   if (!currentUser) return;
-
-  const normalizedUser = currentUser.email === ADMIN_EMAIL
-    ? { ...currentUser, role: "admin" }
-    : { ...currentUser, role: currentUser.role || "customer" };
-  setCurrentUser(normalizedUser);
+  const role = String(currentUser.role || "").toUpperCase();
+  setCurrentUser({
+    ...currentUser,
+    role: role === "ADMIN" ? "admin" : role === "USER" ? "customer" : currentUser.role || "customer"
+  });
 }
 
 export function guardAdminWebsiteAccess() {
   const currentUser = getCurrentUser();
-  if (!currentUser || currentUser.role !== "admin") return;
+  const role = String(currentUser?.role || "").toUpperCase();
+  if (!currentUser || role !== "ADMIN") return;
 
   const pageName = window.location.pathname.split("/").pop() || "index.html";
   const allowedAdminPages = new Set(["admin.html", "login.html", "register.html"]);
@@ -176,8 +186,8 @@ export function initPasswordToggles() {
     button.addEventListener("click", () => {
       const shouldShow = input.type === "password";
       input.type = shouldShow ? "text" : "password";
-      button.textContent = shouldShow ? "Ẩn" : "Hiện";
-      button.setAttribute("aria-label", shouldShow ? "Ẩn mật khẩu" : "Hiện mật khẩu");
+      button.textContent = shouldShow ? "An" : "Hien";
+      button.setAttribute("aria-label", shouldShow ? "An mat khau" : "Hien mat khau");
     });
   });
 }
@@ -194,17 +204,31 @@ export function initMenuToggle() {
   });
 }
 
+export async function refreshCurrentUserFromApi() {
+  try {
+    await getCurrentUserFromApi();
+  } catch {
+    removeToken();
+  } finally {
+    updateLoginLinks();
+  }
+}
+
 export function initCommonLayout() {
   renderBranding();
   normalizeCurrentUserRole();
   guardAdminWebsiteAccess();
   updateLoginLinks();
+  refreshCurrentUserFromApi();
   initPasswordToggles();
   initMenuToggle();
 
-  document.addEventListener("click", () => {
-    document.querySelectorAll(".account-dropdown.show").forEach((menu) => menu.classList.remove("show"));
-  });
+  if (document.body.dataset.commonClickReady !== "true") {
+    document.body.dataset.commonClickReady = "true";
+    document.addEventListener("click", () => {
+      document.querySelectorAll(".account-dropdown.show").forEach((menu) => menu.classList.remove("show"));
+    });
+  }
 }
 
 export const renderHeader = updateLoginLinks;

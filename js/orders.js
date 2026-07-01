@@ -1,33 +1,21 @@
-import { formatMoney, getCurrentUser, getOrders, initCommonLayout, saveOrders } from "./common.js";
+import { apiRequest, getToken, resolveAssetUrl } from "./api.js";
+import { formatMoney, initCommonLayout, showToast } from "./common.js";
 import { initCartControls } from "./cart.js";
 
 let selectedUserOrderId = null;
-
-export function formatOrderCode(order, orders = []) {
-  const index = orders.findIndex((item) => String(item.id) === String(order.id));
-  const number = index === -1 ? 1 : index + 1;
-  return `#DH${String(number).padStart(4, "0")}`;
-}
+let currentOrders = [];
 
 const orderStatusLabels = {
-  PENDING: "Chờ xác nhận",
-  CONFIRMED: "Đã xác nhận",
-  SHIPPING: "Đang giao",
-  COMPLETED: "Hoàn thành",
-  CANCELLED: "Đã hủy"
+  PENDING: "Cho xac nhan",
+  CONFIRMED: "Da xac nhan",
+  SHIPPING: "Dang giao",
+  COMPLETED: "Hoan thanh",
+  CANCELLED: "Da huy"
 };
 
 export function normalizeOrderStatus(status) {
-  const rawStatus = String(status || "PENDING").trim();
-  const upperStatus = rawStatus.toUpperCase();
-  if (orderStatusLabels[upperStatus]) return upperStatus;
-
-  const normalizedStatus = rawStatus.toLowerCase();
-  if (normalizedStatus.includes("hủy") || normalizedStatus.includes("huỷ") || normalizedStatus.includes("cancel")) return "CANCELLED";
-  if (normalizedStatus.includes("hoàn") || normalizedStatus.includes("đã giao") || normalizedStatus.includes("done") || normalizedStatus.includes("completed")) return "COMPLETED";
-  if (normalizedStatus.includes("giao") || normalizedStatus.includes("shipping")) return "SHIPPING";
-  if (normalizedStatus.includes("đã xử") || normalizedStatus.includes("xác") || normalizedStatus.includes("confirmed")) return "CONFIRMED";
-  return "PENDING";
+  const upperStatus = String(status || "PENDING").toUpperCase();
+  return orderStatusLabels[upperStatus] ? upperStatus : "PENDING";
 }
 
 export function getOrderStatusClass(status) {
@@ -41,178 +29,224 @@ export function formatOrderStatusText(status) {
   return orderStatusLabels[normalizeOrderStatus(status)];
 }
 
-function getCurrentUserOrderMatch(order, currentUser) {
-  return String(order.customerId) === String(currentUser.id) || order.email === currentUser.email;
+export function formatOrderCode(order, orders = []) {
+  return order?.orderCode || `#DH${String((orders.findIndex((item) => String(item.id) === String(order?.id)) + 1) || 1).padStart(4, "0")}`;
 }
 
-function getOrderImageSrc(image) {
-  const imagePath = String(image || "").trim();
-  if (!imagePath) return "../assets/product-1.jpg";
-  if (/^(https?:|data:|blob:)/.test(imagePath)) return imagePath;
-
-  const normalizedPath = imagePath.replace(/\\/g, "/");
-  const assetIndex = normalizedPath.lastIndexOf("assets/");
-  if (assetIndex !== -1) return `../${normalizedPath.slice(assetIndex)}`;
-
-  return normalizedPath;
+function formatDate(value) {
+  if (!value) return "";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+  return `${date.toLocaleDateString("vi-VN")} ${date.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })}`;
 }
 
-function syncCurrentUserOrders(currentUser) {
-  const orders = getOrders();
-  const customerName = `${currentUser.lastName || ""} ${currentUser.firstName || ""}`.trim();
-  let hasChange = false;
+function normalizeOrder(order) {
+  const items = order?.items || [];
+  return {
+    ...order,
+    items,
+    totalQuantity: Number(order?.totalQuantity ?? items.reduce((sum, item) => sum + Number(item.quantity || 0), 0)),
+    totalAmount: Number(order?.totalAmount ?? order?.total ?? 0),
+    receiverName: order?.receiverName || order?.customerName || "",
+    receiverPhone: order?.receiverPhone || order?.phone || "",
+    receiverAddress: order?.receiverAddress || order?.address || ""
+  };
+}
 
-  const syncedOrders = orders.map((order) => {
-    if (!getCurrentUserOrderMatch(order, currentUser)) return order;
+async function loadOrders() {
+  const page = await apiRequest("/orders?page=0&size=50");
+  const content = Array.isArray(page) ? page : page?.content || [];
+  currentOrders = content.map(normalizeOrder);
+  return currentOrders;
+}
 
-    const nextOrder = {
-      ...order,
-      customerId: currentUser.id,
-      customerName,
-      email: currentUser.email,
-      phone: currentUser.phone || "",
-      address: currentUser.address || ""
-    };
+async function loadOrderDetail(orderId) {
+  const order = normalizeOrder(await apiRequest(`/orders/${orderId}`));
+  currentOrders = currentOrders.map((item) => String(item.id) === String(order.id) ? order : item);
+  return order;
+}
 
-    hasChange = hasChange
-      || nextOrder.customerName !== order.customerName
-      || nextOrder.email !== order.email
-      || nextOrder.phone !== order.phone
-      || nextOrder.address !== order.address
-      || String(nextOrder.customerId) !== String(order.customerId);
+function renderLoginRequired(container) {
+  container.innerHTML = `
+    <div class="orders-empty">
+      <h2>Ban chua dang nhap</h2>
+      <p>Vui long dang nhap de xem lich su don hang.</p>
+      <a class="btn btn-primary" href="login.html">Dang nhap</a>
+    </div>
+  `;
+}
 
-    return nextOrder;
+function renderEmpty(container) {
+  container.innerHTML = `
+    <div class="orders-empty">
+      <h2>Chua co don hang</h2>
+      <p>Cac don hang dat thanh cong se hien thi tai day.</p>
+      <a class="btn btn-primary" href="products.html">Mua sam ngay</a>
+    </div>
+  `;
+}
+
+function renderOrderItems(order) {
+  return (order.items || []).map((item) => `
+    <article>
+      <img src="${resolveAssetUrl(item.thumbnailUrl)}" alt="${item.productName}">
+      <div>
+        <strong>${item.productName}</strong>
+        <span>${item.color || "Black"} - ${item.size || "M"}</span>
+        <small>SKU: ${item.sku || "NI"}</small>
+      </div>
+      <small>x${item.quantity}</small>
+      <b>${formatMoney(item.subtotal || item.price * item.quantity)}</b>
+    </article>
+  `).join("");
+}
+
+async function renderOrderDetail(container, order) {
+  const status = normalizeOrderStatus(order.status);
+  container.innerHTML = `
+    <div class="user-order-detail-head">
+      <div>
+        <h2>Chi tiet don hang</h2>
+        <strong>${formatOrderCode(order, currentOrders)}</strong>
+      </div>
+      <em class="order-status-pill ${getOrderStatusClass(order.status)}">${formatOrderStatusText(order.status)}</em>
+    </div>
+    <div class="user-order-detail-meta">
+      <p>Ngay dat: ${formatDate(order.createdAt)}</p>
+      <p>Phuong thuc thanh toan: ${order.paymentMethod || "COD"}</p>
+      <p>Tong so luong: ${order.totalQuantity || 0}</p>
+    </div>
+    <section class="user-order-address">
+      <h3>Thong tin nguoi nhan</h3>
+      <strong>${order.receiverName || "Nguoi nhan"}</strong>
+      <p>${order.receiverPhone || "Chua co so dien thoai"}</p>
+      <p>${order.receiverAddress || "Chua co dia chi"}</p>
+      ${order.note ? `<p>Ghi chu: ${order.note}</p>` : ""}
+    </section>
+    <section class="user-order-products">
+      <div class="user-section-head"><h3>San pham (${order.items?.length || 0})</h3><a href="products.html">Mua them</a></div>
+      ${renderOrderItems(order)}
+    </section>
+    <div class="user-order-summary">
+      <div class="total"><span>Tong cong</span><strong>${formatMoney(order.totalAmount)}</strong></div>
+    </div>
+    ${status === "PENDING" ? `<button class="user-buy-again" type="button" data-cancel-order="${order.id}">Huy don hang</button>` : `<a class="user-buy-again" href="products.html">Mua lai</a>`}
+  `;
+
+  container.querySelector("[data-cancel-order]")?.addEventListener("click", async () => {
+    await cancelOrder(order.id);
   });
-
-  if (hasChange) saveOrders(syncedOrders);
-  return syncedOrders.filter((order) => getCurrentUserOrderMatch(order, currentUser));
 }
 
-export function renderUserOrders() {
+async function cancelOrder(orderId) {
+  try {
+    const cancelled = normalizeOrder(await apiRequest(`/orders/${orderId}/cancel`, { method: "PATCH" }));
+    currentOrders = currentOrders.map((order) => String(order.id) === String(orderId) ? cancelled : order);
+    selectedUserOrderId = cancelled.id;
+    showToast("Da huy don hang.");
+    renderUserOrdersFromData();
+  } catch (error) {
+    if (error.status === 401) {
+      showToast("Vui long dang nhap lai.");
+      setTimeout(() => window.location.href = "login.html", 900);
+    } else {
+      showToast(error.message || "Khong huy duoc don hang.");
+    }
+  }
+}
+
+function renderUserOrdersFromData() {
   const userOrdersContent = document.getElementById("userOrdersContent");
   if (!userOrdersContent) return;
 
-  const currentUser = getCurrentUser();
-  if (!currentUser) {
-    userOrdersContent.innerHTML = `
-      <div class="orders-empty">
-        <h2>Bạn chưa đăng nhập</h2>
-        <p>Vui lòng đăng nhập để xem lịch sử đơn hàng.</p>
-        <a class="btn btn-primary" href="login.html">Đăng nhập</a>
-      </div>
-    `;
+  if (!currentOrders.length) {
+    renderEmpty(userOrdersContent);
     return;
   }
 
-  const orders = syncCurrentUserOrders(currentUser);
-  if (orders.length === 0) {
-    userOrdersContent.innerHTML = `
-      <div class="orders-empty">
-        <h2>Chưa có đơn hàng</h2>
-        <p>Các đơn hàng bạn đã đặt sẽ được hiển thị tại đây.</p>
-        <a class="btn btn-primary" href="products.html">Mua sắm ngay</a>
-      </div>
-    `;
-    return;
+  if (!selectedUserOrderId || !currentOrders.some((order) => String(order.id) === String(selectedUserOrderId))) {
+    selectedUserOrderId = currentOrders[0].id;
   }
-
-  if (!selectedUserOrderId || !orders.some((order) => String(order.id) === String(selectedUserOrderId))) {
-    selectedUserOrderId = orders[0].id;
-  }
-
-  const selectedOrder = orders.find((order) => String(order.id) === String(selectedUserOrderId)) || orders[0];
-  const selectedDate = new Date(selectedOrder.createdAt);
-  const selectedItems = selectedOrder.items || [];
-  const selectedSubtotal = selectedOrder.subtotal || selectedItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const selectedShipping = selectedOrder.shipping || 0;
-  const selectedTotal = selectedOrder.total || selectedSubtotal + selectedShipping;
-  const discount = Math.max(selectedSubtotal + selectedShipping - selectedTotal, 0);
+  const selectedOrder = currentOrders.find((order) => String(order.id) === String(selectedUserOrderId)) || currentOrders[0];
 
   userOrdersContent.innerHTML = `
     <div class="user-orders-layout">
       <section class="user-orders-list">
         <div class="user-order-tabs">
-          <button class="active" type="button">Tất cả</button>
-          <button type="button">Chờ xác nhận</button>
-          <button type="button">Đã xác nhận</button>
-          <button type="button">Đang giao</button>
-          <button type="button">Hoàn thành</button>
-          <button type="button">Đã hủy</button>
+          <button class="active" type="button">Tat ca</button>
+          <button type="button">Cho xac nhan</button>
+          <button type="button">Da xac nhan</button>
+          <button type="button">Dang giao</button>
+          <button type="button">Hoan thanh</button>
+          <button type="button">Da huy</button>
         </div>
         <div class="user-order-table">
           <div class="user-order-head">
-            <span>Mã đơn hàng</span>
-            <span>Ngày đặt</span>
-            <span>Tổng tiền</span>
-            <span>Trạng thái</span>
-            <span>Thao tác</span>
+            <span>Ma don</span>
+            <span>Ngay dat</span>
+            <span>Tong tien</span>
+            <span>Trang thai</span>
+            <span>Thao tac</span>
           </div>
-          ${orders.map((order) => {
-            const createdAt = new Date(order.createdAt);
-            return `
-              <article class="user-order-row ${String(order.id) === String(selectedOrder.id) ? "active" : ""}">
-                <strong>${formatOrderCode(order, orders)}</strong>
-                <span>${createdAt.toLocaleDateString("vi-VN")} ${createdAt.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })}</span>
-                <b>${formatMoney(order.total || 0)}</b>
-                <em class="order-status-pill ${getOrderStatusClass(order.status)}">${formatOrderStatusText(order.status)}</em>
-                <button type="button" data-user-order-id="${order.id}">Xem chi tiết</button>
-              </article>
-            `;
-          }).join("")}
-        </div>
-        <div class="user-order-pagination">
-          <span>Hiển thị 1 đến ${orders.length} của ${orders.length} đơn hàng</span>
-          <div><button type="button">‹</button><button class="active" type="button">1</button><button type="button">›</button></div>
-        </div>
-      </section>
-
-      <aside class="user-order-detail">
-        <div class="user-order-detail-head">
-          <div>
-            <h2>Chi tiết đơn hàng</h2>
-            <strong>${formatOrderCode(selectedOrder, orders)}</strong>
-          </div>
-          <em class="order-status-pill ${getOrderStatusClass(selectedOrder.status)}">${formatOrderStatusText(selectedOrder.status)}</em>
-        </div>
-        <div class="user-order-detail-meta">
-          <p>Ngày đặt: ${selectedDate.toLocaleDateString("vi-VN")} ${selectedDate.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })}</p>
-          <p>Phương thức thanh toán: Thanh toán khi giao hàng</p>
-          <p>Phương thức vận chuyển: Giao hàng nhanh</p>
-        </div>
-        <section class="user-order-address">
-          <h3>Địa chỉ giao hàng</h3>
-          <strong>${`${currentUser.lastName || ""} ${currentUser.firstName || ""}`.trim() || selectedOrder.customerName || "Khách hàng"}</strong>
-          <p>${currentUser.phone || selectedOrder.phone || "Chưa cập nhật SĐT"}</p>
-          <p>${currentUser.address || selectedOrder.address || "Chưa cập nhật địa chỉ"}</p>
-        </section>
-        <section class="user-order-products">
-          <div class="user-section-head"><h3>Sản phẩm (${selectedItems.length})</h3><a href="products.html">Xem tất cả</a></div>
-          ${selectedItems.map((item) => `
-            <article>
-              <img src="${getOrderImageSrc(item.image)}" alt="${item.name}">
-              <div><strong>${item.name}</strong><span>${item.color || "Pastel Pink"} - ${item.size || "M"}</span></div>
-              <small>x${item.quantity}</small>
-              <b>${formatMoney(item.price)}</b>
+          ${currentOrders.map((order) => `
+            <article class="user-order-row ${String(order.id) === String(selectedOrder.id) ? "active" : ""}">
+              <strong>${formatOrderCode(order, currentOrders)}</strong>
+              <span>${formatDate(order.createdAt)}</span>
+              <b>${formatMoney(order.totalAmount)}</b>
+              <em class="order-status-pill ${getOrderStatusClass(order.status)}">${formatOrderStatusText(order.status)}</em>
+              <button type="button" data-user-order-id="${order.id}">Xem chi tiet</button>
             </article>
           `).join("")}
-        </section>
-        <div class="user-order-summary">
-          <div><span>Tạm tính</span><strong>${formatMoney(selectedSubtotal)}</strong></div>
-          <div><span>Phí vận chuyển</span><strong>${selectedShipping ? formatMoney(selectedShipping) : "Miễn phí"}</strong></div>
-          <div><span>Giảm giá</span><strong>-${formatMoney(discount)}</strong></div>
-          <div class="total"><span>Tổng cộng</span><strong>${formatMoney(selectedTotal)}</strong></div>
         </div>
-        <a class="user-buy-again" href="products.html">Mua lại</a>
-      </aside>
+        <div class="user-order-pagination">
+          <span>Hien thi ${currentOrders.length} don hang</span>
+          <div><button class="active" type="button">1</button></div>
+        </div>
+      </section>
+      <aside class="user-order-detail" id="userOrderDetail"></aside>
     </div>
   `;
 
   userOrdersContent.querySelectorAll("[data-user-order-id]").forEach((button) => {
-    button.addEventListener("click", () => {
+    button.addEventListener("click", async () => {
       selectedUserOrderId = button.dataset.userOrderId;
-      renderUserOrders();
+      const detail = await loadOrderDetail(selectedUserOrderId);
+      renderUserOrdersFromData();
+      const detailContainer = document.getElementById("userOrderDetail");
+      if (detailContainer) renderOrderDetail(detailContainer, detail);
     });
   });
+
+  const detailContainer = document.getElementById("userOrderDetail");
+  if (detailContainer) renderOrderDetail(detailContainer, selectedOrder);
+}
+
+export async function renderUserOrders() {
+  const userOrdersContent = document.getElementById("userOrdersContent");
+  if (!userOrdersContent) return;
+  if (!getToken()) {
+    renderLoginRequired(userOrdersContent);
+    return;
+  }
+
+  userOrdersContent.innerHTML = `<div class="orders-empty"><p>Dang tai don hang...</p></div>`;
+  try {
+    await loadOrders();
+    renderUserOrdersFromData();
+  } catch (error) {
+    if (error.status === 401) {
+      renderLoginRequired(userOrdersContent);
+    } else {
+      userOrdersContent.innerHTML = `
+        <div class="orders-empty">
+          <h2>Khong tai duoc don hang</h2>
+          <p>${error.message || "Hay thu lai sau."}</p>
+          <button class="btn btn-primary" type="button" id="retryOrders">Thu lai</button>
+        </div>
+      `;
+      document.getElementById("retryOrders")?.addEventListener("click", renderUserOrders);
+    }
+  }
 }
 
 export function initOrdersPage() {

@@ -1,10 +1,12 @@
+import { apiRequest, setStoredUser, setToken } from "./api.js";
 import {
   ADMIN_EMAIL,
   getUsers,
   initCommonLayout,
   saveUsers,
   setCurrentUser,
-  showCenterNotice
+  showCenterNotice,
+  updateLoginLinks
 } from "./common.js";
 
 function setAuthMessage(element, message, type) {
@@ -15,6 +17,26 @@ function setAuthMessage(element, message, type) {
 
 function isValidEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function normalizeUserForFrontend(user) {
+  if (!user) return null;
+  const role = String(user.role || "").toUpperCase();
+  return {
+    ...user,
+    firstName: user.fullName?.split(" ").slice(-1)[0] || user.email,
+    lastName: user.fullName?.split(" ").slice(0, -1).join(" ") || "",
+    role: role === "ADMIN" ? "admin" : "customer",
+    createdAt: user.createdAt || new Date().toISOString()
+  };
+}
+
+function getFriendlyError(error, fallback) {
+  if (!error) return fallback;
+  if (error.status === 0) return "Khong ket noi duoc backend. Hay chay backend tai localhost:8080.";
+  if (error.status === 400) return error.message || "Thong tin chua hop le.";
+  if (error.status === 401 || error.status === 403) return "Email hoac mat khau chua dung.";
+  return error.message || fallback;
 }
 
 export function seedAdminAccount() {
@@ -42,48 +64,44 @@ export function initRegister() {
   const registerMessage = document.getElementById("registerMessage");
   if (!registerForm) return;
 
-  registerForm.addEventListener("submit", (event) => {
+  registerForm.addEventListener("submit", async (event) => {
     event.preventDefault();
 
-    const lastName = document.getElementById("lastName").value.trim();
-    const firstName = document.getElementById("firstName").value.trim();
-    const email = document.getElementById("registerEmail").value.trim().toLowerCase();
-    const password = document.getElementById("registerPassword").value.trim();
-    const users = getUsers();
+    const lastName = document.getElementById("lastName")?.value.trim() || "";
+    const firstName = document.getElementById("firstName")?.value.trim() || "";
+    const email = document.getElementById("registerEmail")?.value.trim().toLowerCase() || "";
+    const password = document.getElementById("registerPassword")?.value.trim() || "";
+    const phone = document.getElementById("registerPhone")?.value.trim() || "";
+    const address = document.getElementById("registerAddress")?.value.trim() || "";
+    const fullName = `${lastName} ${firstName}`.trim();
 
-    if (!lastName || !firstName || !email || !password) {
-      setAuthMessage(registerMessage, "Vui lòng nhập đầy đủ thông tin.", "error");
+    if (!fullName || !email || !password) {
+      setAuthMessage(registerMessage, "Vui long nhap day du ho ten, email va mat khau.", "error");
       return;
     }
     if (!isValidEmail(email)) {
-      setAuthMessage(registerMessage, "Email chưa đúng định dạng.", "error");
+      setAuthMessage(registerMessage, "Email chua dung dinh dang.", "error");
       return;
     }
     if (password.length < 6) {
-      setAuthMessage(registerMessage, "Mật khẩu cần có ít nhất 6 ký tự.", "error");
-      return;
-    }
-    if (users.some((user) => user.email === email)) {
-      setAuthMessage(registerMessage, "Email này đã được đăng ký. Vui lòng đăng nhập.", "error");
+      setAuthMessage(registerMessage, "Mat khau can co it nhat 6 ky tu.", "error");
       return;
     }
 
-    users.push({
-      id: Date.now(),
-      lastName,
-      firstName,
-      fullName: `${lastName} ${firstName}`.trim(),
-      email,
-      phone: "",
-      address: "",
-      role: "customer",
-      createdAt: new Date().toISOString()
-    });
-    saveUsers(users);
-    setAuthMessage(registerMessage, "Tạo tài khoản thành công.", "success");
-    showCenterNotice("Tạo tài khoản thành công. Giai đoạn sau sẽ đăng nhập bằng API thật.", "success", () => {
-      window.location.href = "login.html";
-    });
+    setAuthMessage(registerMessage, "Dang tao tai khoan...", "success");
+    try {
+      await apiRequest("/auth/register", {
+        method: "POST",
+        auth: false,
+        body: { fullName, email, password, phone, address }
+      });
+      setAuthMessage(registerMessage, "Tao tai khoan thanh cong. Hay dang nhap.", "success");
+      showCenterNotice("Tao tai khoan thanh cong.", "success", () => {
+        window.location.href = "login.html";
+      });
+    } catch (error) {
+      setAuthMessage(registerMessage, getFriendlyError(error, "Khong tao duoc tai khoan."), "error");
+    }
   });
 }
 
@@ -92,46 +110,40 @@ export function initLogin() {
   const loginMessage = document.getElementById("loginMessage");
   if (!loginForm) return;
 
-  loginForm.addEventListener("submit", (event) => {
+  loginForm.addEventListener("submit", async (event) => {
     event.preventDefault();
 
-    const email = document.getElementById("loginEmail").value.trim().toLowerCase();
-    const password = document.getElementById("loginPassword").value.trim();
-    const users = getUsers();
+    const email = document.getElementById("loginEmail")?.value.trim().toLowerCase() || "";
+    const password = document.getElementById("loginPassword")?.value.trim() || "";
 
     if (!email || !password) {
-      setAuthMessage(loginMessage, "Vui lòng nhập email và mật khẩu.", "error");
+      setAuthMessage(loginMessage, "Vui long nhap email va mat khau.", "error");
       return;
     }
 
-    let user = null;
-    if (email === ADMIN_EMAIL && password === "123456") {
-      user = users.find((item) => item.email === ADMIN_EMAIL);
-    } else {
-      user = users.find((item) => item.email === email && item.role !== "admin");
+    setAuthMessage(loginMessage, "Dang dang nhap...", "success");
+    try {
+      const response = await apiRequest("/auth/login", {
+        method: "POST",
+        auth: false,
+        body: { email, password }
+      });
+      const token = response?.accessToken;
+      const user = normalizeUserForFrontend(response?.user);
+      if (!token || !user) throw new Error("Login response is missing token or user.");
+
+      setToken(token);
+      setStoredUser(user);
+      setCurrentUser(user);
+      updateLoginLinks();
+
+      setAuthMessage(loginMessage, "Dang nhap thanh cong.", "success");
+      showCenterNotice("Dang nhap thanh cong.", "success", () => {
+        window.location.href = String(user.role).toUpperCase() === "ADMIN" || user.role === "admin" ? "admin.html" : "index.html";
+      });
+    } catch (error) {
+      setAuthMessage(loginMessage, getFriendlyError(error, "Thong tin dang nhap chua hop le."), "error");
     }
-
-    if (!user || password.length < 6) {
-      setAuthMessage(loginMessage, "Thông tin đăng nhập chưa hợp lệ.", "error");
-      return;
-    }
-
-    setCurrentUser({
-      id: user.id,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      fullName: user.fullName || `${user.lastName || ""} ${user.firstName || ""}`.trim(),
-      email: user.email,
-      phone: user.phone || "",
-      address: user.address || "",
-      role: user.role || "customer",
-      createdAt: user.createdAt
-    });
-
-    setAuthMessage(loginMessage, "Đăng nhập thành công.", "success");
-    showCenterNotice("Đăng nhập thành công.", "success", () => {
-      window.location.href = user.role === "admin" ? "admin.html" : "index.html";
-    });
   });
 }
 
